@@ -22,7 +22,7 @@ func Register(c *gin.Context) {
 	// check if account already exists
 	var retrieved models.Accounts
 	if DB.Where("nusnet_id = ?", input.Nusnet_id).First(&retrieved).RowsAffected != 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"success": false, "msg": "Account already exists!"})
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Account already exists!"})
 		return
 	}
 
@@ -35,7 +35,7 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"success": true, "msg": "Account successfully created!"})
+	c.JSON(http.StatusOK, gin.H{"success": true, "message": "Account successfully created!"})
 	log.Println("Account successfully created!")
 }
 
@@ -47,17 +47,17 @@ func Login(c *gin.Context) {
 
 	row := DB.Where("nusnet_id = ?", input.Nusnet_id).First(&retrieved)
 	if row.Error != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"success": false, "msg": "Invalid NUSNET ID!"})
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Invalid NUSNET ID!"})
 		return
 	}
 
 	match := utils.CheckPasswordHash(input.Password, retrieved.Password) // non hashed input first, followed by hashed one retrieved from DB
 
 	if !match {
-		c.JSON(http.StatusUnauthorized, gin.H{"success": false, "msg": "Invalid password!"})
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Invalid password!"})
 		return
 	} else {
-		c.JSON(http.StatusOK, gin.H{"success": true, "msg": "Logged in successfully"})
+		c.JSON(http.StatusOK, gin.H{"success": true})
 	}
 
 	log.Print("Log in successful!")
@@ -67,24 +67,23 @@ func Login(c *gin.Context) {
 // Reeset password
 func ResetPassword(c *gin.Context) {
 	var input models.CreateAccountInput
-
 	// Validate input
 	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"success": false, "msg": "Have you input correctly?"})
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Have you input correctly?"})
 		return
 	}
 
 	// check if account already exists
 	var retrieved models.Accounts
 	if DB.Where("nusnet_id = ?", input.Nusnet_id).First(&retrieved).RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"success": false, "msg": "Account does not exist"})
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Account does not exist"})
 		return
 	}
 
 	// check if new password is same as the old password
 	match := utils.CheckPasswordHash(input.Password, retrieved.Password) // non hashed input first, followed by hashed one retrieved from DB
 	if match {
-		c.JSON(http.StatusBadRequest, gin.H{"success": false, "msg": "New password cannot be the same as old password!"})
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "New password cannot be the same as old password!"})
 		return
 	}
 
@@ -96,7 +95,7 @@ func ResetPassword(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"success": true, "msg": "Password successfully reset!"})
+	c.JSON(http.StatusOK, gin.H{"success": true})
 	log.Println("Password successfully reset!")
 }
 

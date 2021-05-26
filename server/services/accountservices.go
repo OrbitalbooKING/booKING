@@ -91,7 +91,7 @@ func ResetPassword(c *gin.Context) {
 	input.Password = utils.CreateHashedPassword(input.Password)
 
 	if err := DB.Model(&retrieved).UpdateColumn("password", input.Password).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 

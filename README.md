@@ -62,6 +62,7 @@ To maximise the venue and resources usage in School of Computing, we hope to hel
 ---
 ## Project Log
 | S/N | Description | Hours spent by Jason | Hours spent by Jie Wei | Time Period | Remarks |
+| - | - | - | - | - | - |
 | 1 | Poster creation for Lift-off | 2 | 2 | 10/5/2021 | Liftoff |
 | 2 | Video creation for Lift-off | 3 | 3 | 10/5/2021 | Liftoff |
 | 3 | Team meeting: initial planning | 5 | 5 | 11/5/2021 | 1) Layout the full idea for the project and the technology required 2) Delegated roles 3) Asked friends for feedback |

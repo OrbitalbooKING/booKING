@@ -1,5 +1,5 @@
 # booKING
-![ ](./assets/booking\ logo.png)
+![](./assets/booKing\ logo.png)
 
 ## Motivation 
 With the limited venues and resources available in School of Computing, students struggle to find a proper venue to study or to work on group projects. Even if a vacant venue is found, students are also uncertain whether the room is currently occupied, or whether it will be occupied halfway during their usage. In addition, if they want to use it for project meetings or discussions, they are also unsure if the venue itself has the relevant infrastructure (such as projectors, computers or seats) to suit their requirements and preferences. 

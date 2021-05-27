@@ -54,10 +54,10 @@ To maximise the venue and resources usage in School of Computing, we hope to hel
 
 ---
 ## Documentations
-- [User Guide] (https://docs.google.com/document/d/1zvFvemhVmstVMCiOg0dLkmLf1wWBZFmuWxLuLHR_zJg/edit?usp=sharing)
-- [Developer Guide] (https://docs.google.com/document/d/1zvFvemhVmstVMCiOg0dLkmLf1wWBZFmuWxLuLHR_zJg/edit?usp=sharing)
-- [Poster] (https://drive.google.com/file/d/1vGCY2l3TweOiyNjKtW0HgWrqVh6GVa57/view?usp=sharing)
-- [Video] (https://drive.google.com/file/d/1n0D9r45ZNvhBg2152Rb4YcsB8wWRc8oz/view?usp=sharing)
+- [User Guide](https://docs.google.com/document/d/1zvFvemhVmstVMCiOg0dLkmLf1wWBZFmuWxLuLHR_zJg/edit?usp=sharing)
+- [Developer Guide](https://docs.google.com/document/d/1zvFvemhVmstVMCiOg0dLkmLf1wWBZFmuWxLuLHR_zJg/edit?usp=sharing)
+- [Poster](https://drive.google.com/file/d/1vGCY2l3TweOiyNjKtW0HgWrqVh6GVa57/view?usp=sharing)
+- [Video](https://drive.google.com/file/d/1n0D9r45ZNvhBg2152Rb4YcsB8wWRc8oz/view?usp=sharing)
 
 ---
 ## Project Log

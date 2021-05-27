@@ -2,6 +2,7 @@ package services
 
 import (
 	"fmt"
+	"server/config"
 	"server/models"
 
 	"github.com/jinzhu/gorm"
@@ -11,17 +12,10 @@ import (
 var DB *gorm.DB
 
 func ConnectDataBase() {
-	const (
-		host     = "localhost"
-		port     = 5433
-		user     = "postgres"
-		password = "password"
-		dbname   = "testing1"
-	)
 
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
 		"password=%s dbname=%s sslmode=disable",
-		host, port, user, password, dbname)
+		config.DB_HOST, config.DB_PORT, config.DB_USER, config.DB_PASSWORD, config.DB_NAME)
 
 	database, err := gorm.Open("postgres", psqlInfo)
 	if err != nil {

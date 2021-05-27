@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"server/config"
 	"server/middleware"
 	"server/services"
 
@@ -18,5 +19,5 @@ func StartAll(r *gin.Engine) {
 	r.GET("/accounts/:nusnet_id", services.FindAccount)
 	r.DELETE("/accounts/:nusnet_id", services.DeleteAccount)
 
-	r.Run()
+	r.Run(config.LOCAL_HOST)
 }

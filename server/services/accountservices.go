@@ -76,7 +76,7 @@ func ResetPassword(c *gin.Context) {
 	// check if account already exists
 	var retrieved models.Accounts
 	if DB.Where("nusnet_id = ?", input.Nusnet_id).First(&retrieved).RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Account does not exist"})
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Account does not exist!"})
 		return
 	}
 

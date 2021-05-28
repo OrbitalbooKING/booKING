@@ -25,7 +25,7 @@ function SignUpForm() {
                 NUSNET_ID: details.id,
                 password: details.password,
             }).then(response => {
-                history.push("/success");
+                history.push("/sign-up-success");
             }).catch((error) => {
                 if (error.response.status === 400) {
                     setError(error.response.data.message);

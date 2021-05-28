@@ -25,7 +25,7 @@ function ResetForm() {
                 NUSNET_ID: details.id,
                 password: details.password,
             }).then((response) => {
-                history.push("/forgot"); 
+                history.push("/reset-password-success"); 
             }).catch((error) => {
                 if (error.response.status === 400) {
                     setError(error.response.data.message);

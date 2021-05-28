@@ -5,11 +5,11 @@ import { Switch, Route, Link } from "react-router-dom";
 import history from "./history";
 
 import LoginForm from "./components/login.component";
-import SignUpForm from "./components/signup.component";
+import LoginSuccess from "./components/login success.component";
+import SignUpForm from "./components/sign up.component";
+import SignUpSuccess from "./components/sign up success.component";
 import ResetForm from "./components/reset.component";
-import Welcome from "./components/welcome.component";
-import Success from "./components/success.component";
-import Forgot from "./components/forgot.component";
+import ResetSuccess from "./components/reset success.component";
 
 import logo from "./assets/logo for website.png";
 
@@ -40,11 +40,11 @@ function App() {
               <Route exact path="/sign-in"><LoginForm /></Route>
               <Route exact path="/sign-up"><SignUpForm /></Route>
               <Route exact path="/reset-password"><ResetForm /></Route>
-              <Route exact path="/welcome" render={props=>(
-                <Welcome {...props} />)}
+              <Route exact path="/sign-in-success" render={props=>(
+                <LoginSuccess {...props} />)}
               />
-              <Route exact path="/success"><Success /></Route>
-              <Route exact path="/forgot"><Forgot /></Route>
+              <Route exact path="/sign-up-success"><SignUpSuccess /></Route>
+              <Route exact path="/reset-password-success"><ResetSuccess /></Route>
             </Switch>
         </div>
       </div>

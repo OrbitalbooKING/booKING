@@ -8,24 +8,24 @@ const style = {
     padding: 5
 };
 
-function ResetForm() {
+function SignUpForm() {
 
-    const [details, setDetails] = useState({id: "", password: "", newPassword: ""});
-    const [error, setError] = useState("Reset your password!");
+    const [details, setDetails] = useState({id: "", password: "", confirmPassword: ""});
+    const [error, setError] = useState("Create your account!");
 
     const handleClick = e => {
         e.preventDefault();
 
-        if (details.password !== details.newPassword) {
+        if (details.password !== details.confirmPassword) {
             setError("Passwords do not match!");
-        } else if (details.id !== "" && details.password === "" && details.newPassword === "") {
-            setError("Please enter your new password!");
-        } else if (details.password === details.newPassword && details.id !== "") {
-            Axios.patch(configData.LOCAL_HOST + "/reset", {
+        } else if (details.id !== "" && details.password === "" && details.confirmPassword === "") {
+            setError("Please enter a password!");
+        } else if (details.password === details.confirmPassword && details.id !== "") {
+            Axios.post(configData.LOCAL_HOST + "/register", {
                 NUSNET_ID: details.id,
                 password: details.password,
-            }).then((response) => {
-                history.push("/reset-password-success"); 
+            }).then(response => {
+                history.push("/sign-up-success");
             }).catch((error) => {
                 if (error.response.status === 400) {
                     setError(error.response.data.message);
@@ -33,16 +33,16 @@ function ResetForm() {
                     setError("Query failed!");
                 }
             });
-        } else if (details.id === "" && details.password !== "" && details.newPassword !== "") {
+        } else if (details.id === "" && details.password !== "" && details.confirmPassword !== "") {
             setError("Please enter your NUSNET ID!");
         } else {
-            setError("Reset your password!");
+            setError("Create your account!");
         }
     };
 
     return (
         <form>
-            <h3>Reset password</h3>
+            <h3>Sign Up</h3>
 
             <div className="error">
                 <span>{error}</span>
@@ -57,17 +57,17 @@ function ResetForm() {
             </div>
 
             <div className="form-group" style={style}>
-                <input type="password" className="form-control" placeholder="Re-enter password" onChange={e => setDetails({...details, newPassword: e.target.value})} value={details.newPassword} />
+                <input type="password" className="form-control" placeholder="Re-enter password" onChange={e => setDetails({...details, confirmPassword: e.target.value})} value={details.confirmPassword} />
             </div>
 
             <div style={style}>
                 <p className="forgot-password text-right">
-                    <Link to="/sign-in">Sign in</Link>
+                    Already registered? <Link to="/sign-in">Sign in</Link>
                 </p>
-                <button type="submit" className="btn btn-primary btn-block" onClick={handleClick}>Reset</button>
+                <button type="submit" className="btn btn-primary btn-block" onClick={handleClick}>Sign Up</button>
             </div>
         </form>
     );
 }
 
-export default ResetForm;
+export default SignUpForm;

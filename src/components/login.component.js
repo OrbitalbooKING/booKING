@@ -21,7 +21,7 @@ function LoginForm() {
             password: details.password,
         }).then(response => { 
             history.push({
-                pathname: "/welcome",
+                pathname: "/sign-in-success",
                 state: { id: details.id }
             });
         }).catch((error) => {

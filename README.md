@@ -20,15 +20,15 @@ To maximise the venue and resources usage in School of Computing, we hope to hel
 ### *Core Features: (4 weeks)*
 1. - [x] User authentication
 2. - [ ] Venue reservation
-  a. - [ ] Maximum reservation hours per user
-  b. - [ ] Venue classifications 
-  c. - [ ] Resources available in each venue 
+   - - [ ] Maximum reservation hours per user
+   - - [ ] Venue classifications 
+   - - [ ] Resources available in each venue 
 3. - [ ] Available venues search function
 4. - [ ] Venue reservation notification
 5. - [ ] Points system
 6. - [ ] User-friendly interface
-  a. - [ ] Dark Mode
-  b. - [ ] Screen size
+   - - [ ] Dark Mode
+   - - [ ] Screen size
 7. - [ ] Approval process; we will create an interface for staff in SoC to view and approve venue bookings, this allows them to prioritise SoC users who wants to reserve a venue
 8. - [ ] Editing of reserved venues by staff users to address ad-hoc changes
 
@@ -65,4 +65,15 @@ To maximise the venue and resources usage in School of Computing, we hope to hel
 | - | - | - | - | - | - |
 | 1 | Poster creation for Lift-off | 2 | 2 | 10/5/2021 | Liftoff |
 | 2 | Video creation for Lift-off | 3 | 3 | 10/5/2021 | Liftoff |
-| 3 | Team meeting: initial planning | 5 | 5 | 11/5/2021 | 1) Layout the full idea for the project and the technology required<br /> 2) Delegated roles<br /> 3) Asked friends for feedback |
+| 3 | Team meeting: initial planning | 5 | 5 | 11/5/2021 | |
+| 4 | Project research | 4 | 4 | 12/5/2021 | |
+| 5 | Mission control | 3 | 3 | 13/5/2021 | Met up with mentor Robin | 
+| 6 | Programming at home: Frontend & Backend | 2 | 2 | | Setup PostgreSQL and make connection with Golang<br /> Design simple web page using React |
+| 7 | Programming at home: Frontend & Backend | 3 | 3 | | Develop APIs <br /> Design buttons for login features |
+| 8 | Programming at home: Frontend & Backend | 3 | 3 | | Testing of database query calls with APIs<br /> Designing of registration and reset pages |
+| 9 | Programming at home: Integration | 3 | 3 | 26/5/2021 | Successfully connected React frontend with PostgreSQL backend using Golang to carry out authentication |
+
+| Total hours | Jason | Jiewei |
+| - | - | - |
+| | 14 | 14 |
+

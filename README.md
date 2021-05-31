@@ -75,9 +75,9 @@ To maximise the venue and resources usage in School of Computing, we hope to hel
 | 3 | Team meeting: initial planning | 5 | 5 | 11/5/2021 | 1) Layout the full idea for the project and the technology required<br />2) Delegated roles<br />3) Asked friends for feedback |
 | 4 | Project research | 4 | 4 | 12/5/2021 | 1) Read up and research on similar products in the market<br />2) Comparing which software is the best among similar ones |
 | 5 | Mission control | 3 | 3 | 13/5/2021 | Met up with mentor Robin to discuss our project ideas and to get feedback on the softwares we intend to use | 
-| 6 | Programming at home: Frontend & Backend | 2 | 2 | | 1) Setup PostgreSQL and make connection with Golang<br />2) Design simple web page using React |
-| 7 | Programming at home: Frontend & Backend | 3 | 3 | | 1) Develop APIs<br />2) Design buttons for login features |
-| 8 | Programming at home: Frontend & Backend | 3 | 3 | | 1) Testing of database query calls with APIs<br />2) Designing of registration and reset pages |
+| 6 | Programming at home: Frontend & Backend | 2 | 2 | 16/5/2021 | 1) Setup PostgreSQL and make connection with Golang<br />2) Design simple web page using React |
+| 7 | Programming at home: Frontend & Backend | 3 | 3 | 18/5/2021 | 1) Develop APIs<br />2) Design buttons for login features |
+| 8 | Programming at home: Frontend & Backend | 3 | 3 | 22/5/2021 | 1) Testing of database query calls with APIs<br />2) Designing of registration and reset pages |
 | 9 | Programming at home: Integration | 3 | 3 | 26/5/2021 | Successfully connected React frontend with PostgreSQL backend using Golang to carry out authentication |
 | 10 | Programming at home: Integration | 2 | 2 | 26/5/2021 | Successfully connected React frontend with PostgreSQL backend using Go to carry out authentication | 
 | 11 | Documentation at home: User Guide | 8 | 8 | 27/5/2021 |  Worked on documenting a user guide for Milestone 1 | 

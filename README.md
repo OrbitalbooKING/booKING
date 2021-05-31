@@ -56,6 +56,7 @@ To maximise the venue and resources usage in School of Computing, we hope to hel
 ## Documentations
 - [User Guide](https://docs.google.com/document/d/1zvFvemhVmstVMCiOg0dLkmLf1wWBZFmuWxLuLHR_zJg/edit?usp=sharing)
 - [Developer Guide](https://docs.google.com/document/d/1SV7XcLXzWC8Oh0ZJ9_ezHnF3e7drr1Ee3bozCdLTEl8/edit?usp=sharing)
+- [Prototype](https://www.figma.com/proto/StFYx2rDrqAGr74XKgNIck/booKING?node-id=127%3A76&scaling=min-zoom)
 - [Poster](https://drive.google.com/file/d/1vGCY2l3TweOiyNjKtW0HgWrqVh6GVa57/view?usp=sharing)
 - [Video](https://drive.google.com/file/d/1n0D9r45ZNvhBg2152Rb4YcsB8wWRc8oz/view?usp=sharing)
 
@@ -72,8 +73,11 @@ To maximise the venue and resources usage in School of Computing, we hope to hel
 | 7 | Programming at home: Frontend & Backend | 3 | 3 | | Develop APIs <br /> Design buttons for login features |
 | 8 | Programming at home: Frontend & Backend | 3 | 3 | | Testing of database query calls with APIs<br /> Designing of registration and reset pages |
 | 9 | Programming at home: Integration | 3 | 3 | 26/5/2021 | Successfully connected React frontend with PostgreSQL backend using Golang to carry out authentication |
+| 10 | Programming at home: Integration | 2 | 2 | 26/5/2021 | |
+| 11 | Documentation at home: User Guide | 8 | 8 | 27/5/2021 | |
+| 12 | Documentation at home: Developer Guide | 8 | 8 | 28/5/2021 | | 
 
 | Total hours | Jason | Jiewei |
 | - | - | - |
-| | 14 | 14 |
+| | 53 | 53 |
 

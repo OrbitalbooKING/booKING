@@ -64,12 +64,12 @@ func Login(c *gin.Context) {
 }
 
 // PATCH /reset
-// Reeset password
+// Reset password
 func ResetPassword(c *gin.Context) {
 	var input models.CreateAccountInput
 	// Validate input
 	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Have you input correctly?"})
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Have you input correctly? " + err.Error()})
 		return
 	}
 

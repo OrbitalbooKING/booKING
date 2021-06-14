@@ -1,0 +1,3 @@
+accountStatusID,statusName,statusDescription
+1,Active,Normal account
+2,Banned,Due to malicious activities by user 

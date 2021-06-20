@@ -3,7 +3,6 @@ package services
 import (
 	"fmt"
 	"server/config"
-	"server/models"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
@@ -19,12 +18,10 @@ func ConnectDataBase() {
 
 	database, err := gorm.Open("postgres", psqlInfo)
 	if err != nil {
-		panic("Failed to connect to database!")
+		panic("Failed to connect to database!" + err.Error())
 	}
 
 	fmt.Println("Database successfully connected!")
-
-	database.AutoMigrate(&models.Accounts{})
 
 	DB = database
 }

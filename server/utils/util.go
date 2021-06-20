@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"server/models"
 
+	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"golang.org/x/crypto/bcrypt"
 )
 

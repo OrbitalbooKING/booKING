@@ -9,8 +9,8 @@ import (
 
 func main() {
 	r := gin.Default()
-
 	services.ConnectDataBase()
+	services.LoadAllCSV()
 
 	controllers.StartAll(r)
 }

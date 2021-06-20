@@ -1,10 +1,133 @@
 CREATE DATABASE goauth WITH OWNER = postgres ENCODING = 'UTF8' TABLESPACE = pg_default CONNECTION
 LIMIT = - 1;
 
-CREATE TABLE IF NOT EXISTS accounts (
-        id serial PRIMARY KEY,
-        nusnet_id VARCHAR(8) UNIQUE NOT NULL,
-        password VARCHAR(100) NOT NULL
+CREATE TABLE IF NOT EXISTS accountTypes (
+    id SERIAL PRIMARY KEY,
+    accountTypeName VARCHAR(250),
+    accountTypeDescription VARCHAR(250)
 );
 
+CREATE TABLE IF NOT EXISTS accountStatuses (
+    id SERIAL PRIMARY KEY,
+    accountStatusName VARCHAR(250),
+    accountStatusDescription VARCHAR(250)
+);
+
+CREATE TABLE IF NOT EXISTS bookingStatuses (
+    id SERIAL PRIMARY KEY,
+    bookingStatusDescription VARCHAR(250)
+);
+
+CREATE TABLE IF NOT EXISTS notificationTypes (
+    id SERIAL PRIMARY KEY,
+    notificationType VARCHAR(250),
+    notificationTypeDescription VARCHAR(250)
+);
+
+CREATE TABLE IF NOT EXISTS venueStatuses (
+    id SERIAL PRIMARY KEY,
+    venueStatusName VARCHAR(250),
+    venueStatusDescription VARCHAR(250)
+);
+
+CREATE TABLE IF NOT EXISTS faculties (
+    id SERIAL PRIMARY KEY,
+    facultyName VARCHAR(250),
+    facultyDescription VARCHAR(250)
+);
+
+CREATE TABLE IF NOT EXISTS roomTypes (
+    id SERIAL PRIMARY KEY,
+    roomTypeName VARCHAR(250),
+    roomTypeDescription VARCHAR(250)
+);
+
+CREATE TABLE IF NOT EXISTS facilities (
+    id SERIAL PRIMARY KEY,
+    facilityName VARCHAR(250),
+    facilityDescription VARCHAR(250)
+);
+
+CREATE TABLE IF NOT EXISTS buildings (
+    id SERIAL PRIMARY KEY,
+    buildingName VARCHAR(250),
+    facultyID INT REFERENCES faculties, 
+    buildingDescription VARCHAR(250)
+);
+
+CREATE TABLE IF NOT EXISTS venues (
+    id SERIAL PRIMARY KEY,
+    venueName VARCHAR(250),
+    unit VARCHAR(250),
+    maxCapacity INT,
+    buildingID INT REFERENCES buildings,
+    roomTypeID INT REFERENCES roomTypes, 
+    venueStatusID INT REFERENCES venueStatuses,
+    mapPhoto VARCHAR(250),
+    floorPlan VARCHAR(250)
+);
+
+CREATE TABLE IF NOT EXISTS venueTimings (
+    id SERIAL PRIMARY KEY,
+    venueID INT REFERENCES venues,
+    dayOfWeek INT,
+    startHour TIME,
+    endHour TIME
+);
+
+CREATE TABLE IF NOT EXISTS accounts (
+    id SERIAL PRIMARY KEY,
+    nusnetID VARCHAR(8) UNIQUE NOT NULL,
+    passwordHash VARCHAR(250) NOT NULL,
+    name VARCHAR(250),
+    facultyID INT REFERENCES faculties,
+    gradYear INT,
+    profilePic VARCHAR(250),
+    accountTypeID INT REFERENCES accountTypes,
+    points INT,
+    createdAt TIMESTAMP,
+    lastUpdated TIMESTAMP,
+    accountStatusID INT REFERENCES accountStatuses
+);
+
+CREATE TABLE IF NOT EXISTS currentBookings (
+    id SERIAL PRIMARY KEY,
+    nusnetID VARCHAR(8) REFERENCES accounts(nusnetID),
+    venueID INT REFERENCES venues,
+    pax INT,
+    createdAt TIMESTAMP,
+    eventStart TIMESTAMP,
+    eventEnd TIMESTAMP,
+    bookingstatusID INT REFERENCES bookingStatuses,
+    lastUpdated TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS notifications (
+    id SERIAL PRIMARY KEY,
+    notificationTypeID INT REFERENCES notificationTypes,
+    bookingID INT REFERENCES currentBookings
+);
+
+CREATE TABLE IF NOT EXISTS venueFacilities (
+    id SERIAL PRIMARY KEY,
+    venueID INT REFERENCES venues,
+    facilityID INT REFERENCES facilities,
+    quantity INT
+);
+
+ALTER TABLE accountTypes OWNER TO postgres;
+ALTER TABLE accountStatuses OWNER TO postgres;
+ALTER TABLE bookingStatuses OWNER TO postgres;
+ALTER TABLE notificationTypes OWNER TO postgres;
+ALTER TABLE venueStatuses OWNER TO postgres;
+ALTER TABLE faculties OWNER TO postgres;
+ALTER TABLE roomTypes OWNER TO postgres;
+ALTER TABLE facilities OWNER TO postgres;
+ALTER TABLE buildings OWNER TO postgres;
+ALTER TABLE venues OWNER TO postgres;
+ALTER TABLE venueTimings OWNER TO postgres;
+ALTER TABLE facilities OWNER TO postgres;
 ALTER TABLE accounts OWNER TO postgres;
+ALTER TABLE currentBookings OWNER TO postgres;
+ALTER TABLE notifications OWNER TO postgres;
+ALTER TABLE venueFacilities OWNER TO postgres;

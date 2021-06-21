@@ -1,4 +1,0 @@
-accountTypeID,typeName,typeDescription
-1,Student,"For students, basic rights"
-2,Staff,"For staff, approval rights"
-3,Admin,For administrators

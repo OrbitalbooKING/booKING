@@ -18,7 +18,7 @@ func LoadAccountTypesCSV() {
 	if err != nil {
 		panic(err)
 	}
-	exPath := filepath.Dir(ex)
+	exPath, _ := filepath.Abs(filepath.Dir(ex))
 	fmt.Println(" WE REACHED HERE !!!!! \n" + exPath)
 
 	csvFile, err := os.Open(config.ACCOUNTTYPES_CSV)

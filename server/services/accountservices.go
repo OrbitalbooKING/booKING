@@ -110,7 +110,27 @@ func Login(c *gin.Context) {
 		fmt.Println("Invalid password.")
 		return
 	} else {
-		c.JSON(http.StatusOK, gin.H{"success": true})
+		// get online status code
+		var statusCode models.Accountstatuses
+		if err := DB.Where("accountstatusname = ?", "Online").First(&statusCode).Error; err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Unable to retrieve online status code. "})
+			fmt.Println("Unable to retrieve online status code. " + err.Error() + "\n")
+			return
+		}
+
+		// change account status
+		updateQuery := "UPDATE accounts SET accountstatusid = ?, lastupdated = ? WHERE nusnetid = ?"
+		if err := DB.Exec(updateQuery, statusCode.ID, time.Now(), input.Nusnetid).Error; err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Unable to update account logged in status. " + err.Error() + "\n"})
+			fmt.Println("Unable to update account logged in status. " + err.Error() + "\n")
+			return
+		}
+
+		user := models.LoginOutput{
+			Nusnetid: input.Nusnetid,
+			Name:     retrieved.Name,
+		}
+		c.JSON(http.StatusOK, gin.H{"success": true, "message": user})
 		fmt.Println("Log in successful!")
 	}
 }

@@ -1,0 +1,5 @@
+bookingStatusID,description
+1,In the midst of booking
+2,Pending approval
+3,Approved
+4,Rejected

@@ -1,0 +1,3 @@
+accountStatusID,statusName,statusDescription
+1,Online,Currently logged in.
+2,Offline,Currently not logged in.

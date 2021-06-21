@@ -1,0 +1,4 @@
+notificationTypeID,notificationType,description
+1,Pending,Your booking has been received by the system and is pending review by the staff.
+2,Approval,Your booking has been approved.
+3,Rejected,Your booking has been rejected.

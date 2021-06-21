@@ -65,6 +65,42 @@ function Profile(props) {
         "Desktop",
         "Whiteboard",
     ];
+
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
+    
+    const handleCapacityChange = (event) => {
+        setCapacity(event.target.value);
+    };
+    const handleEquipmentChange = (event) => {
+        setEquipment(event.target.value);
+    };
+
+    const filterStartTime = (time) => {
+        if (endDate !== null) {
+            const currentDate = new Date();
+            const selectedDate = new Date(time);
+        
+            return (currentDate.getTime() < selectedDate.getTime()) && (selectedDate.getTime() < endDate.getTime());
+        } else {
+            const currentDate = new Date();
+            const selectedDate = new Date(time);
+        
+            return currentDate.getTime() < selectedDate.getTime();
+        }
+    };
+    const filterEndTime = (time) => {
+        if (startDate !== null) {
+            const selectedDate = new Date(time);
+
+            return startDate.getTime() < selectedDate.getTime();
+        } else {
+            const currentDate = new Date();
+            const selectedDate = new Date(time);
+        
+            return currentDate.getTime() < selectedDate.getTime();
+        }
+    };
     
     const getProfile = () => {
         // Axios.get(configData.LOCAL_HOST + "/profile").then(response => {
@@ -127,6 +163,81 @@ function Profile(props) {
 
     const [bookings, setBookings] = useState();
 
+    const Search = () => {
+        
+        // let buildingSearch = (buildingName === "" ? null : buildingName);
+        // let unitSearch = (unit === "" ? null : unit);
+        // let typeSearch = (venueType === "" ? null : venueType);
+        // let nameSearch = (venueName === "" ? null : venueName);
+
+        // let startTime = (startDate === null ? null : startDate.toISOString());
+        // let endTime = (endDate === null ? null : endDate.toISOString());
+
+        let search = new URLSearchParams();
+        for (let i = 0; i < equipment.length; i++) {
+            search.append("equipment", `${equipment[i]}`);
+        }
+        search.append("capacity", capacity);
+        if (buildingName !== "") {
+            search.append("buildingName", buildingName);
+        }
+        if (unit !== "") {
+            search.append("unitNo", unit);
+        }
+        if (venueType !== "") {
+            let venueTypeId = "";
+            for (let i = 0; i < searchResults.length; i++) {
+                if (venueType === searchResults[i].Roomtypename) {
+                    console.log("match")
+                    venueTypeId = searchResults[i].Roomtypeid;
+                }
+            }
+            console.log(venueTypeId);
+            search.append("roomType", venueTypeId);
+        }
+        if (venueName !== "") {
+            search.append("venueName", venueName);
+        }
+
+        if (startDate !== null) {
+            search.append("startHour", toIsoString(startDate));
+        }
+        if (endDate !== null) {
+            search.append("endHour", toIsoString(endDate));
+        }
+
+        // Axios.post(configData.LOCAL_HOST + "/search", {
+
+        //     equipment: equipment,
+        //     capacity: capacity,
+        //     buildingName: buildingSearch,
+        //     unitNo: unitSearch,
+        //     roomType: typeSearch,
+        //     venueName: nameSearch,
+
+        //     //startHour: startTime,
+        //     //endHour: endTime,
+
+        // })
+
+        
+        Axios.get(configData.LOCAL_HOST + "/search", 
+        {
+            params: search,
+        }
+        // request
+        ).then(response => { 
+            // console.log(response);
+            setSearchResults(response.data.data);
+        }).catch((error) => {
+            if (error.response.status === 400) {
+                console.log(error.response.data.message);
+            } else {
+                console.log("Query failed!");
+            }
+        });
+    };
+
     const editBooking = (val) => () => {
         // history.push({
         //     pathname: "/booking",
@@ -140,6 +251,24 @@ function Profile(props) {
     };
 
     const classes = useStyles();
+
+    function toIsoString(date) {
+        let tzo = -date.getTimezoneOffset(),
+            dif = tzo >= 0 ? '+' : '-',
+            pad = function(num) {
+                var norm = Math.floor(Math.abs(num));
+                return (norm < 10 ? '0' : '') + norm;
+            };
+      
+        return date.getFullYear() +
+            '-' + pad(date.getMonth() + 1) +
+            '-' + pad(date.getDate()) +
+            'T' + pad(date.getHours()) +
+            ':' + pad(date.getMinutes()) +
+            ':' + pad(date.getSeconds()) +
+            dif + pad(tzo / 60) +
+            ':' + pad(tzo % 60);
+    }
 
     useEffect(() => {
         getProfile(); //populates list of venues from API

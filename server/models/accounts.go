@@ -22,6 +22,11 @@ type User struct {
 	Password string `json:"password" form:"password"`
 }
 
+type LoginOutput struct {
+	Nusnetid string
+	Name     string
+}
+
 type CreateAccountInput struct {
 	Nusnetid   string `json:"NUSNET_ID" binding:"required"`
 	Password   string `json:"password" binding:"required"`

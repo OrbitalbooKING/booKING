@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/rand"
 	"os"
+	"path/filepath"
 	"server/config"
 	"server/models"
 	"strconv"
@@ -49,6 +50,13 @@ func LoadAccountTypesCSV() {
 		}
 		counter++
 	}
+
+	ex, err := os.Executable()
+	if err != nil {
+		panic(err)
+	}
+	exPath := filepath.Dir(ex)
+	fmt.Println(" WE REACHED HERE !!!!! \n" + exPath)
 
 	fmt.Printf("Successfully written %d lines on accountTypes table.\n", counter-1)
 }

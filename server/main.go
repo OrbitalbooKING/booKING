@@ -1,6 +1,7 @@
 package main
 
 import (
+	"net/http"
 	"server/controllers"
 	"server/services"
 
@@ -9,6 +10,7 @@ import (
 
 func main() {
 	r := gin.Default()
+	http.Handle("/", http.FileServer(http.Dir("./build")))
 	services.ConnectDataBase()
 	services.LoadAllCSV()
 

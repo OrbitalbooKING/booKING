@@ -1,5 +1,5 @@
 {
-  "name": "booking",
+  "name": "react-login-signup-ui-template",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -24,7 +24,6 @@
     "web-vitals": "^1.1.2"
   },
   "scripts": {
-    
     "dev": "react-scripts start",
     "start": "serve -s build",
     "build": "react-scripts build",
@@ -32,7 +31,7 @@
     "eject": "react-scripts eject",
     "heroku-postbuild": "npm run build"
   },
-  "proxy": "http://localhost:8080",
+  "proxy": "/api",
   "eslintConfig": {
     "extends": [
       "react-app",

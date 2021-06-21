@@ -649,22 +649,9 @@ function Booking(props) {
         ).then(response => { 
             setTimings(response.data.data);
         }).catch((error) => {
-            if (error.response) {
-                console.log("response");
-                // The request was made and the server responded with a status code
-                // that falls out of the range of 2xx
-                if (error.response.status === 400) {
-                    console.log(error.response.data.message);
-                }
-            } else if (error.request) {
-                console.log("request");
-                // The request was made but no response was received
-                // `error.request` is an instance of XMLHttpRequest in the 
-                // browser and an instance of
-                // http.ClientRequest in node.js
-                console.log(error.request);
+            if (error.response.status === 400) {
+                console.log(error.response.data.message);
             } else {
-                // Something happened in setting up the request that triggered an Error
                 console.log("Query failed!");
             }
         });
@@ -732,22 +719,9 @@ function Booking(props) {
         ).then(response => { 
             setCart(response.data.data);
         }).catch((error) => {
-            if (error.response) {
-                console.log("response");
-                // The request was made and the server responded with a status code
-                // that falls out of the range of 2xx
-                if (error.response.status === 400) {
-                    console.log(error.response.data.message);
-                }
-            } else if (error.request) {
-                console.log("request");
-                // The request was made but no response was received
-                // `error.request` is an instance of XMLHttpRequest in the 
-                // browser and an instance of
-                // http.ClientRequest in node.js
-                console.log(error.request);
+            if (error.response.status === 400) {
+                console.log(error.response.data.message);
             } else {
-                // Something happened in setting up the request that triggered an Error
                 console.log("Query failed!");
             }
         });
@@ -802,22 +776,9 @@ function Booking(props) {
         Axios.post(configData.LOCAL_HOST + "/make_pending_booking", [data]).then(response => {
             getCartItems();
         }).catch((error) => {
-            if (error.response) {
-                console.log("response");
-                // The request was made and the server responded with a status code
-                // that falls out of the range of 2xx
-                if (error.response.status === 400) {
-                    console.log(error.response.data.message);
-                }
-            } else if (error.request) {
-                console.log("request");
-                // The request was made but no response was received
-                // `error.request` is an instance of XMLHttpRequest in the 
-                // browser and an instance of
-                // http.ClientRequest in node.js
-                console.log(error.request);
+            if (error.response.status === 400) {
+                console.log(error.response.data.message);
             } else {
-                // Something happened in setting up the request that triggered an Error
                 console.log("Query failed!");
             }
         });
@@ -838,22 +799,9 @@ function Booking(props) {
                 ).then(response => { 
                     getCartItems();
                 }).catch((error) => {
-                    if (error.response) {
-                        console.log("response");
-                        // The request was made and the server responded with a status code
-                        // that falls out of the range of 2xx
-                        if (error.response.status === 400) {
-                            console.log(error.response.data.message);
-                        }
-                    } else if (error.request) {
-                        console.log("request");
-                        // The request was made but no response was received
-                        // `error.request` is an instance of XMLHttpRequest in the 
-                        // browser and an instance of
-                        // http.ClientRequest in node.js
-                        console.log(error.request);
+                    if (error.response.status === 400) {
+                        console.log(error.response.data.message);
                     } else {
-                        // Something happened in setting up the request that triggered an Error
                         console.log("Query failed!");
                     }
                 });
@@ -877,22 +825,10 @@ function Booking(props) {
             ).then(response => { 
                 getCartItems();
             }).catch((error) => {
-                if (error.response) {
-                    console.log("response");
-                    // The request was made and the server responded with a status code
-                    // that falls out of the range of 2xx
-                    if (error.response.status === 400) {
-                        console.log(error.response.data.message);
-                    }
-                } else if (error.request) {
-                    console.log("request");
-                    // The request was made but no response was received
-                    // `error.request` is an instance of XMLHttpRequest in the 
-                    // browser and an instance of
-                    // http.ClientRequest in node.js
-                    console.log(error.request);
+                console.log(error);
+                if (error.response.status === 400) {
+                    console.log(error.response.data.message);
                 } else {
-                    // Something happened in setting up the request that triggered an Error
                     console.log("Query failed!");
                 }
             });
@@ -979,22 +915,9 @@ function Booking(props) {
         ).then(response => { 
             getCartItems();
         }).catch((error) => {
-            if (error.response) {
-                console.log("response");
-                // The request was made and the server responded with a status code
-                // that falls out of the range of 2xx
-                if (error.response.status === 400) {
-                    console.log(error.response.data.message);
-                }
-            } else if (error.request) {
-                console.log("request");
-                // The request was made but no response was received
-                // `error.request` is an instance of XMLHttpRequest in the 
-                // browser and an instance of
-                // http.ClientRequest in node.js
-                console.log(error.request);
+            if (error.response.status === 400) {
+                console.log(error.response.data.message);
             } else {
-                // Something happened in setting up the request that triggered an Error
                 console.log("Query failed!");
             }
         });

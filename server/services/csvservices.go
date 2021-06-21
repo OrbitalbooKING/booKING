@@ -14,6 +14,13 @@ import (
 
 // reads accountTypes.csv and loads into db for accountTypes
 func LoadAccountTypesCSV() {
+	ex, err := os.Executable()
+	if err != nil {
+		panic(err)
+	}
+	exPath := filepath.Dir(ex)
+	fmt.Println(" WE REACHED HERE !!!!! \n" + exPath)
+
 	csvFile, err := os.Open(config.ACCOUNTTYPES_CSV)
 	if err != nil {
 		fmt.Println(err)
@@ -27,12 +34,6 @@ func LoadAccountTypesCSV() {
 		fmt.Println(err)
 		return
 	}
-	ex, err := os.Executable()
-	if err != nil {
-		panic(err)
-	}
-	exPath := filepath.Dir(ex)
-	fmt.Println(" WE REACHED HERE !!!!! \n" + exPath)
 
 	counter := 1
 	var tempHold int

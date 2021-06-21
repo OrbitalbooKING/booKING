@@ -14,7 +14,7 @@ import (
 
 // reads accountTypes.csv and loads into db for accountTypes
 func LoadAccountTypesCSV() {
-	ex, err := os.Executable()
+	ex, err := os.Getwd()
 	if err != nil {
 		panic(err)
 	}

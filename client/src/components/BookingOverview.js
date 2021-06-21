@@ -29,9 +29,22 @@ function BookingOverview(props) {
         ).then(response => { 
             setCart(response.data.data);
         }).catch((error) => {
-            if (error.response.status === 400) {
-                console.log(error.response.data.message);
+            if (error.response) {
+                console.log("response");
+                // The request was made and the server responded with a status code
+                // that falls out of the range of 2xx
+                if (error.response.status === 400) {
+                    console.log(error.response.data.message);
+                }
+            } else if (error.request) {
+                console.log("request");
+                // The request was made but no response was received
+                // `error.request` is an instance of XMLHttpRequest in the 
+                // browser and an instance of
+                // http.ClientRequest in node.js
+                console.log(error.request);
             } else {
+                // Something happened in setting up the request that triggered an Error
                 console.log("Query failed!");
             }
         });
@@ -63,48 +76,26 @@ function BookingOverview(props) {
                     }
                 });
             }).catch((error) => {
-                if (error.response.status === 400) {
-                    console.log(error.response.data.message);
+                if (error.response) {
+                    console.log("response");
+                    // The request was made and the server responded with a status code
+                    // that falls out of the range of 2xx
+                    if (error.response.status === 400) {
+                        console.log(error.response.data.message);
+                    }
+                } else if (error.request) {
+                    console.log("request");
+                    // The request was made but no response was received
+                    // `error.request` is an instance of XMLHttpRequest in the 
+                    // browser and an instance of
+                    // http.ClientRequest in node.js
+                    console.log(error.request);
                 } else {
+                    // Something happened in setting up the request that triggered an Error
                     console.log("Query failed!");
                 }
             }); 
         }
-    };
-
-    const formatter = (timing) => {
-
-        let start = Number(timing.substring(4, 6));
-        let end = Number(timing.substring(4, 6)) + 1;
-
-        if (start < 11) {
-            return start + ":" + timing.substring(6, 9) + " am to " + end + ":" + timing.substring(6, 9) + " am";
-        } else if (start === 11) {
-            return start + ":" + timing.substring(6, 9) + " am to " + end + ":" + timing.substring(6, 9) + " pm";
-        } else if (start === 12) {
-            return start + ":" + timing.substring(6, 9) + " pm to " + (end - 12) + ":" + timing.substring(6, 9) + " pm";
-        } else {
-            return (start - 12) + ":" + timing.substring(6, 9) + " pm to " + (end - 12) + ":" + timing.substring(6, 9) + " pm";
-        }
-        
-    };
-
-    const toIsoString = (date) => {
-        let tzo = -date.getTimezoneOffset(),
-            dif = tzo >= 0 ? '+' : '-',
-            pad = function(num) {
-                var norm = Math.floor(Math.abs(num));
-                return (norm < 10 ? '0' : '') + norm;
-            };
-      
-        return date.getFullYear() +
-            '-' + pad(date.getMonth() + 1) +
-            '-' + pad(date.getDate()) +
-            'T' + pad(date.getHours()) +
-            ':' + pad(date.getMinutes()) +
-            ':' + pad(date.getSeconds()) +
-            dif + pad(tzo / 60) +
-            ':' + pad(tzo % 60);
     };
 
     const dateConverter = (givenDate) => {

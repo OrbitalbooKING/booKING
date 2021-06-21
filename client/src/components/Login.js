@@ -83,19 +83,28 @@ function LoginForm() {
         Axios.post(configData.LOCAL_HOST + "/login", {
             NUSNET_ID: details.id,
             password: details.password,
-            //equipment = array / default : []
-            //capacity = int / default: maxCapacity
-            //building no = string / default: ""
-            //unit no = string / default: ""
         }).then(response => { 
             history.push({
                 pathname: "/sign-in-success",
                 state: { id: details.id }
             });
         }).catch((error) => {
-            if (error.response.status === 400) {
-                setError(error.response.data.message);
+            if (error.response) {
+                console.log("response");
+                // The request was made and the server responded with a status code
+                // that falls out of the range of 2xx
+                if (error.response.status === 400) {
+                    setError(error.response.data.message);
+                }
+            } else if (error.request) {
+                console.log("request");
+                // The request was made but no response was received
+                // `error.request` is an instance of XMLHttpRequest in the 
+                // browser and an instance of
+                // http.ClientRequest in node.js
+                console.log(error.request);
             } else {
+                // Something happened in setting up the request that triggered an Error
                 setError("Query failed!");
             }
         });

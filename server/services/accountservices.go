@@ -43,7 +43,7 @@ func Register(c *gin.Context) {
 
 	// get accountStatusID
 	var accountStatus models.Accountstatuses
-	if err := DB.Where("accountstatusname = ?", "Active").First(&accountStatus).Error; err != nil {
+	if err := DB.Where("accountstatusname = ?", "Offline").First(&accountStatus).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Unable to determine account status"})
 		fmt.Println("Unable to get accountStatusID. " + err.Error() + "\n")
 		return

@@ -1,0 +1,173 @@
+@import url('https://fonts.googleapis.com/css?family=Fira+Sans:400,500,600,700,800');
+
+.App {
+  text-align: center;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: #1C8EF9 !important;
+  min-height: 100vh;
+  display: flex;
+  font-weight: 400;
+  font-family: 'Fira Sans', sans-serif;
+}
+
+h1,h2,h3,h4,h5,h6,label {
+  font-weight: 500;
+  font-family: 'Fira Sans', sans-serif;
+}
+
+body, html, .App, #root, .auth-wrapper {
+  width: 100%;
+  height: 100%;
+}
+
+.navbar-light {
+  background-color: #ffffff;
+  box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
+}
+
+.auth-wrapper {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  text-align: left;
+}
+
+.auth-inner {
+  width: 450px;
+  margin: auto;
+  background: #ffffff;
+  box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
+  padding: 40px 55px 40px 55px;
+  border-radius: 15px;
+  transition: all .3s;
+}
+
+.auth-wrapper .form-control:focus {
+  border-color: #167bff;
+  box-shadow: none;
+}
+
+.auth-wrapper h3 {
+  text-align: center;
+  margin: 0;
+  line-height: 1;
+  padding-bottom: 20px;
+}
+
+.custom-control-label {
+  font-weight: 400;
+}
+
+.forgot-password,
+.forgot-password a {
+  text-align: right;
+  font-size: 13px;
+  padding-top: 10px;
+  color: #7f7d7d;
+  margin: 0;
+}
+
+.forgot-password a {
+  color: #167bff;
+}
+
+.message {
+  color: red;
+}
+
+.error {
+  text-align: center;
+  font-size: 13px;
+  padding-bottom: 15px;
+}
+
+.logo {
+  height: 25px;
+  width: 75px;
+}
+
+.profilePic {
+  height: 75px;
+  width: 75px;
+}
+
+/* .button {
+  float: 'left';
+} */
+
+.display {
+  width: 1050px;
+  margin: auto;
+  background: #ffffff;
+  box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
+  padding: 40px 55px 40px 55px;
+  border-radius: 15px;
+  transition: all .3s;
+}
+
+.display-venues {
+  width: 900px;
+  margin: auto;
+  background: #e5e5e5;
+  /* box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2); */
+  padding: 10px 20px 10px 20px;
+  border-radius: 15px;
+  transition: all .3s;
+}
+
+.searchbar {
+  width: 1050px;
+  margin: auto;
+  background: #ffffff;
+  box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
+  padding: 20px 55px 20px 55px;
+  border-radius: 15px;
+  transition: all .3s;
+}
+
+.calendar {
+  width: 1150px;
+  height: 550px;
+  margin: auto;
+  background: #ffffff;
+  box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
+  padding: 20px 55px 20px 55px;
+  border-radius: 15px;
+  transition: all .3s;
+}
+
+.profile {
+  width: 1080px;
+  margin: auto;
+  background: #ffffff;
+  box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
+  padding: 40px 55px 40px 55px;
+  border-radius: 15px;
+  transition: all .3s;
+}
+
+.display-bookings {
+  width: 950px;
+  margin: auto;
+  background: #e5e5e5;
+  /* box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2); */
+  padding: 10px 20px 10px 20px;
+  border-radius: 15px;
+  transition: all .3s;
+}
+
+/* .react-datepicker-wrapper {
+  position: relative;
+} */
+
+/* .react-datepicker__input-container input {
+  position: absolute;
+  bottom: 0;
+} */
+

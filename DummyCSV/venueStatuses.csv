@@ -1,5 +1,0 @@
-venueStatusID,statusName,statusDescription
-1,Available,Vacant and ready for booking
-2,Partially booked,Partially vacant and ready for booking subject to capacity limits
-3,Fully booked,Fully occupied and cannot be booked
-4,Unavailable,Unavailable for other reasons

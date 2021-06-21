@@ -27,6 +27,12 @@ func LoadAccountTypesCSV() {
 		fmt.Println(err)
 		return
 	}
+	ex, err := os.Executable()
+	if err != nil {
+		panic(err)
+	}
+	exPath := filepath.Dir(ex)
+	fmt.Println(" WE REACHED HERE !!!!! \n" + exPath)
 
 	counter := 1
 	var tempHold int
@@ -50,13 +56,6 @@ func LoadAccountTypesCSV() {
 		}
 		counter++
 	}
-
-	ex, err := os.Executable()
-	if err != nil {
-		panic(err)
-	}
-	exPath := filepath.Dir(ex)
-	fmt.Println(" WE REACHED HERE !!!!! \n" + exPath)
 
 	fmt.Printf("Successfully written %d lines on accountTypes table.\n", counter-1)
 }

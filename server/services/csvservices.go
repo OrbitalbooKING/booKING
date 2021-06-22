@@ -4,35 +4,41 @@ import (
 	"encoding/csv"
 	"fmt"
 	"math/rand"
-	"os"
-	"path/filepath"
+	"net/http"
 	"server/config"
 	"server/models"
 	"strconv"
 	"strings"
 )
 
+// func to read csv files from URL
+func ReadCSVFromUrl(url string) ([][]string, error) {
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, err
+	}
+
+	defer resp.Body.Close()
+	reader := csv.NewReader(resp.Body)
+	reader.Comma = ';'
+	data, err := reader.ReadAll()
+	if err != nil {
+		return nil, err
+	}
+
+	return data, nil
+}
+
 // reads accountTypes.csv and loads into db for accountTypes
 func LoadAccountTypesCSV() {
-	ex, err := os.Executable()
+	FILE_NAME := config.ACCOUNTTYPES_CSV
+	csvLines, err := ReadCSVFromUrl(FILE_NAME)
 	if err != nil {
-		panic(err)
-	}
-	exPath := filepath.Dir(ex)
-	fmt.Println(" WE REACHED HERE !!!!! \n" + exPath)
-
-	csvFile, err := os.Open(config.ACCOUNTTYPES_CSV)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Println("Successfully opened accountTypes.csv file")
-	defer csvFile.Close()
-
-	csvLines, err := csv.NewReader(csvFile).ReadAll()
-	if err != nil {
-		fmt.Println(err)
-		return
+		errorMessage := fmt.Sprintf("Unable to read %s files. "+err.Error()+"\n", FILE_NAME)
+		fmt.Println(errorMessage)
+	} else {
+		successMessage := fmt.Sprintf("Successfully opened %s.", FILE_NAME)
+		fmt.Println(successMessage)
 	}
 
 	counter := 1
@@ -63,18 +69,14 @@ func LoadAccountTypesCSV() {
 
 // reads accountStatuses.csv and loads into db for accountStatuses
 func LoadAccountStatusesCSV() {
-	csvFile, err := os.Open(config.ACCOUNTSTATUSES_CSV)
+	FILE_NAME := config.ACCOUNTSTATUSES_CSV
+	csvLines, err := ReadCSVFromUrl(FILE_NAME)
 	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Println("Successfully opened accountStatuses.csv file")
-	defer csvFile.Close()
-
-	csvLines, err := csv.NewReader(csvFile).ReadAll()
-	if err != nil {
-		fmt.Println(err)
-		return
+		errorMessage := fmt.Sprintf("Unable to read %s files. "+err.Error()+"\n", FILE_NAME)
+		fmt.Println(errorMessage)
+	} else {
+		successMessage := fmt.Sprintf("Successfully opened %s.", FILE_NAME)
+		fmt.Println(successMessage)
 	}
 
 	counter := 1
@@ -105,18 +107,14 @@ func LoadAccountStatusesCSV() {
 
 // reads notificationTypes.csv and loads into db for notificationTypes
 func LoadNotificationTypesCSV() {
-	csvFile, err := os.Open(config.NOTIFICATIONTYPES_CSV)
+	FILE_NAME := config.NOTIFICATIONTYPES_CSV
+	csvLines, err := ReadCSVFromUrl(FILE_NAME)
 	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Println("Successfully opened notificationTypes.csv file")
-	defer csvFile.Close()
-
-	csvLines, err := csv.NewReader(csvFile).ReadAll()
-	if err != nil {
-		fmt.Println(err)
-		return
+		errorMessage := fmt.Sprintf("Unable to read %s files. "+err.Error()+"\n", FILE_NAME)
+		fmt.Println(errorMessage)
+	} else {
+		successMessage := fmt.Sprintf("Successfully opened %s.", FILE_NAME)
+		fmt.Println(successMessage)
 	}
 
 	counter := 1
@@ -147,18 +145,14 @@ func LoadNotificationTypesCSV() {
 
 // reads venueStatuses.csv and loads into db for venueStatuses
 func LoadVenueStatusesCSV() {
-	csvFile, err := os.Open(config.VENUESTATUSES_CSV)
+	FILE_NAME := config.VENUESTATUSES_CSV
+	csvLines, err := ReadCSVFromUrl(FILE_NAME)
 	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Println("Successfully opened venueStatuses.csv file")
-	defer csvFile.Close()
-
-	csvLines, err := csv.NewReader(csvFile).ReadAll()
-	if err != nil {
-		fmt.Println(err)
-		return
+		errorMessage := fmt.Sprintf("Unable to read %s files. "+err.Error()+"\n", FILE_NAME)
+		fmt.Println(errorMessage)
+	} else {
+		successMessage := fmt.Sprintf("Successfully opened %s.", FILE_NAME)
+		fmt.Println(successMessage)
 	}
 
 	counter := 1
@@ -189,18 +183,14 @@ func LoadVenueStatusesCSV() {
 
 // reads bookingStatuses.csv and loads into db for bookingStatuses
 func LoadBookingStatusesCSV() {
-	csvFile, err := os.Open(config.BOOKINGSTATUSES_CSV)
+	FILE_NAME := config.BOOKINGSTATUSES_CSV
+	csvLines, err := ReadCSVFromUrl(FILE_NAME)
 	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Println("Successfully opened bookingStatuses.csv file")
-	defer csvFile.Close()
-
-	csvLines, err := csv.NewReader(csvFile).ReadAll()
-	if err != nil {
-		fmt.Println(err)
-		return
+		errorMessage := fmt.Sprintf("Unable to read %s files. "+err.Error()+"\n", FILE_NAME)
+		fmt.Println(errorMessage)
+	} else {
+		successMessage := fmt.Sprintf("Successfully opened %s.", FILE_NAME)
+		fmt.Println(successMessage)
 	}
 
 	counter := 1
@@ -230,18 +220,14 @@ func LoadBookingStatusesCSV() {
 
 // reads faculties.csv and loads into db for faculties
 func LoadFacultiesCSV() {
-	csvFile, err := os.Open(config.FACULTIES_CSV)
+	FILE_NAME := config.FACULTIES_CSV
+	csvLines, err := ReadCSVFromUrl(FILE_NAME)
 	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Println("Successfully opened faculties.csv file")
-	defer csvFile.Close()
-
-	csvLines, err := csv.NewReader(csvFile).ReadAll()
-	if err != nil {
-		fmt.Println(err)
-		return
+		errorMessage := fmt.Sprintf("Unable to read %s files. "+err.Error()+"\n", FILE_NAME)
+		fmt.Println(errorMessage)
+	} else {
+		successMessage := fmt.Sprintf("Successfully opened %s.", FILE_NAME)
+		fmt.Println(successMessage)
 	}
 
 	counter := 1
@@ -272,18 +258,14 @@ func LoadFacultiesCSV() {
 
 // reads socvenues.csv and loads into db for roomTypes
 func LoadRoomTypes() {
-	csvFile, err := os.Open(config.SOCVENUES_CSV)
+	FILE_NAME := config.SOCVENUES_CSV
+	csvLines, err := ReadCSVFromUrl(FILE_NAME)
 	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Println("Successfully opened socvenues.csv file")
-	defer csvFile.Close()
-
-	csvLines, err := csv.NewReader(csvFile).ReadAll()
-	if err != nil {
-		fmt.Println(err)
-		return
+		errorMessage := fmt.Sprintf("Unable to read %s files. "+err.Error()+"\n", FILE_NAME)
+		fmt.Println(errorMessage)
+	} else {
+		successMessage := fmt.Sprintf("Successfully opened %s.", FILE_NAME)
+		fmt.Println(successMessage)
 	}
 
 	counter := 1
@@ -314,18 +296,14 @@ func LoadRoomTypes() {
 
 // reads socvenues.csv and loads into db for buildings
 func LoadBuildings() {
-	csvFile, err := os.Open(config.SOCVENUES_CSV)
+	FILE_NAME := config.SOCVENUES_CSV
+	csvLines, err := ReadCSVFromUrl(FILE_NAME)
 	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Println("Successfully opened socvenues.csv file")
-	defer csvFile.Close()
-
-	csvLines, err := csv.NewReader(csvFile).ReadAll()
-	if err != nil {
-		fmt.Println(err)
-		return
+		errorMessage := fmt.Sprintf("Unable to read %s files. "+err.Error()+"\n", FILE_NAME)
+		fmt.Println(errorMessage)
+	} else {
+		successMessage := fmt.Sprintf("Successfully opened %s.", FILE_NAME)
+		fmt.Println(successMessage)
 	}
 
 	counter := 1
@@ -379,18 +357,14 @@ func LoadBuildings() {
 
 // reads and loads venues.csv into db for venues
 func LoadVenues() {
-	csvFile, err := os.Open(config.SOCVENUES_CSV)
+	FILE_NAME := config.SOCVENUES_CSV
+	csvLines, err := ReadCSVFromUrl(FILE_NAME)
 	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Println("Successfully opened socvenues.csv file")
-	defer csvFile.Close()
-
-	csvLines, err := csv.NewReader(csvFile).ReadAll()
-	if err != nil {
-		fmt.Println(err)
-		return
+		errorMessage := fmt.Sprintf("Unable to read %s files. "+err.Error()+"\n", FILE_NAME)
+		fmt.Println(errorMessage)
+	} else {
+		successMessage := fmt.Sprintf("Successfully opened %s.", FILE_NAME)
+		fmt.Println(successMessage)
 	}
 
 	counter := 1
@@ -469,19 +443,16 @@ func LoadVenues() {
 
 // reads and loads venueTimings.csv into db for venueTimings
 func LoadVenueTimingsCSV() {
-	csvFile, err := os.Open(config.VENUETIMINGS_CSV)
+	FILE_NAME := config.VENUETIMINGS_CSV
+	csvLines, err := ReadCSVFromUrl(FILE_NAME)
 	if err != nil {
-		fmt.Println(err)
-		return
+		errorMessage := fmt.Sprintf("Unable to read %s files. "+err.Error()+"\n", FILE_NAME)
+		fmt.Println(errorMessage)
+	} else {
+		successMessage := fmt.Sprintf("Successfully opened %s.", FILE_NAME)
+		fmt.Println(successMessage)
 	}
-	fmt.Println("Successfully opened venueTimings.CSV")
-	defer csvFile.Close()
 
-	csvLines, err := csv.NewReader(csvFile).ReadAll()
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
 	counter := 0
 	toConvert := [3]int{0, 1, 2}
 	var tempHold [3]int
@@ -516,19 +487,16 @@ func LoadVenueTimingsCSV() {
 
 // reads and loads facility.csv into db for venues
 func LoadFacilityCSV() {
-	csvFile, err := os.Open(config.FACILITIES_CSV)
+	FILE_NAME := config.FACILITIES_CSV
+	csvLines, err := ReadCSVFromUrl(FILE_NAME)
 	if err != nil {
-		fmt.Println(err)
-		return
+		errorMessage := fmt.Sprintf("Unable to read %s files. "+err.Error()+"\n", FILE_NAME)
+		fmt.Println(errorMessage)
+	} else {
+		successMessage := fmt.Sprintf("Successfully opened %s.", FILE_NAME)
+		fmt.Println(successMessage)
 	}
-	fmt.Println("Successfully opened facility.CSV")
-	defer csvFile.Close()
 
-	csvLines, err := csv.NewReader(csvFile).ReadAll()
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
 	counter := 0
 	var tempHold int
 	for _, line := range csvLines[1:] {
@@ -558,19 +526,16 @@ func LoadFacilityCSV() {
 
 // reads and loads venuefacility.csv into db for venues
 func LoadVenueFacilityCSV() {
-	csvFile, err := os.Open(config.VENUEFACILITIES_CSV)
+	FILE_NAME := config.VENUEFACILITIES_CSV
+	csvLines, err := ReadCSVFromUrl(FILE_NAME)
 	if err != nil {
-		fmt.Println(err)
-		return
+		errorMessage := fmt.Sprintf("Unable to read %s files. "+err.Error()+"\n", FILE_NAME)
+		fmt.Println(errorMessage)
+	} else {
+		successMessage := fmt.Sprintf("Successfully opened %s.", FILE_NAME)
+		fmt.Println(successMessage)
 	}
-	fmt.Println("Successfully opened venueFacility.CSV")
-	defer csvFile.Close()
 
-	csvLines, err := csv.NewReader(csvFile).ReadAll()
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
 	counter := 0
 	toConvert := [4]int{0, 1, 2, 3}
 	var tempHold [4]int

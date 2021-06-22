@@ -20,7 +20,8 @@ func ReadCSVFromUrl(url string) ([][]string, error) {
 
 	defer resp.Body.Close()
 	reader := csv.NewReader(resp.Body)
-	reader.Comma = ';'
+	reader.Comma = ','
+	reader.LazyQuotes = true
 	data, err := reader.ReadAll()
 	if err != nil {
 		return nil, err

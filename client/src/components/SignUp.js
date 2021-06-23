@@ -1,77 +1,3 @@
-// import { useState } from "react";
-// import { Link } from "react-router-dom";
-// import history from "../history";
-// import Axios from "axios";
-// import configData from "../config.json";
-
-// const style = {
-//     padding: 5
-// };
-
-// function SignUpForm() {
-
-//     const [details, setDetails] = useState({id: "", password: "", confirmPassword: ""});
-//     const [error, setError] = useState("Create your account!");
-
-//     const handleClick = e => {
-//         e.preventDefault();
-
-//         if (details.password !== details.confirmPassword) {
-//             setError("Passwords do not match!");
-//         } else if (details.id !== "" && details.password === "" && details.confirmPassword === "") {
-//             setError("Please enter a password!");
-//         } else if (details.password === details.confirmPassword && details.id !== "") {
-//             Axios.post(configData.LOCAL_HOST + "/register", {
-//                 NUSNET_ID: details.id,
-//                 password: details.password,
-//             }).then(response => {
-//                 history.push("/sign-up-success");
-//             }).catch((error) => {
-//                 if (error.response.status === 400) {
-//                     setError(error.response.data.message);
-//                 } else {
-//                     setError("Query failed!");
-//                 }
-//             });
-//         } else if (details.id === "" && details.password !== "" && details.confirmPassword !== "") {
-//             setError("Please enter your NUSNET ID!");
-//         } else {
-//             setError("Create your account!");
-//         }
-//     };
-
-//     return (
-//         <form>
-//             <h3>Sign Up</h3>
-
-//             <div className="error">
-//                 <span className="message">{error}</span>
-//             </div>
-
-//             <div className="form-group" style={style}>
-//                 <input type="text" className="form-control" placeholder="NUSNET ID"  onChange={e => setDetails({...details, id: e.target.value})} value={details.id} />
-//             </div>
-
-//             <div className="form-group" style={style}>
-//                 <input type="password" className="form-control" placeholder="Password" onChange={e => setDetails({...details, password: e.target.value})} value={details.password} />
-//             </div>
-
-//             <div className="form-group" style={style}>
-//                 <input type="password" className="form-control" placeholder="Re-enter password" onChange={e => setDetails({...details, confirmPassword: e.target.value})} value={details.confirmPassword} />
-//             </div>
-
-//             <div style={style}>
-//                 <p className="forgot-password text-right">
-//                     Already registered? <Link to="/sign-in">Sign in</Link>
-//                 </p>
-//                 <button type="submit" className="btn btn-primary btn-block" onClick={handleClick}>Sign Up</button>
-//             </div>
-//         </form>
-//     );
-// }
-
-// export default SignUpForm;
-
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import history from "../history";
@@ -83,9 +9,7 @@ import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
-import ListItemText from '@material-ui/core/ListItemText';
 import Select from '@material-ui/core/Select';
-import Checkbox from '@material-ui/core/Checkbox';
 import { makeStyles } from "@material-ui/core/styles";
 
 const style = {
@@ -94,15 +18,10 @@ const style = {
 
 const useStyles = makeStyles(theme => ({
     formControl: {
-        margin: theme.spacing(1),
         minWidth: 100
     },
     formControl2: {
-        margin: theme.spacing(1),
         minWidth: 320
-    },
-    selectEmpty: {
-        marginTop: theme.spacing(2)
     },
     menuPaper: {
         maxHeight: 200
@@ -237,82 +156,82 @@ function SignUpForm() {
     }, []);
 
     return (
-        <div className="auth-wrapper">
-        <div className="auth-inner">
         <Layout1>
-        <form>
-            <h3>Sign Up</h3>
+            <div className="parent">
+                <div className="sign-up">
+                    <form>
+                        <h3>Sign Up</h3>
 
-            <div className="error">
-                <span className="message">{error}</span>
+                        <div className="error">
+                            <span className="message">{error}</span>
+                        </div>
+
+                        <div className="form-group" style={style}>
+                            <input type="text" className="form-control" placeholder="Username"  onChange={e => setDetails({...details, username: e.target.value})} value={details.username} />
+                        </div> 
+                        
+                        <div className="form-group" style={style}>
+                            <input style={{width: '60%', float: 'left'}}type="text" className="form-control" placeholder="NUSNET ID"  onChange={e => setDetails({...details, id: e.target.value})} value={details.id} />
+                            <div><FormControl style={{width: '40%', float: 'left'}}>
+                                <InputLabel id="demo-simple-select-label">Grad. year</InputLabel>
+                                <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                value={gradYear === undefined ? "" : gradYear}
+                                onChange={handleGradYearChange}
+                                input={<Input />}
+                                MenuProps={{ classes: { paper: classes.menuPaper } }}
+                                >
+                                {Array.from({ length: (10) / 1}, (_, i) => currentYear + (i * 1)).map((val, key) => {
+                                    if (val === undefined) {
+                                        return <MenuItem value={val} key={key}>Blank</MenuItem>;
+                                    } else {
+                                        return <MenuItem value={val} key={key}>{val}</MenuItem>;
+                                    }
+                                })}
+                                </Select>
+                            </FormControl></div>
+                        </div>
+                        
+                        <FormControl style={{width: '100%', padding: 5}}>
+                            <InputLabel id="demo-simple-select-label">Faculty</InputLabel>
+                            <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={faculty === undefined ? "" : faculty}
+                            onChange={handleFacultyChange}
+                            input={<Input />}
+                            MenuProps={{ classes: { paper: classes.menuPaper } }}
+                            >                 
+                            {facultyList === undefined ? "" : Object.entries(facultyList).sort().map((val, key) => {
+                                // console.log(val[1].Facultydescription)
+                                if (val === undefined) {
+                                    return <MenuItem value={val[1].Facultydescription} key={key}>Blank</MenuItem>;
+                                } else {
+                                    return <MenuItem value={val[1].Facultydescription} key={key}>{val[1].Facultydescription}</MenuItem>;
+                                }
+                            })}
+                            </Select>
+                        </FormControl>
+
+                        <div className="form-group" style={style}>
+                            <input type="password" className="form-control" placeholder="Password" onChange={e => setDetails({...details, password: e.target.value})} value={details.password} />
+                        </div>
+
+                        <div className="form-group" style={style}>
+                            <input type="password" className="form-control" placeholder="Re-enter password" onChange={e => setDetails({...details, confirmPassword: e.target.value})} value={details.confirmPassword} />
+                        </div>
+
+                        <div style={style}>
+                            <p className="forgot-password text-right">
+                                Already registered? <Link to="/sign-in">Sign in</Link>
+                            </p>
+                            <button style={{float: 'left'}} type="submit" className="btn btn-primary btn-block" onClick={submitForm}>Sign Up</button>
+                        </div>
+                    </form>
+                </div>
             </div>
-
-            <div className="form-group" style={style}>
-                <input type="text" className="form-control" placeholder="Username"  onChange={e => setDetails({...details, username: e.target.value})} value={details.username} />
-            </div> 
-            
-            <div className="form-group" style={style}>
-                <input style={{width: 210, float: 'left'}}type="text" className="form-control" placeholder="NUSNET ID"  onChange={e => setDetails({...details, id: e.target.value})} value={details.id} />
-                <div style={{float: 'left'}}><FormControl className={classes.formControl}>
-                    <InputLabel id="demo-simple-select-label">Grad. year</InputLabel>
-                    <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={gradYear === undefined ? "" : gradYear}
-                    onChange={handleGradYearChange}
-                    input={<Input />}
-                    MenuProps={{ classes: { paper: classes.menuPaper } }}
-                    >
-                    {Array.from({ length: (10) / 1}, (_, i) => currentYear + (i * 1)).map((val, key) => {
-                        if (val === undefined) {
-                            return <MenuItem value={val} key={key}>Blank</MenuItem>;
-                        } else {
-                            return <MenuItem value={val} key={key}>{val}</MenuItem>;
-                        }
-                    })}
-                    </Select>
-                </FormControl></div>
-            </div>
-
-            
-            <FormControl className={classes.formControl2}>
-                <InputLabel id="demo-simple-select-label">Faculty</InputLabel>
-                <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={faculty === undefined ? "" : faculty}
-                onChange={handleFacultyChange}
-                input={<Input />}
-                MenuProps={{ classes: { paper: classes.menuPaper } }}
-                >                 
-                {facultyList === undefined ? "" : Object.entries(facultyList).sort().map((val, key) => {
-                    // console.log(val[1].Facultydescription)
-                    if (val === undefined) {
-                        return <MenuItem value={val[1].Facultydescription} key={key}>Blank</MenuItem>;
-                    } else {
-                        return <MenuItem value={val[1].Facultydescription} key={key}>{val[1].Facultydescription}</MenuItem>;
-                    }
-                })}
-                </Select>
-            </FormControl>
-
-            <div className="form-group" style={style}>
-                <input type="password" className="form-control" placeholder="Password" onChange={e => setDetails({...details, password: e.target.value})} value={details.password} />
-            </div>
-
-            <div className="form-group" style={style}>
-                <input type="password" className="form-control" placeholder="Re-enter password" onChange={e => setDetails({...details, confirmPassword: e.target.value})} value={details.confirmPassword} />
-            </div>
-
-            <div style={style}>
-                <p className="forgot-password text-right">
-                    Already registered? <Link to="/sign-in">Sign in</Link>
-                </p>
-                <button style={{float: 'left'}} type="submit" className="btn btn-primary btn-block" onClick={submitForm}>Sign Up</button>
-            </div>
-        </form>
         </Layout1>
-        </div></div>
     );
 }
 

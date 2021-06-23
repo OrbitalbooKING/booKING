@@ -1,70 +1,15 @@
 import { useState, useEffect } from "react";
-import history from "../history";
-import Axios from "axios";
-import configData from "../config.json";
+// import history from "../history";
+// import Axios from "axios";
+// import configData from "../config.json";
 import Layout2 from "../layouts/Layout2";
 import Unauthorised from "./Unauthorised";
-
-import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import ListItemText from '@material-ui/core/ListItemText';
-import Select from '@material-ui/core/Select';
-import Checkbox from '@material-ui/core/Checkbox';
-
-import { makeStyles } from "@material-ui/core/styles";
-
-import TextField from '@material-ui/core/TextField';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-
-import DatePicker from 'react-datepicker' ;
-import 'react-datepicker/dist/react-datepicker.css';
 
 import moment from "moment";
 
 import profilePic from "../assets/profile.png";
 
-const style = {
-    padding: 5
-};
-
-const useStyles = makeStyles(theme => ({
-    formControl: {
-      margin: theme.spacing(1),
-      minWidth: 120
-    },
-    selectEmpty: {
-      marginTop: theme.spacing(2)
-    },
-    menuPaper: {
-      maxHeight: 200
-    }
-}));
-  
-
 function Profile(props) {
-
-    const [searchFields, setSearchFields] = useState({unitNo: "", capacity: 0, date: "", equipment: []});
-    const [searchResults, setSearchResults] = useState();
-    const [venuesList, setVenuesList] = useState();
-    const [venue, setVenue] = useState("");
-
-    // 4 forms
-    const [venueName, setVenueName] = useState("");
-    const [venueType, setVenueType] = useState("");
-    const [buildingName, setBuildingName] = useState("");
-    const [unit, setUnit] = useState("");
-
-    const [capacity, setCapacity] = useState(0);
-
-    const [equipment, setEquipment] = useState([]);
-    const equipmentList = [
-        "Projector",
-        "Screen",
-        "Desktop",
-        "Whiteboard",
-    ];
     
     const getProfile = () => {
         // Axios.get(configData.LOCAL_HOST + "/profile").then(response => {
@@ -139,86 +84,74 @@ function Profile(props) {
         // });
     };
 
-    const classes = useStyles();
-
     useEffect(() => {
         getProfile(); //populates list of venues from API
         getBookings(); //get venue details for filtering from API
         
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-
-    useEffect(() => {
-        console.log(searchResults);
-        
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [searchResults]);
     
     return (
-        <div className="auth-wrapper">
+        <>
             {props.location.state !== undefined 
-                ? <div>
-                    <Layout2 id={props.location.state.id} action="Viewing profile">
-                             
-                        <div className="profile">
-                            <h3>Profile</h3>
-                            <div className="display-bookings" style={{height: 'auto'}}>
-                                <div 
-                                // style={{display: 'inline-flex', justifyContent: 'center'}}
-                                style={{height: 90, display: 'inline-block' , paddingLeft: 10}}
-                                >
-                                    <img className="profilePic" src = {profilePic} alt="profilePic" style={{display: 'block', marginTop: 'auto', marginBottom: 'auto'}}/>
-                                </div>
-                                <div style={{display: 'inline-block', paddingLeft: 20}}>
-                                    <div>Username: {profileInfo.Name}</div>
-                                    <div>NUSNET ID: {profileInfo.Nusnetid}</div>
-                                    <div>Graduation year: {profileInfo.Gradyear}</div>
-                                    <div>Faculty: {profileInfo.Faculty}</div>
-                                    <div>Password: {profileInfo.Password}</div>
-                                </div>
-                            </div>
-                            <br />
-                            <h3>Bookings</h3>
-                            <div>
-                                <div style={{display: 'inline-block', width: 260, textAlign: 'center', position: 'relative'}}>Venue name </div>
-                                <div style={{display: 'inline-block', width: 100, textAlign: 'center', position: 'relative'}}>Location </div>
-                                <div style={{display: 'inline-block', width: 150, textAlign: 'center'}}>Date </div>
-                                <div style={{display: 'inline-block', width: 70, textAlign: 'center'}}>Pax </div>
-                                <div style={{display: 'inline-block', width: 100, textAlign: 'center'}}>Booking id </div>
-                                <div style={{display: 'inline-block', width: 80, textAlign: 'center'}}>Status </div>
-                                <div style={{display: 'inline-block', width: 80, textAlign: 'center'}}>Sharing? </div>
-                            </div>
-                            <br />
-                            <div style={{overflowY: "auto", height: 100}}>
-
-                                {bookings === undefined ? "Loading..." : bookings.map((val, key) => {
-                                    return (<div key={key}>
-                                        <div className="display-bookings" style={{height: 'auto'}}>
-                                            <div style={{display: 'inline-block', paddingRight: 20}}>
-                                                <div style={{float: 'left', width: 220, paddingRight: 20, whiteSpace: 'pre-wrap', overflowWrap: 'break-word'}}>{val.Venuename} </div>
-                                                <div style={{float: 'left', width: 140, paddingRight: 20, whiteSpace: 'pre-wrap', overflowWrap: 'break-word'}}>{val.Buildingname} {val.Unit} </div>
-                                                <div style={{float: 'left', width: 150, paddingRight: 20, whiteSpace: 'pre-wrap', overflowWrap: 'break-word'}}>{dateConverter(val.Eventstart)} </div>
-                                                <div style={{float: 'left', width: 70, paddingRight: 20, whiteSpace: 'pre-wrap', overflowWrap: 'break-word'}}>{val.Pax} </div>
-                                                <div style={{float: 'left', width: 70, paddingRight: 20, whiteSpace: 'pre-wrap', overflowWrap: 'break-word'}}>{val.Bookingid} </div>
-                                                <div style={{float: 'left', width: 100, paddingRight: 20, whiteSpace: 'pre-wrap', overflowWrap: 'break-word'}}>{val.Status} </div>
-                                                <div style={{float: 'left', width: 70, paddingRight: 20, whiteSpace: 'pre-wrap', overflowWrap: 'break-word'}}>{val.Sharing ? "Yes" : "No"} </div>
-                                            </div>
-                                            <button style={{float: 'right'}} type="submit" className="btn btn-primary btn-block" onClick={editBooking(val)}>Edit</button> 
+                ? <Layout2 id={props.location.state.id} action="Viewing profile">
+                        <div className="parent">
+                            <div className="home-page">
+                                <div className="profile">
+                                    <h3>Profile</h3>
+                                    <div className="display-bookings" style={{height: 'auto'}}>
+                                        <div 
+                                        style={{height: 90, display: 'inline-block' , paddingLeft: 10}}
+                                        >
+                                            <img className="profilePic" src = {profilePic} alt="profilePic" style={{display: 'block', marginTop: 'auto', marginBottom: 'auto'}}/>
                                         </div>
-                                        <br />
-                                    </div>);
-                                })}
-                                
+                                        <div style={{display: 'inline-block', paddingLeft: 20}}>
+                                            <div>Username: {profileInfo === undefined ? "" : profileInfo.Name}</div>
+                                            <div>NUSNET ID: {profileInfo === undefined ? "" : profileInfo.Nusnetid}</div>
+                                            <div>Graduation year: {profileInfo === undefined ? "" : profileInfo.Gradyear}</div>
+                                            <div>Faculty: {profileInfo === undefined ? "" : profileInfo.Faculty}</div>
+                                            <div>Password: {profileInfo === undefined ? "" : profileInfo.Password}</div>
+                                        </div>
+                                    </div>
+                                    <br />
+                                    <h3>Bookings</h3>
+                                    <div>
+                                        <div style={{display: 'inline-block', width: 260, textAlign: 'center', position: 'relative'}}>Venue name </div>
+                                        <div style={{display: 'inline-block', width: 100, textAlign: 'center', position: 'relative'}}>Location </div>
+                                        <div style={{display: 'inline-block', width: 150, textAlign: 'center'}}>Date </div>
+                                        <div style={{display: 'inline-block', width: 70, textAlign: 'center'}}>Pax </div>
+                                        <div style={{display: 'inline-block', width: 100, textAlign: 'center'}}>Booking id </div>
+                                        <div style={{display: 'inline-block', width: 80, textAlign: 'center'}}>Status </div>
+                                        <div style={{display: 'inline-block', width: 80, textAlign: 'center'}}>Sharing? </div>
+                                    </div>
+                                    <br />
+                                    <div style={{overflowY: "auto", height: 100}}>
+
+                                        {bookings === undefined ? "Loading..." : bookings.map((val, key) => {
+                                            return (<div key={key}>
+                                                <div className="display-bookings" style={{height: 'auto'}}>
+                                                    <div style={{display: 'inline-block', paddingRight: 20}}>
+                                                        <div style={{float: 'left', width: 220, paddingRight: 20, whiteSpace: 'pre-wrap', overflowWrap: 'break-word'}}>{val.Venuename} </div>
+                                                        <div style={{float: 'left', width: 140, paddingRight: 20, whiteSpace: 'pre-wrap', overflowWrap: 'break-word'}}>{val.Buildingname} {val.Unit} </div>
+                                                        <div style={{float: 'left', width: 150, paddingRight: 20, whiteSpace: 'pre-wrap', overflowWrap: 'break-word'}}>{dateConverter(val.Eventstart)} </div>
+                                                        <div style={{float: 'left', width: 70, paddingRight: 20, whiteSpace: 'pre-wrap', overflowWrap: 'break-word'}}>{val.Pax} </div>
+                                                        <div style={{float: 'left', width: 70, paddingRight: 20, whiteSpace: 'pre-wrap', overflowWrap: 'break-word'}}>{val.Bookingid} </div>
+                                                        <div style={{float: 'left', width: 100, paddingRight: 20, whiteSpace: 'pre-wrap', overflowWrap: 'break-word'}}>{val.Status} </div>
+                                                        <div style={{float: 'left', width: 70, paddingRight: 20, whiteSpace: 'pre-wrap', overflowWrap: 'break-word'}}>{val.Sharing ? "Yes" : "No"} </div>
+                                                    </div>
+                                                    <button style={{float: 'right'}} type="submit" className="btn btn-primary btn-block" onClick={editBooking(val)}>Edit</button> 
+                                                </div>
+                                                <br />
+                                            </div>);
+                                        })}
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </Layout2>
-                </div>
-                
-                : <div className="display"><div style={style}>
-                    <Unauthorised />
-                </div></div>
+                    </Layout2>                
+                : <Unauthorised />
             }
-        </div>
+        </>
     );
 }
 

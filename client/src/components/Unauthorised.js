@@ -1,10 +1,6 @@
 import history from "../history";
 import Layout1 from "../layouts/Layout1";
 
-// const style = {
-//     padding: 5
-// };
-
 function Unauthorised() {
 
     const Login = () => {
@@ -12,12 +8,13 @@ function Unauthorised() {
     };
 
     return (
-        <Layout1>
+       
+        <Layout1> <div className="parent"><div className="welcome-page">
             <div> 
                 <h2>Please login!</h2>
                 <button style={{float: 'left'}} type="submit" className="btn btn-primary btn-block" onClick={Login}>Login</button>
             </div>
-        </Layout1>
+        </div></div></Layout1>
     );
 }
 

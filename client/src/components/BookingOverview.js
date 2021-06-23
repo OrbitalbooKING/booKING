@@ -7,11 +7,6 @@ import Unauthorised from "./Unauthorised";
 
 import moment from "moment";
 
-
-const style = {
-    padding: 5
-};
-
 function BookingOverview(props) {
 
     const [cart, setCart] = useState();
@@ -109,59 +104,58 @@ function BookingOverview(props) {
     };
 
     return (
-        <div className="auth-wrapper">
+        <>
             {props.location.state !== undefined 
-                ? <div>
-                    <Layout2 id={props.location.state.id} action="Booking overview">
-                        <div className="calendar">
-                            <div style={{height: 48}}>
-                                <div style={{display: 'inline-block', width: 355, textAlign: 'center', position: 'relative'}}>Venue type </div>
-                                <div style={{display: 'inline-block', width: 200, textAlign: 'center', position: 'relative'}}>Venue name </div>
-                                <div style={{display: 'inline-block', width: 160, textAlign: 'center', position: 'relative'}}>Location </div>
-                                <div style={{display: 'inline-block', width: 70, textAlign: 'center'}}>Max capacity </div>
-                                <div style={{display: 'inline-block', paddingLeft: 15, position: 'relative'}}> Equipment available </div>
-                            </div>
-                            <br />
-                            <div className="display-venues" style={{height: 'auto'}}>
-                                <div style={{display: 'inline-block', paddingRight: 20}}>
-                                    <div style={{float: 'left', width: 240, paddingRight: 20, whiteSpace: 'pre-wrap', overflowWrap: 'break-word'}}>{props.location.state.venueType} </div>
-                                    <div style={{float: 'left', width: 260, paddingRight: 20, whiteSpace: 'pre-wrap', overflowWrap: 'break-word'}}>{props.location.state.venueName} </div>
-                                    <div style={{float: 'left', width: 150, paddingRight: 20, whiteSpace: 'pre-wrap', overflowWrap: 'break-word'}}>{props.location.state.buildingName} {props.location.state.unit} </div>
-                                    <div style={{float: 'left', width: 70, paddingRight: 20, whiteSpace: 'pre-wrap', overflowWrap: 'break-word'}}>{props.location.state.capacity} </div>
-                                    <div style={{display: 'inline-flex'}}> 
-                                        <br />{props.location.state.equipment.Projector === undefined ? "" : props.location.state.equipment.Projector === 1 ? props.location.state.equipment.Projector + " projector" : props.location.state.equipment.Projector + " projectors"}
-                                        <br />{props.location.state.equipment.Screen === undefined ? "" : props.location.state.equipment.Screen === 1 ? props.location.state.equipment.Screen + " screen" : props.location.state.equipment.Screen + " screens"}
-                                        <br />{props.location.state.equipment.Desktop === undefined ? "" : props.location.state.equipment.Desktop === 1 ? props.location.state.equipment.Desktop + " desktop" : props.location.state.equipment.Desktop + " desktops"}
-                                        <br />{props.location.state.equipment.Whiteboard === undefined ? "" : props.location.state.equipment.Whiteboard === 1 ? props.location.state.equipment.Whiteboard + " whiteboard" : props.location.state.equipment.Whiteboard + " whiteboards"}
+                ? <Layout2 id={props.location.state.id} action="Booking overview">
+                    <div className="parent">
+                        <div className="home-page">
+                            <div className="booking-overview">
+                                <div className="display-selected-venue-header">
+                                        <div style={{display: 'flex', flexDirection: 'row'}}>
+                                            <div style={{width: 240, textAlign: 'center', alignSelf: 'center'}}>Venue type </div>
+                                            <div style={{width: 260, textAlign: 'center', alignSelf: 'center'}}>Venue name </div>
+                                            <div style={{width: 150, textAlign: 'center', alignSelf: 'center'}}>Location </div>
+                                            <div style={{width: 80, textAlign: 'center', alignSelf: 'center'}}>Max capacity </div>
+                                            <div style={{width: 120, textAlign: 'center', alignSelf: 'center'}}>Equipment </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div style={{margin: '0 auto', height: 300, width: 550, paddingLeft: 20}}><div style={{textAlign: 'center'}}>Selected Timeslots:</div>
-                                <div style = 
-                                {{overflowY: "auto", height: 250}}
-                                >
-                                    {cart === undefined ? "" : cart.map((val, key) => {
-                                        return (<div key={key}>
-                                            <hr />
-                                            <div style={{height: 32, position:'relative'}}>
-                                                <div style = {{paddingLeft: 3, paddingTop: 4}}>Pax: {val.Pax} | Timing: {dateConverter(val.Eventstart)}</div>
+                                    <div className="display-selected-venue" style={{height: 'auto'}}>
+                                        <div style={{display: 'flex', flexDirection: 'row'}}>
+                                            <div style={{width: 240, textAlign: 'center', alignSelf: 'center'}}>{props.location.state.venueType} </div>
+                                            <div style={{width: 260, textAlign: 'center', alignSelf: 'center'}}>{props.location.state.venueName} </div>
+                                            <div style={{width: 150, textAlign: 'center', alignSelf: 'center'}}>{props.location.state.buildingName} {props.location.state.unit} </div>
+                                            <div style={{width: 80, textAlign: 'center', alignSelf: 'center'}}>{props.location.state.capacity} </div>
+                                            <div style={{display: 'flex', width: 120, textAlign: 'center', alignSelf: 'center'}}>
+                                                <br />{props.location.state.equipment.Projector === undefined ? "" : props.location.state.equipment.Projector === 1 ? props.location.state.equipment.Projector + " projector" : props.location.state.equipment.Projector + " projectors"}
+                                                <br />{props.location.state.equipment.Screen === undefined ? "" : props.location.state.equipment.Screen === 1 ? props.location.state.equipment.Screen + " screen" : props.location.state.equipment.Screen + " screens"}
+                                                <br />{props.location.state.equipment.Desktop === undefined ? "" : props.location.state.equipment.Desktop === 1 ? props.location.state.equipment.Desktop + " desktop" : props.location.state.equipment.Desktop + " desktops"}
+                                                <br />{props.location.state.equipment.Whiteboard === undefined ? "" : props.location.state.equipment.Whiteboard === 1 ? props.location.state.equipment.Whiteboard + " whiteboard" : props.location.state.equipment.Whiteboard + " whiteboards"}
                                             </div>
-                                        </div>);
-                                    })}
+                                        </div>
+                                    </div>
+                                <div style={{margin: '0 auto', height: 300, width: 550, paddingLeft: 20}}><div style={{textAlign: 'center'}}>Selected Timeslots:</div>
+                                    <div style = 
+                                    {{overflowY: "auto", height: 250}}
+                                    >
+                                        {cart === undefined ? "" : cart.map((val, key) => {
+                                            return (<div key={key}>
+                                                <hr />
+                                                <div style={{height: 32, position:'relative'}}>
+                                                    <div style = {{paddingLeft: 3, paddingTop: 4}}>Pax: {val.Pax} | Timing: {dateConverter(val.Eventstart)}</div>
+                                                </div>
+                                            </div>);
+                                        })}
+                                    </div>
+                                    <br />
+                                    <button style={{position: 'absolute', bottom: 0, right: 0, margin: 25}} type="submit" className="btn btn-primary btn-block" onClick={confirmBooking}>Confirm Bookings</button>
                                 </div>
-                                <br />
-                                <button style={{float: 'right'}} type="submit" className="btn btn-primary btn-block" onClick={confirmBooking}>Confirm Bookings</button>
                             </div>
-                        </div>                                
-                    </Layout2>
-                </div>              
-                : <div className="display">
-                    <div style={style}>
-                    <Unauthorised />
+                        </div>
                     </div>
-                </div>
+                </Layout2>
+                : <Unauthorised />
             }
-        </div>
+        </>
     );
 }
 

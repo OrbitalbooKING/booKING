@@ -2,6 +2,7 @@ import '../../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import '../App.css';
 
 import history from '../history';
+import { Link } from "react-router-dom";
 
 import logo from "../assets/logo for website.png";
 
@@ -12,6 +13,20 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 
 function Layout2(props) {
 
+    const getHelp = () => {
+        history.push({
+            pathname: "/help-logged-in",
+            state: { id: props.id }
+        });
+    };
+    
+    const viewProfile = () => {
+        history.push({
+            pathname: "/profile",
+            state: { id: props.id }
+        });
+    };
+    
     const logout = () => {
         history.push({
             pathname: "/logout",
@@ -19,35 +34,30 @@ function Layout2(props) {
         });
     };
 
-    const viewProfile = () => {
-        history.push({
-            pathname: "/profile",
-            state: { id: props.id }
-        });
-    };
-
     return (
-        <div className="">
-            <Navbar bg="light" expand="lg" fixed="top"><div className="container">
-            <Navbar.Brand href="/home"><img className="logo" src = {logo} alt="logo" /></Navbar.Brand>
-            {/* <Navbar.Collapse id="basic-navbar-nav">
-                <Nav className="mr-auto">
-                <Nav.Link href="/venues">Venues</Nav.Link>
-                <Nav.Link href="#link">Search</Nav.Link>
-                </Nav>
-            </Navbar.Collapse> */}
-            {props.action}
-            <Nav className="mr-auto">
-                <Nav.Link href="/help">Help</Nav.Link>
-                <NavDropdown title={props.id} id="basic-nav-dropdown">
-                    <NavDropdown.Item onClick={viewProfile}>Profile</NavDropdown.Item>
-                    <NavDropdown.Divider />
-                    <NavDropdown.Item onClick={logout}>Logout</NavDropdown.Item>
-                </NavDropdown>
-            </Nav>
-            </div>
+        <div>
+            <Navbar collapseOnSelect expand="sm" fixed="top">
+                <Link className="navbar-brand" to="/home"><img className="logo" src = {logo} alt="logo" style={{float: 'right', paddingLeft: 10}}/></Link>
+                <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+                <Navbar.Collapse id="responsive-navbar-nav">
+                    <div className="container">
+                        <Nav className="mr-auto">
+                            <div style={{margin: '0 auto', alignSelf: 'center'}}>
+                                {props.action === undefined ? "" : props.action}
+                            </div>
+                            <Nav.Link onClick={getHelp}>Help</Nav.Link>
+                            <NavDropdown title={props.id} id="basic-nav-dropdown">
+                                <NavDropdown.Item onClick={viewProfile}>Profile</NavDropdown.Item>
+                                <NavDropdown.Divider />
+                                <NavDropdown.Item onClick={logout}>Logout</NavDropdown.Item>
+                            </NavDropdown>
+                        </Nav>
+                    </div>
+                </Navbar.Collapse>
             </Navbar>
-            <div>{props.children}</div>
+            <div>
+                {props.children}
+            </div>
         </div>
     );
 }

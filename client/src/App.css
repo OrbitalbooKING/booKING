@@ -21,7 +21,7 @@ h1,h2,h3,h4,h5,h6,label {
   font-family: 'Fira Sans', sans-serif;
 }
 
-body, html, .App, #root, .auth-wrapper {
+body, html, #root {
   width: 100%;
   height: 100%;
 }
@@ -31,33 +31,96 @@ body, html, .App, #root, .auth-wrapper {
   box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
 }
 
-.auth-wrapper {
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  text-align: left;
+.sticky-nav {
+  position: sticky;
+  top: 0;
 }
 
-.auth-inner {
-  width: 450px;
-  margin: auto;
+.parent{
+  margin-top: 56px;
+  position: absolute; 
+  top: 0px; 
+  left: 0px;
+  right: 0px; 
+  bottom: 0px;
+
+}
+
+.content{
+  width: auto;
+  height: auto;
   background: #ffffff;
   box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
-  padding: 40px 55px 40px 55px;
+  padding: 3% 3%;
   border-radius: 15px;
   transition: all .3s;
-}
 
-.auth-wrapper .form-control:focus {
-  border-color: #167bff;
-  box-shadow: none;
-}
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
 
-.auth-wrapper h3 {
+  overflow-y: auto;
+  overflow-x: auto;
+
+  justify-self: center;
+  justify-content: center;
+  justify-items: center;
+  align-self: center;
+  align-content: center;
+  align-items: center;
   text-align: center;
-  margin: 0;
-  line-height: 1;
-  padding-bottom: 20px;
+}
+
+.sign-up{
+  width: auto;
+  height: auto;
+  background: #ffffff;
+  box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
+  padding: 3% 3%;
+  border-radius: 15px;
+  transition: all .3s;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+
+  overflow-y: auto;
+  overflow-x: auto;
+
+  justify-self: center;
+  justify-content: center;
+  justify-items: center;
+  align-self: center;
+  align-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.welcome-page{
+  width: auto;
+  height: auto;
+  background: #ffffff;
+  box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
+  padding: 3% 3%;
+  border-radius: 15px;
+  transition: all .3s;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  display: flex;
+  flex-direction: column;
+
+  overflow-y: auto;
+  overflow-x: auto;
 }
 
 .custom-control-label {
@@ -69,12 +132,8 @@ body, html, .App, #root, .auth-wrapper {
   text-align: right;
   font-size: 13px;
   padding-top: 10px;
-  color: #7f7d7d;
-  margin: 0;
-}
-
-.forgot-password a {
   color: #167bff;
+  margin: 0;
 }
 
 .message {
@@ -97,41 +156,53 @@ body, html, .App, #root, .auth-wrapper {
   width: 75px;
 }
 
-/* .button {
-  float: 'left';
-} */
-
-.display {
-  width: 1050px;
-  margin: auto;
+.venue-list {
+  width: 1000px;
   background: #ffffff;
   box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
-  padding: 40px 55px 40px 55px;
+  padding: 1% 1%;
   border-radius: 15px;
   transition: all .3s;
 }
 
-.display-venues {
+.display-selected-venue-header {
+  width: 900px;
+  margin: auto;
+  background: #ffffff;
+  padding: 10px 20px 10px 20px;
+  border-radius: 15px;
+  transition: all .3s;
+}
+
+.display-selected-venue {
   width: 900px;
   margin: auto;
   background: #e5e5e5;
-  /* box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2); */
   padding: 10px 20px 10px 20px;
   border-radius: 15px;
   transition: all .3s;
 }
 
 .searchbar {
-  width: 1050px;
-  margin: auto;
+  width: 1000px;
   background: #ffffff;
   box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
-  padding: 20px 55px 20px 55px;
+  padding: 2% 2%;
   border-radius: 15px;
   transition: all .3s;
+  
+  flex-direction: column;
+
+  justify-self: center;
+  justify-content: center;
+  justify-items: center;
+  align-self: center;
+  align-content: center;
+  align-items: center;
+  text-align: center;
 }
 
-.calendar {
+.booking-selector {
   width: 1150px;
   height: 550px;
   margin: auto;
@@ -156,18 +227,55 @@ body, html, .App, #root, .auth-wrapper {
   width: 950px;
   margin: auto;
   background: #e5e5e5;
-  /* box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2); */
   padding: 10px 20px 10px 20px;
   border-radius: 15px;
   transition: all .3s;
 }
 
-/* .react-datepicker-wrapper {
-  position: relative;
-} */
+.booking-overview {
+  width: 950px;
+  margin: auto;
+  background: #ffffff;
+  padding: 10px 20px 10px 20px;
+  border-radius: 15px;
+  transition: all .3s;
+}
 
-/* .react-datepicker__input-container input {
+.home-page {
+  width: auto;
+  height: auto;
   position: absolute;
-  bottom: 0;
-} */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
 
+@media (max-width: 450px) {
+  .content{
+    width: auto;
+    height: auto;
+    background: #ffffff;
+    box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
+    padding: 5% 5%;
+    border-radius: 15px;
+    transition: all .3s;
+  
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+  
+    overflow-y: auto;
+    overflow-x: auto;
+  
+    justify-self: center;
+    justify-content: center;
+    justify-items: center;
+    align-self: center;
+    align-content: center;
+    align-items: center;
+    text-align: center;
+  }
+}

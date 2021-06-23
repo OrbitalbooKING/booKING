@@ -2,6 +2,7 @@ package services
 
 import (
 	"encoding/csv"
+	"errors"
 	"fmt"
 	"math/rand"
 	"net/http"
@@ -13,18 +14,21 @@ import (
 
 // func to read csv files from URL
 func ReadCSVFromUrl(url string) ([][]string, error) {
+	var noCSV = errors.New("URL has no CSV.")
+	var invalidURL = errors.New("Invalid URL.")
+
 	resp, err := http.Get(url)
 	if err != nil {
-		return nil, err
+		return nil, invalidURL
 	}
-
 	defer resp.Body.Close()
+
 	reader := csv.NewReader(resp.Body)
 	reader.Comma = ','
 	reader.LazyQuotes = true
 	data, err := reader.ReadAll()
 	if err != nil {
-		return nil, err
+		return nil, noCSV // use own error
 	}
 
 	return data, nil

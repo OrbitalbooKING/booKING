@@ -31,7 +31,11 @@ func Register(c *gin.Context) {
 	}
 
 	// hashing the password
-	input.Password = utils.CreateHashedPassword(input.Password)
+	result, err := utils.CreateHashedPassword(input.Password);
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	input.Password = result
 
 	// get accountTypeID
 	var accountType models.Accounttypes
@@ -163,7 +167,11 @@ func ResetPassword(c *gin.Context) {
 	}
 
 	// hashing the password
-	input.Password = utils.CreateHashedPassword(input.Password)
+	result, err := utils.CreateHashedPassword(input.Password)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	input.Password = result
 
 	if err := DB.Model(&retrieved).UpdateColumn("password", input.Password).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Unable to reset password."})

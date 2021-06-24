@@ -23,21 +23,33 @@ function Layout2(props) {
     const viewProfile = () => {
         history.push({
             pathname: "/profile",
-            state: { id: props.id }
+            state: {
+                id: props.id,
+                name: props.name
+            }
         });
     };
     
     const logout = () => {
         history.push({
             pathname: "/logout",
-            state: { id: props.id }
+            state: {
+                id: props.id,
+                name: props.name
+            }
         });
     };
 
     return (
         <div>
             <Navbar collapseOnSelect expand="sm" fixed="top">
-                <Link className="navbar-brand" to="/home"><img className="logo" src = {logo} alt="logo" style={{float: 'right', paddingLeft: 10}}/></Link>
+                <Link className="navbar-brand" to={{
+                    pathname: "/home", 
+                    state: { 
+                        id: props.id,
+                        name: props.name
+                    }
+                   }}><img className="logo" src = {logo} alt="logo" style={{float: 'right', paddingLeft: 10}}/></Link>
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <div className="container">
@@ -46,7 +58,7 @@ function Layout2(props) {
                                 {props.action === undefined ? "" : props.action}
                             </div>
                             <Nav.Link onClick={getHelp}>Help</Nav.Link>
-                            <NavDropdown title={props.id} id="basic-nav-dropdown">
+                            <NavDropdown title={props.name !== "" ? props.name : props.id} id="basic-nav-dropdown">
                                 <NavDropdown.Item onClick={viewProfile}>Profile</NavDropdown.Item>
                                 <NavDropdown.Divider />
                                 <NavDropdown.Item onClick={logout}>Logout</NavDropdown.Item>

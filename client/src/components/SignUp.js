@@ -92,7 +92,10 @@ function SignUpForm() {
                 gradYear: gradYear,
                 password: details.password
             }).then(response => {
-                history.push("/sign-up-success");
+                history.push({
+                    pathname: "/sign-up-success",
+                    state: { message: response.data.message }
+                });
             }).catch((error) => {
                 if (error.response) {
                     console.log("response");
@@ -118,12 +121,6 @@ function SignUpForm() {
         } else {
             setError("Create your account!");
         }
-        console.log(details.username);
-        console.log(details.id);
-        console.log(gradYear);
-        console.log(faculty);
-        console.log(details.password);
-        console.log(details.confirmPassword);
     };
 
     const getFacultyList = e => {

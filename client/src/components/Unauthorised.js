@@ -8,13 +8,16 @@ function Unauthorised() {
     };
 
     return (
-       
-        <Layout1> <div className="parent"><div className="welcome-page">
-            <div> 
-                <h2>Please login!</h2>
-                <button style={{float: 'left'}} type="submit" className="btn btn-primary btn-block" onClick={Login}>Login</button>
+        <Layout1>
+            <div className="parent">
+                <div className="welcome-page">
+                    <div> 
+                        <h2>Please login!</h2>
+                        <button style={{float: 'left'}} type="submit" className="btn btn-primary btn-block" onClick={Login}>Login</button>
+                    </div>
+                </div>
             </div>
-        </div></div></Layout1>
+        </Layout1>
     );
 }
 

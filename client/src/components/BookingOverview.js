@@ -45,12 +45,6 @@ function BookingOverview(props) {
         });
     };
 
-    useEffect(() => {
-        getCartItems();
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
     const confirmBooking = () => {
         if (cart !== undefined) {
             let tempArr = [];
@@ -66,8 +60,9 @@ function BookingOverview(props) {
             }).then(response => { 
                 history.push({
                     pathname: "/booking-success",
-                    state: { 
-                        id: props.location.state.id
+                    state: {
+                        id: props.location.state.id,
+                        name: props.location.state.name
                     }
                 });
             }).catch((error) => {
@@ -96,17 +91,21 @@ function BookingOverview(props) {
     const dateConverter = (givenDate) => {
 
         let endHour = Number(givenDate.substring(11,13)) + 1;
-
         let tempDate = givenDate.substring(0, 13);
 
         return moment(tempDate, 'YYYY-MM-DDThh').format('Do MMMM YYYY hh:mm a') + " to " + moment(endHour, 'hh').format('h:mm a');
-    
     };
+    
+    useEffect(() => {
+        getCartItems();
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     return (
         <>
             {props.location.state !== undefined 
-                ? <Layout2 id={props.location.state.id} action="Booking overview">
+                ? <Layout2 id={props.location.state.id} name={props.location.state.name} action="Booking overview">
                     <div className="parent">
                         <div className="home-page">
                             <div className="booking-overview">

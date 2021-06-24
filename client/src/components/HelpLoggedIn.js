@@ -25,8 +25,7 @@ function HelpLoggedIn(props) {
     }, []);
 
     return (
-        <>
-        <Layout2 id={props.location.state.id} action="Viewing help">
+        <Layout2 id={props.location.state.id} name={props.location.state.name} action="Viewing help">
             <div className="parent">
                 <div className="welcome-page">
                     <div style={{overflowWrap: 'break-word', wordBreak: 'break-all'}}>
@@ -43,7 +42,6 @@ function HelpLoggedIn(props) {
                 </div>
             </div>
         </Layout2>
-    </>
     );
 }
 

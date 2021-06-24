@@ -94,7 +94,7 @@ function Profile(props) {
     return (
         <>
             {props.location.state !== undefined 
-                ? <Layout2 id={props.location.state.id} action="Viewing profile">
+                ? <Layout2 id={props.location.state.id} name={props.location.state.name} action="Viewing profile">
                         <div className="parent">
                             <div className="home-page">
                                 <div className="profile">

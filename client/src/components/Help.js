@@ -25,25 +25,23 @@ function Help() {
     }, []);
 
     return (
-        <>
-            <Layout1>
-                <div className="parent">
-                    <div className="welcome-page">
-                        <div style={{overflowWrap: 'break-word', wordBreak: 'break-all'}}>
-                            <h5>Refer to our user guide: </h5>
-                            <h5>https://docs.google.com/document/d/1zvFvemhVmstVMCiOg0dLkmLf1wWBZFmuWxLuLHR_zJg/edit?usp=sharing</h5>
-                            <span className="message">{ isCopied ? "Copied!" : ""}</span>
-                        </div>
-                        <div>
-                            <CopyToClipboard text="https://docs.google.com/document/d/1zvFvemhVmstVMCiOg0dLkmLf1wWBZFmuWxLuLHR_zJg/edit?usp=sharing" onCopy={onCopyText}> 
-                                <button style={{float: 'right'}} className="btn btn-primary btn-block">Copy URL</button>
-                            </CopyToClipboard>
-                            <button style={{float: 'left'}} type="submit" className="btn btn-primary btn-block" onClick={Login}>Login</button> 
-                        </div>
+        <Layout1>
+            <div className="parent">
+                <div className="welcome-page">
+                    <div style={{overflowWrap: 'break-word', wordBreak: 'break-all'}}>
+                        <h5>Refer to our user guide: </h5>
+                        <h5>https://docs.google.com/document/d/1zvFvemhVmstVMCiOg0dLkmLf1wWBZFmuWxLuLHR_zJg/edit?usp=sharing</h5>
+                        <span className="message">{ isCopied ? "Copied!" : ""}</span>
+                    </div>
+                    <div>
+                        <CopyToClipboard text="https://docs.google.com/document/d/1zvFvemhVmstVMCiOg0dLkmLf1wWBZFmuWxLuLHR_zJg/edit?usp=sharing" onCopy={onCopyText}> 
+                            <button style={{float: 'right'}} className="btn btn-primary btn-block">Copy URL</button>
+                        </CopyToClipboard>
+                        <button style={{float: 'left'}} type="submit" className="btn btn-primary btn-block" onClick={Login}>Login</button> 
                     </div>
                 </div>
-            </Layout1>
-        </>
+            </div>
+        </Layout1>
     );
 }
 

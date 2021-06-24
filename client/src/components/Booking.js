@@ -38,13 +38,39 @@ function Booking(props) {
 
     const classes = useStyles();
 
+    const [errorMessage, setErrorMessage] = useState();
+
     const [date, setDate] = useState(new DateObject());
-
-    const [capacity, setCapacity] = useState(0);  
-
-    const [errorMessage, setErrorMessage] = useState("Please select a capacity!");
+    const [capacity, setCapacity] = useState(0);
 
     const [timings, setTimings] = useState([]);
+    const [availability, setAvailability] = useState();
+    const [selected, setSelected] = useState();
+    const [cart, setCart] = useState();
+
+    const handleDateChange = (selected) => { // changes current date based on selected date on calendar
+        setDate(selected);
+    };
+
+    const handleCapacityChange = (event) => {
+        setCapacity(event.target.value);
+    };
+
+    const handleCheckboxChange = (event) => {
+
+        let selectedHour = Number(event.target.name.substring(4,6));
+
+        let selectedStart = toIsoString(new Date(date.year, date.month.number - 1, date.day, selectedHour, 0, 0, 0));
+        let selectedEnd = toIsoString(new Date(date.year, date.month.number - 1, date.day, selectedHour + 1, 0, 0, 0));
+
+        if (event.target.checked) { // user selected checkbox
+            addToCart(selectedStart, selectedEnd);
+            setSelected({ ...selected, [event.target.name]: event.target.checked });
+        } else { // user unselected checkbox
+            removeFromCart(selectedStart, selectedEnd);
+            setSelected({ ...selected, [event.target.name]: event.target.checked });
+        }
+    };
 
     const getTimings = () => { // get bookings for selected date
 
@@ -88,30 +114,6 @@ function Booking(props) {
             }
         });
     };
-
-    useEffect(() => {
-        getTimings();
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [date]);
-
-    useEffect(() => {
-        getTimings();
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [capacity]);
-
-    useEffect(() => {
-        populateCheckbox();
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [timings]);
-
-    const [availability, setAvailability] = useState();
-
-    const [selected, setSelected] = useState();
-
-    const [cart, setCart] = useState();
 
     const populateCheckbox = () => {
         let availabilityState = {};
@@ -172,29 +174,6 @@ function Booking(props) {
         });
     };
 
-    useEffect(() => {
-        getCartItems();
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    useEffect(() => {
-        populateCheckbox();
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [cart]);
-
-    useEffect(() => {
-        if (capacity > 1) {
-            setErrorMessage("");
-        } else {
-            setErrorMessage("Please select a capacity!");
-        }
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [capacity]);
-    
-    
     const addToCart = (start, end) => { // whenever the user checks a checkbox
 
         if (cart !== undefined) {
@@ -280,6 +259,39 @@ function Booking(props) {
             }
         }
     };
+    
+    const removeTimeslot = (value) => () => { // removes selected timeslot
+
+        let search = new URLSearchParams();
+        search.append("bookingID", value.Bookingid);               
+
+        Axios.delete(configData.LOCAL_HOST + "/delete_pending_booking", 
+        {
+            params: search,
+        }
+        ).then(response => { 
+            getCartItems();
+        }).catch((error) => {
+            if (error.response) {
+                console.log("response");
+                // The request was made and the server responded with a status code
+                // that falls out of the range of 2xx
+                if (error.response.status === 400) {
+                    console.log(error.response.data.message);
+                }
+            } else if (error.request) {
+                console.log("request");
+                // The request was made but no response was received
+                // `error.request` is an instance of XMLHttpRequest in the 
+                // browser and an instance of
+                // http.ClientRequest in node.js
+                console.log(error.request);
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                console.log("Query failed!");
+            }
+        });
+    };
 
     const removeAllFromCart = () => {
         if (cart !== undefined) {
@@ -324,6 +336,7 @@ function Booking(props) {
                 pathname: "/booking-overview",
                 state: { 
                     id: props.location.state.id,
+                    name: props.location.state.name,
                     venueType: props.location.state.venueType,
                     venueName: props.location.state.venueName,
                     buildingName: props.location.state.buildingName,
@@ -334,41 +347,17 @@ function Booking(props) {
             });
         }
     };
-
-    const handleDateChange = (selected) => { // changes current date based on selected date on calendar
-        setDate(selected);
-    };
-
-    const handleCapacityChange = (event) => {
-        setCapacity(event.target.value);
-    };
-
-    const handleCheckboxChange = (event) => {
-
-        let selectedHour = Number(event.target.name.substring(4,6));
-
-        let selectedStart = toIsoString(new Date(date.year, date.month.number - 1, date.day, selectedHour, 0, 0, 0));
-        let selectedEnd = toIsoString(new Date(date.year, date.month.number - 1, date.day, selectedHour + 1, 0, 0, 0));
-
-        if (event.target.checked) { // user selected checkbox
-            addToCart(selectedStart, selectedEnd);
-            setSelected({ ...selected, [event.target.name]: event.target.checked });
-        } else { // user unselected checkbox
-            removeFromCart(selectedStart, selectedEnd);
-            setSelected({ ...selected, [event.target.name]: event.target.checked });
-        }
-    };
-
+    
     const DisplayTimings = () => { // displays checkboxes for users to select timeslots
 
         return (
             <div>
                 <div style={{overflowY: "auto", height: 200}}>            
                     <FormGroup>
-                        {availability === undefined
+                        {availability === undefined || timings.length === 0
                             ? "Loading..." 
                             : Object.entries(availability).map((val, key) => {
-                                if (capacity === 0) {
+                                if (capacity === 0 || date.format("MM/DD/YYYY") === moment().format('MM/DD/YYYY')) {
                                     return <FormControlLabel disabled control={<Checkbox checked={selected[val[0]]} onChange={handleCheckboxChange} name={val[0]} />} label={formatter(val[0])} key={key} />;
                                 } else if (val[1]) {
                                     return <FormControlLabel control={<Checkbox checked={selected[val[0]]} onChange={handleCheckboxChange} name={val[0]} />} label={formatter(val[0])} key={key} />;
@@ -379,45 +368,13 @@ function Booking(props) {
                         }
                     </FormGroup>
                 </div>
+                {/* Loading... */}
                 <div className="error">
                     <span className="message">{errorMessage}</span>
                 </div>
             </div>
         );
-    };      
-
-    const removeTimeslot = (value) => () => { // removes selected timeslot
-
-        let search = new URLSearchParams();
-        search.append("bookingID", value.Bookingid);               
-
-        Axios.delete(configData.LOCAL_HOST + "/delete_pending_booking", 
-        {
-            params: search,
-        }
-        ).then(response => { 
-            getCartItems();
-        }).catch((error) => {
-            if (error.response) {
-                console.log("response");
-                // The request was made and the server responded with a status code
-                // that falls out of the range of 2xx
-                if (error.response.status === 400) {
-                    console.log(error.response.data.message);
-                }
-            } else if (error.request) {
-                console.log("request");
-                // The request was made but no response was received
-                // `error.request` is an instance of XMLHttpRequest in the 
-                // browser and an instance of
-                // http.ClientRequest in node.js
-                console.log(error.request);
-            } else {
-                // Something happened in setting up the request that triggered an Error
-                console.log("Query failed!");
-            }
-        });
-    };
+    };  
 
     const formatter = (timing) => {
 
@@ -457,17 +414,57 @@ function Booking(props) {
     const dateConverter = (givenDate) => {
 
         let endHour = Number(givenDate.substring(11,13)) + 1;
-
         let tempDate = givenDate.substring(0, 13);
 
         return moment(tempDate, 'YYYY-MM-DDThh').format('Do MMMM YYYY hh:mm a') + " to " + moment(endHour, 'hh').format('h:mm a');
-    
     };
+
+    useEffect(() => {
+        getCartItems();
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    useEffect(() => {
+        getTimings();
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [date]);
+
+    useEffect(() => {
+        getTimings();
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [capacity]);
+    
+    useEffect(() => {
+        if (date.format("MM/DD/YYYY") === moment().format('MM/DD/YYYY')) {
+            setErrorMessage("Please select a date!");
+        } else if (capacity > 1) {
+            setErrorMessage("");
+        } else if (availability !== undefined && timings.length !== 0) {
+            setErrorMessage("Please select a capacity!");
+        }
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [capacity, availability, timings]);
+
+    useEffect(() => {
+        populateCheckbox();
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [timings]);
+
+    useEffect(() => {
+        populateCheckbox();
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [cart]);
 
     return (
         <>
             {props.location.state !== undefined 
-                ? <Layout2 id={props.location.state.id} action="Make a booking">
+                ? <Layout2 id={props.location.state.id} name={props.location.state.name} action="Make a booking">
                         <div className="parent">
                             <div className="home-page">
                                 <div className="booking-selector">
@@ -522,7 +519,7 @@ function Booking(props) {
                                                 if (date < currentTime) return {
                                                 disabled: true,
                                                 style: { color: "#ccc" },
-                                                onClick: () => alert("date has already passed!")
+                                                onClick: () => alert("Date has already passed!")
                                                 }
                                             }}
                                             value={date}

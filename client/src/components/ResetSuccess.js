@@ -1,7 +1,7 @@
 import history from "../history";
 import Layout1 from "../layouts/Layout1";
 
-function ResetSuccess() {
+function ResetSuccess(props) {
 
     const Login = () => {
         history.push("/sign-in");

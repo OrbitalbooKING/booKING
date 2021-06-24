@@ -36,8 +36,12 @@ function App() {
           <Route exact path="/sign-in-success" render={props=>(
             <LoginSuccess {...props} />)}
           />
-          <Route exact path="/sign-up-success"><SignUpSuccess /></Route>
-          <Route exact path="/reset-password-success"><ResetSuccess /></Route>
+          <Route exact path="/sign-up-success" render={props=>(
+            <SignUpSuccess {...props} />)}
+          />
+          <Route exact path="/reset-password-success" render={props=>(
+            <ResetSuccess {...props} />)}
+          />
           <Route exact path="/home" render={props=>(
             <Home {...props} />)}
           />

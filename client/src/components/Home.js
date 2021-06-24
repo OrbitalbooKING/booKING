@@ -29,6 +29,8 @@ const useStyles = makeStyles(theme => ({
   
 
 function Home(props) {
+    
+    const classes = useStyles();
 
     const [searchResults, setSearchResults] = useState();
     const [venuesList, setVenuesList] = useState();
@@ -63,29 +65,27 @@ function Home(props) {
         if (endDate !== null) {
             const currentDate = new Date();
             const selectedDate = new Date(time);
-        
             return (currentDate.getTime() < selectedDate.getTime()) && (selectedDate.getTime() < endDate.getTime());
         } else {
             const currentDate = new Date();
             const selectedDate = new Date(time);
-        
             return currentDate.getTime() < selectedDate.getTime();
         }
     };
+
     const filterEndTime = (time) => {
         if (startDate !== null) {
             const selectedDate = new Date(time);
-
             return startDate.getTime() < selectedDate.getTime();
         } else {
             const currentDate = new Date();
             const selectedDate = new Date(time);
-        
             return currentDate.getTime() < selectedDate.getTime();
         }
     };
     
-    const getVenues = () => {Axios.get(configData.LOCAL_HOST + "/home").then(response => {
+    const getVenues = () => {
+        Axios.get(configData.LOCAL_HOST + "/home").then(response => {
         setVenuesList(response.data.data);
         // setVenuesList(MOCKDATA);
     }).catch((error) => {
@@ -177,6 +177,7 @@ function Home(props) {
             pathname: "/booking",
             state: { 
                 id: props.location.state.id,
+                name: props.location.state.name,
                 venueType: val.Roomtypename,
                 venueName: val.Venuename,
                 buildingName: val.Buildingname,
@@ -185,11 +186,9 @@ function Home(props) {
                 equipment: val.Facilitiesdict
             }
         });
-    };
+    };  
 
-    const classes = useStyles();
-
-    function toIsoString(date) {
+    const toIsoString = (date) => {
         let tzo = -date.getTimezoneOffset(),
             dif = tzo >= 0 ? '+' : '-',
             pad = function(num) {
@@ -205,7 +204,7 @@ function Home(props) {
             ':' + pad(date.getSeconds()) +
             dif + pad(tzo / 60) +
             ':' + pad(tzo % 60);
-    }
+    };
 
     useEffect(() => {
         Search(); //populates list of venues from API
@@ -213,17 +212,11 @@ function Home(props) {
         
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-
-    useEffect(() => {
-        console.log(searchResults);
-        
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [searchResults]);
     
     return (
         <>   
             {props.location.state !== undefined 
-                ? <Layout2 id={props.location.state.id} action="Viewing venues">
+                ? <Layout2 id={props.location.state.id} name={props.location.state.name} action="Viewing venues">
                     <div className="parent">
                         <div className="home-page">
                             <div className="searchbar">
@@ -347,7 +340,7 @@ function Home(props) {
                                 </div>
                                 <div style={{overflowY: "auto", height: 200}}>
 
-                                    {searchResults === undefined ? "Loading..." : searchResults.map((val, key) => {
+                                    {searchResults === undefined ? <div><h2 style={{textAlign: 'center', alignContent: 'center'}}>Loading... </h2></div> : searchResults.map((val, key) => {
                                         return (<div key={key}>
                                             <div className="display-selected-venue" style={{height: 'auto'}}>
                                                 <div style={{display: 'flex', flexDirection: 'row'}}>
@@ -372,7 +365,6 @@ function Home(props) {
                         </div>
                     </div>
                 </Layout2>
-                
                 : <Unauthorised />
             }
         </>

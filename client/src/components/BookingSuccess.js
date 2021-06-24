@@ -7,14 +7,17 @@ function BookingSuccess(props) {
     const Home = () => {
         history.push({
             pathname: "/home",
-            state: { id: props.location.state.id }
+            state: {
+                id: props.location.state.id,
+                name: props.location.state.name
+            }
         });
     };
 
     return (
         <>
             {props.location.state !== undefined 
-                ? <Layout2 id={props.location.state.id} action="Booking success!">
+                ? <Layout2 id={props.location.state.id} name={props.location.state.name} action="Booking success!">
                         <div className="parent">
                             <div className="welcome-page">
                                 <h2>You have successfully made your bookings!</h2>

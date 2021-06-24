@@ -8,18 +8,16 @@ function ResetSuccess() {
     };
 
     return (
-        <>
-            <Layout1>
-                <div className="parent">
-                    <div className="welcome-page">
-                        <h2>You have successfully resetted your password!</h2>
-                        <div>
-                            <button style={{float: 'left'}} type="submit" className="btn btn-primary btn-block" onClick={Login}>Login</button> 
-                        </div>
+        <Layout1>
+            <div className="parent">
+                <div className="welcome-page">
+                    <h2>{props.location.state.message}</h2>
+                    <div>
+                        <button style={{float: 'left'}} type="submit" className="btn btn-primary btn-block" onClick={Login}>Login</button> 
                     </div>
                 </div>
-            </Layout1>
-        </>
+            </div>
+        </Layout1>
     );
 }
 

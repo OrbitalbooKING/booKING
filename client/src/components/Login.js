@@ -23,7 +23,10 @@ function LoginForm() {
         }).then(response => { 
             history.push({
                 pathname: "/sign-in-success",
-                state: { id: details.id }
+                state: { 
+                    id: response.data.message.Nusnetid,
+                    name: response.data.message.Name
+                }
             });
         }).catch((error) => {
             if (error.response) {

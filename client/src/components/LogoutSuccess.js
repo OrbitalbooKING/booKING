@@ -11,10 +11,10 @@ function LogoutSuccess(props) {
     return (
         <>
             {props.location.state !== undefined 
-                ? <Layout1 id={props.location.state.id} action="Logged out!">
+                ? <Layout1>
                         <div className="parent">
                             <div className="welcome-page">
-                                <h2>Goodbye {props.location.state.id}!</h2>
+                                <h2>Goodbye {props.location.state.name !== "" ? props.location.state.name : props.location.state.id}!</h2>
                                 <div>
                                     <button style={{float: 'left'}} type="submit" className="btn btn-primary btn-block" onClick={Login}>Login</button> 
                                 </div>

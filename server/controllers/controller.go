@@ -33,8 +33,6 @@ func StartAll(r *gin.Engine) {
 	api.DELETE("/delete_pending_booking", services.DeletePendingBooking)
 	api.DELETE("/delete_booking", services.DeleteBooking) // not done
 
-	api.GET("/accounts", services.GetAccounts)
-	api.DELETE("/accounts/:nusnet_id", services.DeleteAccount)
 	// PUT for updating account
 
 	if port := os.Getenv("PORT"); port != "" {

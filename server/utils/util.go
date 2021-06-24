@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"errors"
 	"fmt"
 	"server/models"
 
@@ -9,24 +10,19 @@ import (
 )
 
 // HashPassword hashes user password
-func HashPassword(user *models.User) {
+func HashPassword(user *models.User) error {
+	hashError := errors.New(fmt.Sprintf("unable to hash password for user %s", user.Nusnetid))
 	bytes, err := bcrypt.GenerateFromPassword([]byte(user.Password), 10)
 	if err != nil {
 		fmt.Printf("Unable to hash password " + err.Error())
+		return hashError
 	}
 	user.Password = string(bytes)
-}
-
-func CreateHashedPassword(password string) string {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 10)
-	if err != nil {
-		fmt.Printf("Unable to create hashed password " + err.Error())
-	}
-	return string(bytes)
+	return nil
 }
 
 //CheckPasswordHash compares hash with password
-func CheckPasswordHash(password, hash string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+func CheckPasswordHash(input models.User, hash string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(input.Password))
 	return err == nil
 }

@@ -117,7 +117,14 @@ function Home(props) {
         }
         search.append("capacity", capacity);
         if (buildingName !== "") {
-            search.append("buildingName", buildingName);
+            let buildingNameId = "";
+            for (let i = 0; i < searchResults.length; i++) {
+                if (buildingName === searchResults[i].Buildingname) {
+                    buildingNameId = searchResults[i].Buildingid;
+                    continue;
+                }
+            }
+            search.append("buildingName", buildingNameId);
         }
         if (unit !== "") {
             search.append("unitNo", unit);
@@ -126,11 +133,10 @@ function Home(props) {
             let venueTypeId = "";
             for (let i = 0; i < searchResults.length; i++) {
                 if (venueType === searchResults[i].Roomtypename) {
-                    console.log("match")
                     venueTypeId = searchResults[i].Roomtypeid;
+                    continue;
                 }
             }
-            console.log(venueTypeId);
             search.append("roomType", venueTypeId);
         }
         if (venueName !== "") {
@@ -225,6 +231,15 @@ function Home(props) {
                                         <Autocomplete
                                             id="free-solo-demo"
                                             freeSolo
+                                            options={venuesList === undefined ? [] : venuesList.filter((dataName) => dataName.Venuename.toLowerCase().includes(venueName.toLowerCase())).filter((dataBuilding) => dataBuilding.Buildingname.toLowerCase().includes(buildingName.toLowerCase())).filter((dataUnit) => dataUnit.Unit.toLowerCase().includes(unit.toLowerCase())).map((dataType) => dataType.Roomtypename).filter((item, i, s) => s.lastIndexOf(item) === i).sort()}
+                                            onBlur={e => setVenueType(e.target.value)}
+                                            renderInput={(params) => (
+                                            <TextField {...params} label="Venue type" style={{width: 240, paddingBottom: 10, paddingRight: 10}} />
+                                            )}
+                                        />
+                                        <Autocomplete
+                                            id="free-solo-demo"
+                                            freeSolo
                                             options={venuesList === undefined ? [] : venuesList.filter((dataType) => dataType.Roomtypename.toLowerCase().includes(venueType.toLowerCase())).filter((dataBuilding) => dataBuilding.Buildingname.toLowerCase().includes(buildingName.toLowerCase())).filter((dataUnit) => dataUnit.Unit.toLowerCase().includes(unit.toLowerCase())).map((dataName) => dataName.Venuename).filter((item, i, s) => s.lastIndexOf(item) === i).sort()}
                                             onBlur={e => setVenueName(e.target.value)}
                                             renderInput={(params) => (
@@ -232,14 +247,6 @@ function Home(props) {
                                             )}
                                         />
                                         <Autocomplete
-                                            id="free-solo-demo"
-                                            freeSolo
-                                            options={venuesList === undefined ? [] : venuesList.filter((dataName) => dataName.Venuename.toLowerCase().includes(venueName.toLowerCase())).filter((dataBuilding) => dataBuilding.Buildingname.toLowerCase().includes(buildingName.toLowerCase())).filter((dataUnit) => dataUnit.Unit.toLowerCase().includes(unit.toLowerCase())).map((dataType) => dataType.Roomtypename).filter((item, i, s) => s.lastIndexOf(item) === i).sort()}
-                                            onBlur={e => setVenueType(e.target.value)}
-                                            renderInput={(params) => (
-                                            <TextField {...params} label="Room type" style={{width: 240, paddingBottom: 10, paddingRight: 10}} />
-                                            )}
-                                        /><Autocomplete
                                             id="free-solo-demo"
                                             freeSolo
                                             options={venuesList === undefined ? [] : venuesList.filter((dataName) => dataName.Venuename.toLowerCase().includes(venueName.toLowerCase())).filter((dataType) => dataType.Roomtypename.toLowerCase().includes(venueType.toLowerCase())).filter((dataUnit) => dataUnit.Unit.toLowerCase().includes(unit.toLowerCase())).map((dataBuilding) => dataBuilding.Buildingname).filter((item, i, s) => s.lastIndexOf(item) === i).sort()}
@@ -258,7 +265,7 @@ function Home(props) {
                                             <TextField {...params} label="Unit" style={{width: 140, paddingBottom: 10, paddingRight: 10}} />
                                             )}
                                         />
-                                        <FormControl style={{width: 85}} className={classes.formControl}>
+                                        <FormControl style={{width: 85}}>
                                             <InputLabel id="demo-simple-select-label">Capacity</InputLabel>
                                             <Select
                                             labelId="demo-simple-select-label"
@@ -268,7 +275,7 @@ function Home(props) {
                                             input={<Input />}
                                             MenuProps={{ classes: { paper: classes.menuPaper } }}
                                             >
-                                            {Array.from({length: 25}, (v, i) => i).map((val, key) => {
+                                            {Array.from({length: 101}, (v, i) => i).map((val, key) => {
                                                 if (val === 0) {
                                                     return <MenuItem value={val} key={key}>Default</MenuItem>;
                                                 } else {

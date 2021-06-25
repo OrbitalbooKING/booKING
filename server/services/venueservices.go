@@ -2,6 +2,7 @@ package services
 
 import (
 	"fmt"
+	"github.com/jinzhu/gorm"
 	"log"
 	"net/http"
 	"server/models"
@@ -14,33 +15,16 @@ import (
 // get all venues
 func GetVenues(c *gin.Context) {
 	// get all the venues
-	var searchPage []models.SearchPage
-	query1 := "SELECT * FROM Venues" +
-		" JOIN Buildings ON Venues.buildingid = Buildings.id" +
-		" JOIN RoomTypes ON Venues.roomtypeid = RoomTypes.id" +
-		" JOIN VenueStatuses ON Venues.venuestatusid = VenueStatuses.id"
-	if err := DB.Raw(query1).Scan(&searchPage).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	searchPage, err := GetSearchPage(DB)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Unable to populate venues. "+ err.Error()})
+		fmt.Println("Unable to populate venues. "+ err.Error())
 		return
 	}
 
-	// get all facilities in the venue and put into homepage struct
-	var venuesandfacilities []models.VenuesAndFacilities
-
-	for i, s := range searchPage {
-		searchPage[i].Facilitiesdict = make(map[string]int)
-		tempQuery := "SELECT * FROM public.Venuefacilities " +
-			"JOIN public.Facilities ON public.Venuefacilities.facilityid = public.facilities.id " +
-			"WHERE venueid = ?;"
-		if err := DB.Raw(tempQuery, s.ID).Scan(&venuesandfacilities).Error; err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-
-		// make dict that contains all equipment and its quantity
-		for _, y := range venuesandfacilities {
-			searchPage[i].Facilitiesdict[y.Facilityname] = y.Quantity
-		}
+	if err := MakeVenueFaciltiesDict(searchPage); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false,
+			"message": "Unable to get venues and facilities. " + err.Error()})
 	}
 
 	c.JSON(http.StatusOK, gin.H{"data": searchPage})
@@ -58,19 +42,56 @@ func SearchVenues(c *gin.Context) {
 		return
 	}
 
-	// retrieve array of facilityID by querying using facilityname
-	var facility models.Facilities
-	facilityIDArr := make([]int, 0)
-	for _, s := range searchInput.Equipment {
-		facilityQuery := "SELECT id FROM facilities WHERE facilityname = ?"
-		if err := DB.Raw(facilityQuery, s).Scan(&facility).Error; err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": "Error in querying for facilityID. "})
-			fmt.Println("Check facilityQuery. " + err.Error() + "\n")
-			return
-		}
-		facilityIDArr = append(facilityIDArr, facility.ID)
+	facilityIDArr, err := GetFacilityIDArr(DB, searchInput)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": "Error in querying for facilityID. "})
+		fmt.Println("Check facilityQuery. " + err.Error() + "\n")
 	}
 
+	filters, err := GetVenueIDArrAfterFilter(DB, searchInput, facilityIDArr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": "Error in querying for buildings, roomtypes, venuestatuses. "})
+		fmt.Println("Check searchPageQuery. " + err.Error() + "\n")
+	}
+
+	searchPage, err := GetVenueArr(DB, filters)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": "Error in querying for buildings, roomtypes, venuestatuses. "})
+		fmt.Println("Check searchPageQuery. " + err.Error() + "\n")
+	}
+
+	if err := MakeVenueFaciltiesDict(searchPage); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false,
+			"message": "Unable to get venues and facilities. " + err.Error()})
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": searchPage})
+	fmt.Println("Return successful!")
+}
+
+func GetVenueArr(DB *gorm.DB, filters []models.SearchPage) ([]models.SearchPage, error) {
+	// make into v.id in filters into an array
+	filterArray := make([]int, 0)
+	for _, s := range filters {
+		filterArray = append(filterArray, s.ID)
+	}
+
+	// get all the venue information with venueid
+	searchPage := make([]models.SearchPage, 0)
+	returnQuery := "SELECT DISTINCT v.id, v.venuename, v.unit, buildingname, buildingid, v.maxcapacity, roomtypename, v.roomtypeid, venuestatusname, v.mapphoto, v.floorplan" +
+		" FROM venues AS v" +
+		" JOIN buildings ON buildings.id = v.buildingid" +
+		" JOIN roomtypes ON roomtypes.id = v.roomtypeid" +
+		" JOIN venuestatuses ON venuestatuses.id = v.venuestatusid" +
+		" WHERE v.id IN (?)"
+
+	if err := DB.Raw(returnQuery, filterArray).Scan(&searchPage).Error; err != nil {
+		return nil, err
+	}
+	return searchPage, nil
+}
+
+func GetVenueIDArrAfterFilter(DB *gorm.DB, searchInput models.SearchInput, facilityIDArr []int) ([]models.SearchPage, error) {
 	// get dayofweek from searchinput
 	var dayOfWeek interface{} // to hold either int or nil
 	if searchInput.StartHour != nil {
@@ -209,47 +230,57 @@ func SearchVenues(c *gin.Context) {
 	}
 
 	searchPageQuery += " ORDER BY v.id"
-	fmt.Println(searchPageQuery)
 
 	if err := DB.Raw(searchPageQuery).Scan(&filters).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": "Error in querying for buildings, roomtypes, venuestatuses. "})
-		fmt.Println("Check searchPageQuery. " + err.Error() + "\n")
-		return
+		return nil, err
 	}
+	return filters, nil
+}
 
-	// make into v.id in filters into an array
-	filterArray := make([]int, 0)
-	for _, s := range filters {
-		filterArray = append(filterArray, s.ID)
+func GetFacilityIDArr(DB *gorm.DB, searchInput models.SearchInput) ([]int, error) {
+	// retrieve array of facilityID by querying using facilityname
+	var facility models.Facilities
+	facilityIDArr := make([]int, 0)
+	for _, s := range searchInput.Equipment {
+		facilityQuery := "SELECT id FROM facilities WHERE facilityname = ?"
+		if err := DB.Raw(facilityQuery, s).Scan(&facility).Error; err != nil {
+			return nil, err
+		}
+		facilityIDArr = append(facilityIDArr, facility.ID)
 	}
+	return facilityIDArr, nil
+}
 
-	// get all the venue information with venueid
-	searchPage := make([]models.SearchPage, 0)
-	returnQuery := "SELECT DISTINCT v.id, v.venuename, v.unit, buildingname, buildingid, v.maxcapacity, roomtypename, v.roomtypeid, venuestatusname, v.mapphoto, v.floorplan" +
-		" FROM venues AS v" +
-		" JOIN buildings ON buildings.id = v.buildingid" +
-		" JOIN roomtypes ON roomtypes.id = v.roomtypeid" +
-		" JOIN venuestatuses ON venuestatuses.id = v.venuestatusid" +
-		" WHERE v.id IN (?)"
-
-	if err := DB.Raw(returnQuery, filterArray).Scan(&searchPage).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": "Error in querying for buildings, roomtypes, venuestatuses. "})
-		fmt.Println("Check searchPageQuery. " + err.Error() + "\n")
-		return
-	}
-
-	// get all facilities in the venue and put into homepage struct
+func GetVenueFacilities(DB *gorm.DB, s models.SearchPage) ([]models.VenuesAndFacilities, error) {
 	var venuesandfacilities []models.VenuesAndFacilities
+	tempQuery := "SELECT * FROM public.Venuefacilities " +
+		"JOIN public.Facilities ON public.Venuefacilities.facilityid = public.facilities.id " +
+		"WHERE venueid = ?;"
+	if err := DB.Raw(tempQuery, s.ID).Scan(&venuesandfacilities).Error; err != nil {
+		return []models.VenuesAndFacilities{}, err
+	}
+	return venuesandfacilities, nil
+}
 
+func GetSearchPage(DB *gorm.DB) ([]models.SearchPage, error) {
+	var searchPage []models.SearchPage
+	query1 := "SELECT * FROM Venues" +
+		" JOIN Buildings ON Venues.buildingid = Buildings.id" +
+		" JOIN RoomTypes ON Venues.roomtypeid = RoomTypes.id" +
+		" JOIN VenueStatuses ON Venues.venuestatusid = VenueStatuses.id"
+	if err := DB.Raw(query1).Scan(&searchPage).Error; err != nil {
+		return []models.SearchPage{}, err
+	}
+	return searchPage, nil
+}
+
+func MakeVenueFaciltiesDict(searchPage []models.SearchPage) error {
 	for i, s := range searchPage {
+		// get all facilities in the venue and put into homepage struct
 		searchPage[i].Facilitiesdict = make(map[string]int)
-		tempQuery := "SELECT * FROM public.Venuefacilities " +
-			"JOIN public.Facilities ON public.Venuefacilities.facilityid = public.facilities.id " +
-			"WHERE venueid = ?;"
-		if err := DB.Raw(tempQuery, s.ID).Scan(&venuesandfacilities).Error; err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": "Error in getting facilities. "})
-			fmt.Println("Check tempQuery. " + err.Error() + "\n")
-			return
+		venuesandfacilities, err := GetVenueFacilities(DB, s)
+		if err != nil {
+			return err
 		}
 
 		// make dict that contains all equipment and its quantity
@@ -257,7 +288,5 @@ func SearchVenues(c *gin.Context) {
 			searchPage[i].Facilitiesdict[y.Facilityname] = y.Quantity
 		}
 	}
-
-	c.JSON(http.StatusOK, gin.H{"data": searchPage})
-	fmt.Println("Return successful!")
+	return nil
 }

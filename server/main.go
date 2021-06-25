@@ -1,11 +1,11 @@
 package main
 
 import (
+	"github.com/gin-gonic/gin"
 	"net/http"
 	"server/controllers"
-	"server/services"
 
-	"github.com/gin-gonic/gin"
+	"server/services"
 )
 
 func main() {

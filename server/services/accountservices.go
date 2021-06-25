@@ -27,6 +27,7 @@ func Register(c *gin.Context) {
 	if GetAccountExists(DB, input) {
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Account already exists!"})
 		fmt.Println("Account already exists.")
+		return
 	}
 
 	// hashing the password
@@ -41,17 +42,25 @@ func Register(c *gin.Context) {
 	input.Password = user.Password
 
 	// get accountTypeID
-	accountType, err := GetAccountTypeDetails(DB, "Student")
+	accountType, exists, err := GetAccountTypeDetails(DB, "Student")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Unable to determine account type"})
 		fmt.Println("Unable to get accountTypeID. " + err.Error() + "\n")
 	}
+	if !exists {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Trying to set account to invalid type"})
+		fmt.Println("accountType does not exist. " + err.Error() + "\n")
+	}
 
 	// get accountStatusID
-	accountStatus, err := GetAccountStatus(DB, "Offline")
+	accountStatus, exists, err := GetAccountStatus(DB, "Offline")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Unable to determine account status"})
 		fmt.Println("Unable to get accountStatusID. " + err.Error() + "\n")
+	}
+	if !exists {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Trying to set account to invalid status"})
+		fmt.Println("accountStatus does not exist. " + err.Error() + "\n")
 	}
 
 	account := models.Accounts{
@@ -80,10 +89,14 @@ func Register(c *gin.Context) {
 // GET /get_faculty
 // get a list of faculties to populate registration field
 func GetFaculty(c *gin.Context) {
-	facultyList, err := GetFacultyList(DB)
+	facultyList, exists, err := GetFacultyList(DB)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Unable to get list of faculties."})
 		fmt.Println("Error getting list of faculties. " + err.Error() + "\n")
+	}
+	if !exists {
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "System has nothing in list of faculties"})
+		fmt.Println("List of faculties is empty. " + err.Error() + "\n")
 	}
 
 	c.JSON(http.StatusOK, gin.H{"data": facultyList})
@@ -99,10 +112,14 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	retrieved, err := GetAccount(DB, input)
+	retrieved, exists, err := GetAccount(DB, input)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Invalid NUSNET ID!"})
 		fmt.Println("Invalid NUSNET ID input. " + err.Error() + "\n")
+	}
+	if !exists {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Account does not exist"})
+		fmt.Println("account does not exist. " + err.Error() + "\n")
 	}
 
 	match := utils.CheckPasswordHash(input, retrieved.Passwordhash) // non hashed input first, followed by hashed one retrieved from DB
@@ -113,11 +130,15 @@ func Login(c *gin.Context) {
 	}
 
 	// get online status code
-	statusCode, err := GetAccountStatus(DB, "Online")
+	statusCode, exists, err := GetAccountStatus(DB, "Online")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Unable to retrieve online status code. "})
 		fmt.Println("Unable to retrieve online status code. " + err.Error() + "\n")
 		return
+	}
+	if !exists {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Trying to set account to invalid status"})
+		fmt.Println("accountStatus does not exist. " + err.Error() + "\n")
 	}
 
 	// change account status
@@ -157,11 +178,15 @@ func ResetPassword(c *gin.Context) {
 		Nusnetid: input.Nusnetid,
 		Password: input.Password,
 	}
-	retrieved, err := GetAccount(DB, user)
+	retrieved, exists, err := GetAccount(DB, user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Unable to get account!" + err.Error()})
 		fmt.Println("Unable to get account." + err.Error())
 		return
+	}
+	if !exists {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Account does not exist"})
+		fmt.Println("account does not exist. " + err.Error() + "\n")
 	}
 
 	// check if new password is same as the old password
@@ -199,11 +224,15 @@ func GetProfile(c *gin.Context) {
 	}
 
 	// get account from user input
-	account, err := GetAccount(DB, user)
+	account, exists, err := GetAccount(DB, user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": "Check database query"})
 		fmt.Println("Error in retrieving profile details from Database. " + err.Error() + "\n")
 		return
+	}
+	if !exists {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Account does not exist"})
+		fmt.Println("account does not exist. " + err.Error() + "\n")
 	}
 
 	c.JSON(http.StatusOK, gin.H{"data": account})
@@ -220,10 +249,14 @@ func GetBookings(c *gin.Context) {
 		return
 	}
 
-	booking, err := RetrieveUserBookings(DB, user)
+	booking, exists, err := RetrieveUserBookings(DB, user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": "Check database query"})
 		fmt.Println("Error in retrieving booking details from Database. " + err.Error() + "\n")
+	}
+	if !exists {
+		c.JSON(http.StatusOK, gin.H{"message": "User has no bookings"})
+		fmt.Println("User has no bookings")
 	}
 
 	c.JSON(http.StatusOK, gin.H{"data": booking})
@@ -231,13 +264,17 @@ func GetBookings(c *gin.Context) {
 }
 
 
-func GetAccountTypeDetails(DB *gorm.DB, theType string) (models.Accounttypes, error) {
+func GetAccountTypeDetails(DB *gorm.DB, theType string) (models.Accounttypes, bool, error) {
 	var accountType models.Accounttypes
 	query := "SELECT * FROM accounttypes WHERE accounttypename = ?"
-	if err := DB.Raw(query, theType).Scan(&accountType).Error; err != nil {
-		return models.Accounttypes{}, err
+	result := DB.Raw(query, theType).Scan(&accountType)
+	if result.RowsAffected == 0 {
+		return models.Accounttypes{}, false, nil
 	}
-	return accountType, nil
+	if result.Error != nil {
+		return models.Accounttypes{}, false, result.Error
+	}
+	return accountType, true, nil
 }
 
 func GetAccountExists(DB *gorm.DB, input models.CreateAccountInput) bool {
@@ -245,16 +282,19 @@ func GetAccountExists(DB *gorm.DB, input models.CreateAccountInput) bool {
 	return DB.Where("nusnetid = ?", input.Nusnetid).First(&retrieved).RowsAffected != 0
 }
 
-// get accountStatusID
-func GetAccountStatus(DB *gorm.DB, statusName string) (models.Accountstatuses, error) {
+func GetAccountStatus(DB *gorm.DB, statusName string) (models.Accountstatuses, bool, error) {
 	var accountStatus models.Accountstatuses
-	if err := DB.Where("accountstatusname = ?", statusName).First(&accountStatus).Error; err != nil {
-		return models.Accountstatuses{}, err
+	query := "SELECT * FROM accountstatuses WHERE accountstatusname = ?"
+	result := DB.Raw(query, statusName).Scan(&accountStatus)
+	if result.RowsAffected == 0 {
+		return models.Accountstatuses{}, false, nil
 	}
-	return accountStatus, nil
+	if result.Error != nil {
+		return models.Accountstatuses{}, false, result.Error
+	}
+	return accountStatus, true, nil
 }
 
-// create account
 func CreateAccount(DB *gorm.DB, account models.Accounts) error {
 	if err := DB.Create(&account).Error; err != nil {
 		return err
@@ -262,21 +302,29 @@ func CreateAccount(DB *gorm.DB, account models.Accounts) error {
 	return nil
 }
 
-func GetFacultyList(DB *gorm.DB) ([]models.Faculties, error) {
-	var facultyList []models.Faculties
-	if err := DB.Find(&facultyList).Error; err != nil {
-		return nil, err
+func GetFacultyList(DB *gorm.DB) ([]models.Faculties, bool, error) {
+	var faculties []models.Faculties
+	query := "SELECT * FROM faculties"
+	result := DB.Raw(query).Scan(&faculties)
+	if result.RowsAffected == 0 {
+		return []models.Faculties{}, false, nil
 	}
-	return facultyList, nil
+	if result.Error != nil {
+		return []models.Faculties{}, false, result.Error
+	}
+	return faculties, true, nil
 }
 
-func GetAccount(DB *gorm.DB, input models.User) (models.Accounts, error) {
+func GetAccount(DB *gorm.DB, input models.User) (models.Accounts, bool, error) {
 	var retrieved models.Accounts
-	row := DB.Where("nusnetid = ?", input.Nusnetid).First(&retrieved)
-	if row.Error != nil {
-		return models.Accounts{}, row.Error
+	result := DB.Where("nusnetid = ?", input.Nusnetid).First(&retrieved)
+	if result.RowsAffected == 0 {
+		return models.Accounts{}, false, nil
 	}
-	return retrieved, nil
+	if result.Error != nil {
+		return models.Accounts{}, false, result.Error
+	}
+	return retrieved, true, nil
 }
 
 func UpdateAccountStatus(DB *gorm.DB, statusCode models.Accountstatuses, input models.User) error {
@@ -294,10 +342,15 @@ func UpdateAccountPassword(DB *gorm.DB, retrieved models.Accounts, input models.
 	return nil
 }
 
-func RetrieveUserBookings(DB *gorm.DB, user models.User) ([]models.Currentbookings, error) {
-	var booking []models.Currentbookings
-	if err := DB.Find(&booking).Where("nusnetid = ?", user.Nusnetid).Scan(&booking).Error; err != nil {
-		return nil, err
+func RetrieveUserBookings(DB *gorm.DB, user models.User) ([]models.Currentbookings, bool, error) {
+	var bookings []models.Currentbookings
+	query := "SELECT * FROM currentbookings WHERE nusnetid = ?"
+	result := DB.Raw(query, user.Nusnetid).Scan(&bookings)
+	if result.RowsAffected == 0 {
+		return []models.Currentbookings{}, false, nil
 	}
-	return booking, nil
+	if result.Error != nil {
+		return []models.Currentbookings{}, false, result.Error
+	}
+	return bookings, true, nil
 }

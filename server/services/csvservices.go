@@ -2,6 +2,7 @@ package services
 
 import (
 	"encoding/csv"
+	"errors"
 	"fmt"
 	"math/rand"
 	"net/http"
@@ -17,14 +18,45 @@ func ReadCSVFromUrl(url string) ([][]string, error) {
 	if err != nil {
 		return nil, err
 	}
+	statusCode := resp.StatusCode
+	if statusCode != 200 {
+		if statusCode == 401 || statusCode == 402 || statusCode == 403 || statusCode == 451 {
+			return nil, errors.New("unable to gain access to website")
+		} else if statusCode == 408 {
+			return nil, errors.New("request timed out")
+		} else if statusCode == 414 || statusCode == 431 {
+			return nil, errors.New("URI too long")
+		} else if statusCode == 429 {
+			return nil, errors.New("too many requests sent at on time")
+		} else if statusCode == 500 {
+			return nil, errors.New("internal server error")
+		} else if statusCode == 503 {
+			return nil, errors.New("bad gateway")
+		} else if statusCode == 504 {
+			return nil, errors.New("gateway timeout")
+		} else if statusCode == 507 {
+			return nil, errors.New("server has insufficient storage to complete request")
+		} else if statusCode == 508 {
+			return nil, errors.New("infinite loop detected and server terminated process")
+		} else if statusCode == 511 {
+			return nil, errors.New("network authentication required to gain network access")
+		} else {
+			return nil, errors.New(fmt.Sprintf("unable to reach website with status code %d", resp.StatusCode))
+		}
+	}
 
+	noCSV := errors.New("nothing to read at this URL")
+	if resp == nil {
+		return nil, noCSV
+	}
 	defer resp.Body.Close()
+
 	reader := csv.NewReader(resp.Body)
 	reader.Comma = ','
 	reader.LazyQuotes = true
 	data, err := reader.ReadAll()
-	if err != nil {
-		return nil, err
+	if err != nil || data == nil {
+		return nil, noCSV // use own error
 	}
 
 	return data, nil

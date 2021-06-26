@@ -18,6 +18,7 @@ import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
 import DatePicker from 'react-datepicker' ;
+import subDays from "date-fns/subDays";
 import 'react-datepicker/dist/react-datepicker.css';
 
 
@@ -53,6 +54,7 @@ function Home(props) {
 
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
+    const [tempDate, setTempDate] = useState(null);
     
     const handleCapacityChange = (event) => {
         setCapacity(event.target.value);
@@ -60,7 +62,7 @@ function Home(props) {
     const handleEquipmentChange = (event) => {
         setEquipment(event.target.value);
     };
-
+    
     const filterStartTime = (time) => {
         if (endDate !== null) {
             const currentDate = new Date();
@@ -218,6 +220,24 @@ function Home(props) {
         
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    useEffect(() => {
+        if (startDate !== null) {
+            setTempDate(startDate);
+        } else {
+            setTempDate(new Date());
+        }
+        
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [startDate]);
+
+    useEffect(() => {
+        if (startDate > endDate) {
+            setEndDate(null);
+        }
+        
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [startDate]);
     
     return (
         <>   
@@ -291,6 +311,7 @@ function Home(props) {
                                             selected={startDate}
                                             onChange={(date) => setStartDate(date)}
                                             showTimeSelect
+                                            minDate={subDays(new Date(), 0)}
                                             filterTime={filterStartTime}
                                             timeFormat="HH:mm"
                                             timeIntervals={60}
@@ -299,10 +320,12 @@ function Home(props) {
                                             placeholderText="Select start time"
                                             isClearable
                                         />
+                                        
                                         <DatePicker
                                             selected={endDate}
                                             onChange={(date) => setEndDate(date)}
                                             showTimeSelect
+                                            minDate={subDays(tempDate, 0)}
                                             filterTime={filterEndTime}
                                             timeFormat="HH:mm"
                                             timeIntervals={60}

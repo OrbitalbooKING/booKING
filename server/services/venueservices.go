@@ -22,7 +22,7 @@ func GetVenues(c *gin.Context) {
 		return
 	}
 
-	if err := MakeVenueFaciltiesDict(searchPage); err != nil {
+	if err := MakeVenueFacilitiesDict(DB, searchPage); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"success": false,
 			"message": "Unable to get venues and facilities. " + err.Error()})
 	}
@@ -34,7 +34,6 @@ func GetVenues(c *gin.Context) {
 // GET /search
 // search for venues based on filters applied
 func SearchVenues(c *gin.Context) {
-	// first get array of facilities
 	var searchInput models.SearchInput
 	if err := c.BindQuery(&searchInput); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Check input fields. " + err.Error()})
@@ -54,13 +53,17 @@ func SearchVenues(c *gin.Context) {
 		fmt.Println("Check searchPageQuery. " + err.Error() + "\n")
 	}
 
-	searchPage, err := GetVenueArr(DB, filters)
+	searchPage, exists, err := GetVenueArr(DB, filters)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": "Error in querying for buildings, roomtypes, venuestatuses. "})
 		fmt.Println("Check searchPageQuery. " + err.Error() + "\n")
 	}
+	if !exists {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": "Venues do not exist in database."})
+		fmt.Println("Check searchPageQuery. " + err.Error() + "\n")
+	}
 
-	if err := MakeVenueFaciltiesDict(searchPage); err != nil {
+	if err := MakeVenueFacilitiesDict(DB, searchPage); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"success": false,
 			"message": "Unable to get venues and facilities. " + err.Error()})
 	}
@@ -69,7 +72,8 @@ func SearchVenues(c *gin.Context) {
 	fmt.Println("Return successful!")
 }
 
-func GetVenueArr(DB *gorm.DB, filters []models.SearchPage) ([]models.SearchPage, error) {
+
+func GetVenueArr(DB *gorm.DB, filters []models.SearchPage) ([]models.SearchPage, bool, error) {
 	// make into v.id in filters into an array
 	filterArray := make([]int, 0)
 	for _, s := range filters {
@@ -85,10 +89,14 @@ func GetVenueArr(DB *gorm.DB, filters []models.SearchPage) ([]models.SearchPage,
 		" JOIN venuestatuses ON venuestatuses.id = v.venuestatusid" +
 		" WHERE v.id IN (?)"
 
-	if err := DB.Raw(returnQuery, filterArray).Scan(&searchPage).Error; err != nil {
-		return nil, err
+	result := DB.Raw(returnQuery, filterArray).Scan(&searchPage)
+	if result.RowsAffected == 0 {
+		return nil, false, nil
 	}
-	return searchPage, nil
+	if result.Error != nil {
+		return nil, false, result.Error
+	}
+	return searchPage, true, nil
 }
 
 func GetVenueIDArrAfterFilter(DB *gorm.DB, searchInput models.SearchInput, facilityIDArr []int) ([]models.SearchPage, error) {
@@ -99,7 +107,6 @@ func GetVenueIDArrAfterFilter(DB *gorm.DB, searchInput models.SearchInput, facil
 	}
 
 	// get all venues, from venues table, with venueid, venuename, capacity, buildingNo, unitNo filters applied filter applied
-	var filters []models.SearchPage
 	searchPageQuery := "SELECT DISTINCT v.id FROM venues AS v"
 	firstWhereAdded := false
 
@@ -179,7 +186,7 @@ func GetVenueIDArrAfterFilter(DB *gorm.DB, searchInput models.SearchInput, facil
 		if firstWhereAdded {
 			searchPageQuery += fmt.Sprintf(" AND v.id IN ("+
 				" SELECT ID FROM venues"+
-				" WHERE venuename = %s)", *searchInput.Venuename)
+				" WHERE venuename = '%s')", *searchInput.Venuename)
 		} else {
 			searchPageQuery += fmt.Sprintf(" WHERE v.id IN ("+
 				" SELECT ID FROM venues"+
@@ -230,7 +237,7 @@ func GetVenueIDArrAfterFilter(DB *gorm.DB, searchInput models.SearchInput, facil
 	}
 
 	searchPageQuery += " ORDER BY v.id"
-
+	var filters []models.SearchPage
 	if err := DB.Raw(searchPageQuery).Scan(&filters).Error; err != nil {
 		return nil, err
 	}
@@ -274,7 +281,7 @@ func GetSearchPage(DB *gorm.DB) ([]models.SearchPage, error) {
 	return searchPage, nil
 }
 
-func MakeVenueFaciltiesDict(searchPage []models.SearchPage) error {
+func MakeVenueFacilitiesDict(DB *gorm.DB, searchPage []models.SearchPage) error{
 	for i, s := range searchPage {
 		// get all facilities in the venue and put into homepage struct
 		searchPage[i].Facilitiesdict = make(map[string]int)

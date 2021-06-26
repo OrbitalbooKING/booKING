@@ -23,7 +23,7 @@ func (a AnyTime) Match(v driver.Value) bool {
 	return ok
 }
 
-func setup(table string) (sqlmock.Sqlmock, *Repository, *sqlmock.Rows, error){
+func setupAccounts(table string) (sqlmock.Sqlmock, *Repository, *sqlmock.Rows, error){
 	type Table struct {
 		Headers []string
 	}
@@ -62,30 +62,28 @@ func setup(table string) (sqlmock.Sqlmock, *Repository, *sqlmock.Rows, error){
 	}
 	repository = &Repository{db: gdb}
 
-	var rows *sqlmock.Rows
+	rows := sqlmock.NewRows(tables[table].Headers)
 	if table == "Accounts" {
-		rows = sqlmock.NewRows(tables[table].Headers).AddRow("1", "e001", "pass", "test", "1", "2022",
-			"testURL", "1", "50", "time", "time", "1")
+		rows = rows.AddRow(1, "e001", "pass", "test", 1, 2022, "testURL", 1, 50, time.Time{}, time.Time{}, 1)
 	} else if table == "AccountStatuses" {
-		rows = sqlmock.NewRows(tables[table].Headers).AddRow("1", "Online", "Currently logged in.")
+		rows = rows.AddRow(1, "Online", "Currently logged in.")
 	} else if table == "AccountTypes" {
-		rows = sqlmock.NewRows(tables[table].Headers).AddRow("1", "Student", "For students, basic rights")
+		rows = rows.AddRow(1, "Student", "For students, basic rights")
 	} else if table == "Faculties" {
-		rows = sqlmock.NewRows(tables[table].Headers).AddRow("1", "SoC", "School of Computing").
-			AddRow("2", "FASS", "Faculty of Arts and Social Sciences").
-			AddRow("3", "Others", "Others")
+		rows = rows.AddRow(1, "SoC", "School of Computing").
+					AddRow(2, "FASS", "Faculty of Arts and Social Sciences").
+					AddRow(3, "Others", "Others")
 	} else if table == "CurrentBookings" {
-		rows = sqlmock.NewRows(tables[table].Headers).AddRow("1", "e001", "1", "10", "time",
-			"time", "time", "1", "time").
-			AddRow("1", "e001", "1", "10", "time", "time", "time", "1", "time").
-			AddRow("1", "e001", "1", "10", "time", "time", "time", "1", "time")
+		rows = rows.AddRow(1, "e001", 1, 10, time.Time{}, time.Time{}, time.Time{}, 1, time.Time{}).
+					AddRow(1, "e001", 1, 10, time.Time{}, time.Time{}, time.Time{}, 1, time.Time{}).
+					AddRow(1, "e001", 1, 10, time.Time{}, time.Time{}, time.Time{}, 1, time.Time{})
 	}
 
 	return mock, repository, rows, nil
 }
 
 func TestGetAccountTypeDetails_ValidInput(t *testing.T) {
-	mock, repo, rows, err := setup("AccountTypes")
+	mock, repo, rows, err := setupAccounts("AccountTypes")
 	if err != nil {
 		t.Errorf("unexpected error: %s", err.Error())
 	}
@@ -113,7 +111,7 @@ func TestGetAccountTypeDetails_ValidInput(t *testing.T) {
 }
 
 func TestGetAccountTypeDetails_InvalidInput(t *testing.T) {
-	mock, repo, _, err := setup("AccountTypes")
+	mock, repo, _, err := setupAccounts("AccountTypes")
 	if err != nil {
 		t.Errorf("unexpected error: %s", err.Error())
 	}
@@ -132,7 +130,7 @@ func TestGetAccountTypeDetails_InvalidInput(t *testing.T) {
 }
 
 func TestGetAccountExists_True(t *testing.T) {
-	mock, repo, rows, err := setup("Accounts")
+	mock, repo, rows, err := setupAccounts("Accounts")
 	if err != nil {
 		t.Errorf("unexpected error: %s", err.Error())
 	}
@@ -154,7 +152,7 @@ func TestGetAccountExists_True(t *testing.T) {
 }
 
 func TestGetAccountExists_False(t *testing.T) {
-	mock, repo, _, err := setup("Accounts")
+	mock, repo, _, err := setupAccounts("Accounts")
 	if err != nil {
 		t.Errorf("unexpected error: %s", err.Error())
 	}
@@ -176,7 +174,7 @@ func TestGetAccountExists_False(t *testing.T) {
 }
 
 func TestGetAccountStatus_ValidInput(t *testing.T) {
-	mock, repo, rows, err := setup("AccountStatuses")
+	mock, repo, rows, err := setupAccounts("AccountStatuses")
 	if err != nil {
 		t.Errorf("unexpected error: %s", err.Error())
 	}
@@ -204,7 +202,7 @@ func TestGetAccountStatus_ValidInput(t *testing.T) {
 }
 
 func TestGetAccountStatus_InvalidInput(t *testing.T) {
-	mock, repo, _, err := setup("AccountStatuses")
+	mock, repo, _, err := setupAccounts("AccountStatuses")
 	if err != nil {
 		t.Errorf("unexpected error: %s", err.Error())
 	}
@@ -223,7 +221,7 @@ func TestGetAccountStatus_InvalidInput(t *testing.T) {
 }
 
 func TestCreateAccount_ValidInput(t *testing.T) {
-	mock, repo, _, err := setup("Accounts")
+	mock, repo, _, err := setupAccounts("Accounts")
 	if err != nil {
 		t.Errorf("unexpected error: %s", err.Error())
 	}
@@ -261,7 +259,7 @@ func TestCreateAccount_ValidInput(t *testing.T) {
 }
 
 func TestGetFacultyList_Exists(t *testing.T) {
-	mock, repo, rows, err := setup("Faculties")
+	mock, repo, rows, err := setupAccounts("Faculties")
 	if err != nil {
 		t.Errorf("unexpected error: %s", err.Error())
 	}
@@ -297,7 +295,7 @@ func TestGetFacultyList_Exists(t *testing.T) {
 }
 
 func TestGetFacultyList_EmptyList(t *testing.T) {
-	mock, repo, _, err := setup("Faculties")
+	mock, repo, _, err := setupAccounts("Faculties")
 	if err != nil {
 		t.Errorf("unexpected error: %s", err.Error())
 	}
@@ -316,7 +314,7 @@ func TestGetFacultyList_EmptyList(t *testing.T) {
 }
 
 func TestGetAccount_True(t *testing.T) {
-	mock, repo, rows, err := setup("Accounts")
+	mock, repo, rows, err := setupAccounts("Accounts")
 	if err != nil {
 		t.Errorf("unexpected error: %s", err.Error())
 	}
@@ -357,7 +355,7 @@ func TestGetAccount_True(t *testing.T) {
 }
 
 func TestGetAccount_False(t *testing.T) {
-	mock, repo, _, err := setup("Accounts")
+	mock, repo, _, err := setupAccounts("Accounts")
 	if err != nil {
 		t.Errorf("unexpected error: %s", err.Error())
 	}
@@ -381,13 +379,15 @@ func TestGetAccount_False(t *testing.T) {
 }
 
 func TestUpdateAccountStatus(t *testing.T) {
-	mock, repo, _, err := setup("Accounts")
+	mock, repo, _, err := setupAccounts("Accounts")
 	if err != nil {
 		t.Errorf("unexpected error: %s", err.Error())
 	}
 
 	query := regexp.QuoteMeta(`UPDATE accounts SET accountstatusid = $1, lastupdated = $2 WHERE nusnetid = $3`)
-	mock.ExpectExec(query).WithArgs(2, AnyTime{}, "e001").WillReturnResult(sqlmock.NewResult(1, 1))
+	mock.ExpectExec(query).
+		WithArgs(2, AnyTime{}, "e001").
+		WillReturnResult(sqlmock.NewResult(1, 1))
 
 	inputUser := models.User{
 		Nusnetid:   "e001",
@@ -408,7 +408,7 @@ func TestUpdateAccountStatus(t *testing.T) {
 }
 
 func TestUpdateAccountPassword(t *testing.T) {
-	mock, repo, _, err := setup("Accounts")
+	mock, repo, _, err := setupAccounts("Accounts")
 	if err != nil {
 		t.Errorf("unexpected error: %s", err.Error())
 	}
@@ -450,7 +450,7 @@ func TestUpdateAccountPassword(t *testing.T) {
 }
 
 func TestRetrieveUserBookings_Exists(t *testing.T) {
-	mock, repo, rows, err := setup("CurrentBookings")
+	mock, repo, rows, err := setupAccounts("CurrentBookings")
 	if err != nil {
 		t.Errorf("unexpected error: %s", err.Error())
 	}
@@ -510,7 +510,7 @@ func TestRetrieveUserBookings_Exists(t *testing.T) {
 }
 
 func TestRetrieveUserBookings_EmptyList(t *testing.T) {
-	mock, repo, _, err := setup("CurrentBookings")
+	mock, repo, _, err := setupAccounts("CurrentBookings")
 	if err != nil {
 		t.Errorf("unexpected error: %s", err.Error())
 	}

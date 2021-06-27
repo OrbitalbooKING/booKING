@@ -519,9 +519,7 @@ func TestCheckIfOverLimitAndTime_False(t *testing.T) {
 		AND cb.venueid = $3
 		AND cb.bookingstatusid IN ($4,$5,$6)
 		GROUP BY cb.eventstart`)
-	mock.ExpectQuery(query).
-		WithArgs(AnyTime{}, AnyTime{}, 1, 1, 2, 3).
-		WillReturnRows(rows)
+	mock.ExpectQuery(query).WithArgs(AnyTime{}, AnyTime{}, 1, 1, 2, 3).WillReturnRows(rows)
 
 	s := models.BookingInput{
 		Eventstart:   time.Now().Add(time.Hour),
@@ -545,7 +543,7 @@ func TestCheckIfOverLimitAndTime_False(t *testing.T) {
 	}
 }
 
-func TestCheckIfOverLimitAndTime_OverPax(t *testing.T) {
+func TestCheckIfOverLimitAndTime_OverPax(t *testing.T) 	{
 	mock, repo, rows, err := setupBookings("CheckIfOverLimitAndTime_OverPax")
 	if err != nil {
 		t.Errorf("unexpected error: %s", err.Error())
@@ -602,7 +600,46 @@ func TestCheckIfOverLimitAndTime_OverTime(t *testing.T) {
 		WillReturnRows(rows)
 
 	s := models.BookingInput{
-		Eventstart:   time.Now(),
+		Eventstart:   time.Now().Add(-time.Hour),
+		Eventend:     time.Now(),
+		Pax: 		  1,
+	}
+	venue := models.Venues{
+		ID:            1,
+		Maxcapacity:   20,
+	}
+	statusIDArr := []int{1, 2, 3}
+
+	expected := true
+	if result, err := CheckIfOverLimitAndTime(repo.db, s, venue, statusIDArr); err != nil || result != expected {
+		if err != nil {
+			t.Fatalf("Unexpected error: %s", err.Error())
+		}
+		if result != expected {
+			t.Errorf("Expected this input to be over time: %t. Got it as %t instead", expected, result)
+		}
+	}
+}
+
+func TestCheckIfOverLimitAndTime_OverBoth(t *testing.T) {
+	mock, repo, rows, err := setupBookings("CheckIfOverLimitAndTime_OverPax")
+	if err != nil {
+		t.Errorf("unexpected error: %s", err.Error())
+	}
+
+	query := regexp.
+		QuoteMeta(`SELECT cb.eventstart, SUM(pax) AS sumpax FROM currentBookings AS cb
+		JOIN venues ON venues.id = cb.venueid
+		WHERE (cb.eventStart = $1 OR cb.eventEnd = $2)
+		AND cb.venueid = $3
+		AND cb.bookingstatusid IN ($4,$5,$6)
+		GROUP BY cb.eventstart`)
+	mock.ExpectQuery(query).
+		WithArgs(AnyTime{}, AnyTime{}, 1, 1, 2, 3).
+		WillReturnRows(rows)
+
+	s := models.BookingInput{
+		Eventstart:   time.Now().Add(-time.Hour),
 		Eventend:     time.Now(),
 		Pax: 		  1,
 	}

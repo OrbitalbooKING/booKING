@@ -57,7 +57,7 @@ func setupAccounts(table string) (sqlmock.Sqlmock, *Repository, *sqlmock.Rows, e
 		return nil, nil, nil, err
 	}
 	gdb, err := gorm.Open("postgres", db)
-	if err != nil {
+	if err != nil 	{
 		return nil, nil, nil, err
 	}
 	repository = &Repository{db: gdb}
@@ -220,6 +220,25 @@ func TestGetAccountStatus_InvalidInput(t *testing.T) {
 	}
 }
 
+func TestGetAccountStatus_Error(t *testing.T) {
+	mock, repo, _, err := setupAccounts("AccountStatuses")
+	if err != nil {
+		t.Errorf("unexpected error: %s", err.Error())
+	}
+
+	query := regexp.QuoteMeta("SELECT * FROM accountstatuses WHERE accountstatusname = $1")
+	mock.ExpectQuery(query).WithArgs().WillReturnRows(sqlmock.NewRows(nil))
+
+	if _, exists, err := GetAccountStatus(repo.db, "InvalidInput"); err == nil || exists {
+		if err != nil {
+			t.Fatalf("Unexpected error: %s", err.Error())
+		}
+		if exists {
+			t.Fatalf("Unexpected error that accountStatus does exist for an invalid input.")
+		}
+	}
+}
+
 func TestCreateAccount_ValidInput(t *testing.T) {
 	mock, repo, _, err := setupAccounts("Accounts")
 	if err != nil {
@@ -295,13 +314,13 @@ func TestGetFacultyList_Exists(t *testing.T) {
 }
 
 func TestGetFacultyList_EmptyList(t *testing.T) {
-	mock, repo, _, err := setupAccounts("Faculties")
+	mock, repo, _, err := setupAccounts("")
 	if err != nil {
 		t.Errorf("unexpected error: %s", err.Error())
 	}
 
 	query := regexp.QuoteMeta("SELECT * FROM faculties")
-	mock.ExpectQuery(query).WillReturnRows(sqlmock.NewRows(nil))
+	mock.ExpectQuery(query).WillReturnError(gorm.ErrRecordNotFound)
 
 	if _, exists, err := GetFacultyList(repo.db); err != nil || exists {
 		if err != nil {
@@ -413,10 +432,9 @@ func TestUpdateAccountPassword(t *testing.T) {
 		t.Errorf("unexpected error: %s", err.Error())
 	}
 
-	query := regexp.QuoteMeta(`UPDATE accounts SET password = $1 WHERE id = $2`)
-	mock.ExpectBegin()
+	query := regexp.QuoteMeta(`UPDATE accounts SET passwordHash = $1 WHERE id = $2`)
 	mock.ExpectExec(query).WithArgs("test", 1).WillReturnResult(sqlmock.NewResult(1, 1))
-	mock.ExpectCommit()
+
 
 	input := models.CreateAccountInput{
 		Nusnetid:   "e001",
@@ -516,7 +534,7 @@ func TestRetrieveUserBookings_EmptyList(t *testing.T) {
 	}
 
 	query := regexp.QuoteMeta(`SELECT * FROM currentbookings WHERE nusnetid = $1`)
-	mock.ExpectQuery(query).WithArgs("e002").WillReturnRows(sqlmock.NewRows(nil))
+	mock.ExpectQuery(query).WithArgs("e002").WillReturnError(gorm.ErrRecordNotFound)
 
 	input := models.User{
 		Nusnetid:   "e002",

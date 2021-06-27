@@ -187,6 +187,7 @@ func ResetPassword(c *gin.Context) {
 	if !exists {
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Account does not exist"})
 		fmt.Println("account does not exist. " + err.Error() + "\n")
+		return
 	}
 
 	// check if new password is same as the old password
@@ -200,6 +201,7 @@ func ResetPassword(c *gin.Context) {
 	// hashing the password
 	if err := utils.HashPassword(&user); err != nil {
 		fmt.Println("Error in hashing user password: " + err.Error())
+		return
 	}
 	input.Password = user.Password
 
@@ -207,6 +209,7 @@ func ResetPassword(c *gin.Context) {
 	if err := UpdateAccountPassword(DB, retrieved, input); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Unable to reset password."})
 		fmt.Println("Error in updating database. " + err.Error() + "\n")
+		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{"success": true, "message": "Account successfully reset!"})
@@ -268,7 +271,7 @@ func GetAccountTypeDetails(DB *gorm.DB, theType string) (models.Accounttypes, bo
 	var accountType models.Accounttypes
 	query := "SELECT * FROM accounttypes WHERE accounttypename = ?"
 	result := DB.Raw(query, theType).Scan(&accountType)
-	if result.RowsAffected == 0 {
+	if result.Error == gorm.ErrRecordNotFound {
 		return models.Accounttypes{}, false, nil
 	}
 	if result.Error != nil {
@@ -286,7 +289,7 @@ func GetAccountStatus(DB *gorm.DB, statusName string) (models.Accountstatuses, b
 	var accountStatus models.Accountstatuses
 	query := "SELECT * FROM accountstatuses WHERE accountstatusname = ?"
 	result := DB.Raw(query, statusName).Scan(&accountStatus)
-	if result.RowsAffected == 0 {
+	if result.Error == gorm.ErrRecordNotFound {
 		return models.Accountstatuses{}, false, nil
 	}
 	if result.Error != nil {
@@ -306,7 +309,7 @@ func GetFacultyList(DB *gorm.DB) ([]models.Faculties, bool, error) {
 	var faculties []models.Faculties
 	query := "SELECT * FROM faculties"
 	result := DB.Raw(query).Scan(&faculties)
-	if result.RowsAffected == 0 {
+	if result.Error == gorm.ErrRecordNotFound {
 		return []models.Faculties{}, false, nil
 	}
 	if result.Error != nil {
@@ -318,7 +321,7 @@ func GetFacultyList(DB *gorm.DB) ([]models.Faculties, bool, error) {
 func GetAccount(DB *gorm.DB, input models.User) (models.Accounts, bool, error) {
 	var retrieved models.Accounts
 	result := DB.Where("nusnetid = ?", input.Nusnetid).First(&retrieved)
-	if result.RowsAffected == 0 {
+	if result.Error == gorm.ErrRecordNotFound {
 		return models.Accounts{}, false, nil
 	}
 	if result.Error != nil {
@@ -336,7 +339,8 @@ func UpdateAccountStatus(DB *gorm.DB, statusCode models.Accountstatuses, input m
 }
 
 func UpdateAccountPassword(DB *gorm.DB, retrieved models.Accounts, input models.CreateAccountInput) error {
-	if err := DB.Model(&retrieved).UpdateColumn("password", input.Password).Error; err != nil {
+	query := "UPDATE accounts SET passwordHash = ? WHERE id = ?"
+	if err := DB.Exec(query, input.Password, retrieved.ID).Error; err != nil {
 		return err
 	}
 	return nil
@@ -346,7 +350,7 @@ func RetrieveUserBookings(DB *gorm.DB, user models.User) ([]models.Currentbookin
 	var bookings []models.Currentbookings
 	query := "SELECT * FROM currentbookings WHERE nusnetid = ?"
 	result := DB.Raw(query, user.Nusnetid).Scan(&bookings)
-	if result.RowsAffected == 0 {
+	if result.Error == gorm.ErrRecordNotFound {
 		return []models.Currentbookings{}, false, nil
 	}
 	if result.Error != nil {

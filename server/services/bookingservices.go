@@ -212,8 +212,8 @@ func MakeTimeslotArr(operatingHours models.UnavailableTimings, timingWithPax []m
 	return timeslots
 }
 
-func GetBookingsOfDay(DB *gorm.DB, input models.TimingSearchInput, venue models.Venues, statusIDArr []int) ([]models.UnavailableTimings, error) {
-	// get bookings that day
+func GetBookingsOfDay(DB *gorm.DB, input models.TimingSearchInput,
+	venue models.Venues, statusIDArr []int) ([]models.UnavailableTimings, error) {
 	var timingWithPax []models.UnavailableTimings
 	timingsQuery := "SELECT cb.eventstart, SUM(pax) AS sumpax FROM currentBookings AS cb" +
 		" JOIN venues ON venues.id = cb.venueid" +
@@ -231,7 +231,6 @@ func GetBookingsOfDay(DB *gorm.DB, input models.TimingSearchInput, venue models.
 }
 
 func GetVenueIDAndMaxCapacity(DB *gorm.DB, input models.TimingSearchInput) (models.Venues, error) {
-	// get venueid and maxcapacity
 	var venue models.Venues
 	venueQuery := "SELECT v.id, v.maxcapacity FROM venues AS v JOIN buildings on buildings.id = v.buildingid WHERE unit = ? AND buildingname = ?"
 	if err := DB.Raw(venueQuery, input.UnitNo, input.Buildingname).Scan(&venue).Error; err != nil {
@@ -339,16 +338,15 @@ func InsertBooking(DB *gorm.DB, overLimitAndTime bool, s models.BookingInput, ve
 }
 
 func CheckIfOverLimitAndTime(DB *gorm.DB, s models.BookingInput, venue models.Venues, statusIDArr []int) (bool, error) {
-	// first check if pax is over-limit
 	var paxCheck models.UnavailableTimings
 	paxQuery := "SELECT cb.eventstart, SUM(pax) AS sumpax FROM currentBookings AS cb" +
 		" JOIN venues ON venues.id = cb.venueid" +
-		" WHERE (cb.eventStart = ?" +
-		" OR cb.eventEnd = ?)" +
+		" WHERE (cb.eventStart = ? OR cb.eventEnd = ?)" +
 		" AND cb.venueid = ?" +
 		" AND cb.bookingstatusid IN (?)" +
 		" GROUP BY cb.eventstart"
-	if result := DB.Raw(paxQuery, s.Eventstart, s.Eventend, venue.ID, statusIDArr).Scan(&paxCheck); result.Error != nil {
+	if result := DB.Raw(paxQuery, s.Eventstart, s.Eventend, venue.ID, statusIDArr).Scan(&paxCheck);
+	result.Error != nil {
 		if result.RowsAffected == 0 {
 		} else {
 			return false, result.Error

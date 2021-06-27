@@ -32,12 +32,12 @@ To maximise the venue and resources usage in School of Computing, we hope to hel
 
 ### **Core Features: (4 weeks)**
 1. - [x] User authentication
-2. - [ ] Adding all the venues to the database 
-3. - [ ] Venue reservation
+2. - [x] Adding all the venues to the database 
+3. - [x] Venue reservation
    - - [ ] Maximum reservation hours per user
-   - - [ ] Venue classifications 
-   - - [ ] Resources available in each venue 
-4. - [ ] Available venues search function
+   - - [x] Venue classifications 
+   - - [x] Resources available in each venue 
+4. - [x] Available venues search function
 5. - [ ] Venue reservation notification
 6. - [ ] Points system
 7. - [ ] User-friendly interface
@@ -48,7 +48,7 @@ To maximise the venue and resources usage in School of Computing, we hope to hel
 
 ### **Advanced Features: (4 weeks)**
 1. - [ ] Venue sharing system
-2. - [ ] Autocomplete function in venue search bar 
+2. - [x] Autocomplete function in venue search bar 
 3. - [ ] Automatic categorisation of venue type
 4. - [ ] Priority queue for SoC users to reserve rooms over non-SoC users
 

@@ -90,7 +90,7 @@ func GetVenueArr(DB *gorm.DB, filters []models.SearchPage) ([]models.SearchPage,
 		" WHERE v.id IN (?)"
 
 	result := DB.Raw(returnQuery, filterArray).Scan(&searchPage)
-	if result.RowsAffected == 0 {
+	if result.Error == gorm.ErrRecordNotFound {
 		return nil, false, nil
 	}
 	if result.Error != nil {

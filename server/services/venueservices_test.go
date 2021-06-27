@@ -147,7 +147,7 @@ func TestGetVenueArr_InvalidInput(t *testing.T) {
 		JOIN roomtypes ON roomtypes.id = v.roomtypeid 
 		JOIN venuestatuses ON venuestatuses.id = v.venuestatusid`)
 
-	mock.ExpectQuery(query).WithArgs(2,3,4).WillReturnRows(sqlmock.NewRows(nil))
+	mock.ExpectQuery(query).WithArgs(2,3,4).WillReturnError(gorm.ErrRecordNotFound)
 
 	if searchPage, exists, err := GetVenueArr(repo.db, input);
 		searchPage != nil || exists || err != nil {
@@ -182,7 +182,7 @@ func TestGetVenueIDArrAfterFilter(t *testing.T) {
 	}
 
 	query := regexp.
-		QuoteMeta(`SELECT DISTINCT v.id FROM venues AS v WHERE v.id NOT IN ( SELECT cb.venueID FROM currentBookings AS cb WHERE cb.venueID = v.id AND cb.eventStart > TIMESTAMP '0001-01-01T00:00:00Z' AND cb.eventEnd < TIMESTAMP '0001-01-01T00:00:00Z') AND v.id IN ( SELECT vt.venueID FROM venueTimings AS vt WHERE vt.venueID = v.id AND vt.dayOfWeek = 1 AND vt.startHour <= coalesce('00:00', startHour) AND vt.endHour >= coalesce('00:00', endHour)) AND v.id NOT IN ( SELECT cb.venueID FROM currentBookings AS cb WHERE cb.venueID = v.id AND (cb.eventStart >= TIMESTAMP '0001-01-01T00:00:00Z' OR cb.eventEnd <= TIMESTAMP '0001-01-01T00:00:00Z') GROUP BY cb.venueID HAVING SUM(cb.pax) > v.maxCapacity - 1) AND v.id IN ( SELECT ID FROM venues WHERE maxcapacity >= 1) AND v.id IN ( SELECT venueID FROM venueFacilities AS vf WHERE vf.venueID = v.id AND vf.facilityid IN (1,2) GROUP BY vf.venueid HAVING COUNT(vf.facilityid) > 2) AND v.id IN ( SELECT ID FROM venues WHERE venuename = test) AND v.id IN ( SELECT ID from venues WHERE buildingid = 1) AND v.id IN ( SELECT ID from venues WHERE unit = 'test') AND v.id IN ( SELECT ID from venues WHERE roomtypeid = 1) ORDER BY v.id`)
+		QuoteMeta(`SELECT DISTINCT v.id FROM venues AS v WHERE v.id NOT IN ( SELECT cb.venueID FROM currentBookings AS cb WHERE cb.venueID = v.id AND cb.eventStart > TIMESTAMP '0001-01-01T00:00:00Z' AND cb.eventEnd < TIMESTAMP '0001-01-01T00:00:00Z') AND v.id IN ( SELECT vt.venueID FROM venueTimings AS vt WHERE vt.venueID = v.id AND vt.dayOfWeek = 1 AND vt.startHour <= coalesce('00:00', startHour) AND vt.endHour >= coalesce('00:00', endHour)) AND v.id NOT IN ( SELECT cb.venueID FROM currentBookings AS cb WHERE cb.venueID = v.id AND (cb.eventStart >= TIMESTAMP '0001-01-01T00:00:00Z' OR cb.eventEnd <= TIMESTAMP '0001-01-01T00:00:00Z') GROUP BY cb.venueID HAVING SUM(cb.pax) > v.maxCapacity - 1) AND v.id IN ( SELECT ID FROM venues WHERE maxcapacity >= 1) AND v.id IN ( SELECT venueID FROM venueFacilities AS vf WHERE vf.venueID = v.id AND vf.facilityid IN (1,2) GROUP BY vf.venueid HAVING COUNT(vf.facilityid) > 2) AND v.id IN ( SELECT ID FROM venues WHERE venuename = 'test') AND v.id IN ( SELECT ID from venues WHERE buildingid = 1) AND v.id IN ( SELECT ID from venues WHERE unit = 'test') AND v.id IN ( SELECT ID from venues WHERE roomtypeid = 1) ORDER BY v.id`)
 
 	mock.ExpectQuery(query).WillReturnRows(rows)
 

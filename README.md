@@ -19,9 +19,10 @@ To maximise the venue and resources usage in School of Computing, we hope to hel
 - [User Guide](https://docs.google.com/document/d/1zvFvemhVmstVMCiOg0dLkmLf1wWBZFmuWxLuLHR_zJg/edit?usp=sharing)
 - [Developer Guide](https://docs.google.com/document/d/1SV7XcLXzWC8Oh0ZJ9_ezHnF3e7drr1Ee3bozCdLTEl8/edit?usp=sharing)
 - [Prototype on Figma](https://www.figma.com/file/StFYx2rDrqAGr74XKgNIck/booKING?node-id=3%3A20)
-- [Prototype on Heroku)(https://shielded-peak-15351.herokuapp.com/)
+- [Prototype on Heroku](https://shielded-peak-15351.herokuapp.com/)
 - [Poster](https://drive.google.com/file/d/1vGCY2l3TweOiyNjKtW0HgWrqVh6GVa57/view?usp=sharing)
 - [Video](https://drive.google.com/file/d/1n0D9r45ZNvhBg2152Rb4YcsB8wWRc8oz/view?usp=sharing)
+- [Cognitive Walkthrough](https://drive.google.com/file/d/1qtbvl8xnwmnuFjW62ugDXUMCpetBr5eh/view?usp=sharing)
 
 ---
 ## Timeline
@@ -40,18 +41,15 @@ To maximise the venue and resources usage in School of Computing, we hope to hel
    - - [x] Resources available in each venue 
 4. - [x] Available venues search function
 5. - [ ] Venue reservation notification
-6. - [ ] Points system
-7. - [ ] User-friendly interface
-   - - [ ] Dark Mode
-   - - [ ] Screen size
+6. - [x] Autocomplete function in venue search bar 
+7. - [ ] Points system
 8. - [ ] Approval process; we will create an interface for staff in SoC to view and approve venue bookings, this allows them to prioritise SoC users who wants to reserve a venue
 9. - [ ] Editing of reserved venues by staff users to address ad-hoc changes
 
 ### **Advanced Features: (4 weeks)**
 1. - [ ] Venue sharing system
-2. - [x] Autocomplete function in venue search bar 
-3. - [ ] Automatic categorisation of venue type
-4. - [ ] Priority queue for SoC users to reserve rooms over non-SoC users
+2. - [ ] Automatic categorisation of venue type
+3. - [ ] Priority queue for SoC users to reserve rooms over non-SoC users
 
 ### **Nice-to-have Features: (2 weeks)**
 1. - [ ] Prevent interval bookings (don’t let users book 30 mins and leave it empty for 30 mins etc) 
@@ -59,6 +57,9 @@ To maximise the venue and resources usage in School of Computing, we hope to hel
 3. - [ ] Minimum number of characters for password
 4. - [ ] Responsive design for different screen sizes
 5. - [ ] Statistics displayed for each venue for staff users
+6. - [ ] User-friendly interface
+   - - [ ] Dark Mode
+   - - [ ] Screen size
 
 ---
 ## Tech Stack
@@ -83,10 +84,15 @@ To maximise the venue and resources usage in School of Computing, we hope to hel
 | 10 | Programming at home: Integration | 2 | 2 | 26/5/2021 | Successfully connected React frontend with PostgreSQL backend using Go to carry out authentication | 
 | 11 | Documentation at home: User Guide | 8 | 8 | 27/5/2021 |  Worked on documenting a user guide for Milestone 1 | 
 | 12 | Documentation at home: Developer Guide | 8 | 8 | 28/5/2021 | Worked on documenting a developer guide for Milestone 1 | 
+| 13 | Team meeting: milestone review | 2 | 2 | 1/6/2021 | 1) Met with mentor Loh Zi Bin Robin to look through milestone one feedbacks as well as plan out next course of action |
+| 14 | Programming at home: Frontend & Backend | 10 | 10 | 7/6/2021 | 1) Obtain venue information from NUS website to populate venue lists to store in database<br />2) Create API routes to fetch all venues<br />3) Implement search bar and venue display on react | 
+| 15 | Programming at home: Frontend & Backend | 10 | 10 | 14/6/2021 | 1) Implement filters for queries to only display certain venues<br />2) Create booking page with a calendar for users to select their desired time slots |
+| 16 | Programming at home: Frontend & Backend | 10 | 10 | 21/6/2021 | 1) Create booking services<br />2) Integration of frontend and backend to test out search features and booking |
+| 17 | Documentation at home: Frontend & Backend tests | 8 | 8 | 25/6/2021 | 1) Create test files to conduct testing of backend code<br />2) Qualitative evaluation of application (heuristics evaluation and cognitive walkthrough) |
 
 | Total hours | Jason | Jiewei |
 | - | - | - |
-| | 53 | 53 |
+| | 93 | 93 |
 
 ---
 ## Qualifications 

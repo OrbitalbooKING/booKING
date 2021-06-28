@@ -281,7 +281,7 @@ func GetSearchPage(DB *gorm.DB) ([]models.SearchPage, error) {
 	return searchPage, nil
 }
 
-func MakeVenueFacilitiesDict(DB *gorm.DB, searchPage []models.SearchPage) error{
+func MakeVenueFacilitiesDict(DB *gorm.DB, searchPage []models.SearchPage) error {
 	for i, s := range searchPage {
 		// get all facilities in the venue and put into homepage struct
 		searchPage[i].Facilitiesdict = make(map[string]int)

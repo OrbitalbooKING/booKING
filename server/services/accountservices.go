@@ -44,22 +44,22 @@ func Register(c *gin.Context) {
 	// get accountTypeID
 	accountType, exists, err := GetAccountTypeDetails(DB, "Student")
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Unable to determine account type"})
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "Unable to determine account type"})
 		fmt.Println("Unable to get accountTypeID. " + err.Error() + "\n")
 	}
 	if !exists {
-		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Trying to set account to invalid type"})
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "Trying to set account to invalid type"})
 		fmt.Println("accountType does not exist. " + err.Error() + "\n")
 	}
 
 	// get accountStatusID
 	accountStatus, exists, err := GetAccountStatus(DB, "Offline")
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Unable to determine account status"})
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "Unable to determine account status"})
 		fmt.Println("Unable to get accountStatusID. " + err.Error() + "\n")
 	}
 	if !exists {
-		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Trying to set account to invalid status"})
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "Trying to set account to invalid status"})
 		fmt.Println("accountStatus does not exist. " + err.Error() + "\n")
 	}
 

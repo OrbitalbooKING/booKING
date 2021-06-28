@@ -2,9 +2,9 @@ package services
 
 import (
 	"database/sql"
-	"fmt"
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/jinzhu/gorm"
+	"reflect"
 	"regexp"
 	"server/models"
 	"testing"
@@ -28,7 +28,7 @@ func setupVenues(table string) (sqlmock.Sqlmock, *Repository, *sqlmock.Rows, err
 			Headers: []string{"id", "facilityName", "facilityDescription"},
 		},
 		"VenuesAndFacilities": {
-			Headers: []string{"id", "venueID", "facilityID", "quantity", "facilityName"},
+			Headers: []string{"id", "venueid", "facilityid", "quantity", "facilityname"},
 		},
 		"SearchPage": {
 			Headers: []string{"id", "venuename", "unit", "buildingname", "buildingid", "maxcapacity", "roomtypename",
@@ -274,7 +274,7 @@ func TestGetSearchPage(t *testing.T) {
 	}
 }
 
-func TestMakeVenueFacilitiesDict(t *testing.T) {
+func TestMakeVenueFacilitiesDict_Stubbed(t *testing.T) {
 	mock, repo, rows, err := setupVenues("VenuesAndFacilities")
 	if err != nil {
 		t.Errorf("unexpected error: %s", err.Error())
@@ -291,15 +291,55 @@ func TestMakeVenueFacilitiesDict(t *testing.T) {
 					WHERE venueid = $1;`)
 
 	mock.ExpectQuery(query).WithArgs(1).WillReturnRows(rows)
+	dict := make(map[string]int)
+	dict["Desktop"] = 1
+	dict["Projector"] = 1
+	expected := []models.SearchPage{
+		{
+				ID:              1,
+				Facilitiesdict: dict,
+		},
+	}
 
-	if err := MakeVenueFacilitiesDict(repo.db, input); err != nil || input[0].Facilitiesdict[""] != 1 {
-		fmt.Println(input[0].Facilitiesdict)
+	if err := MakeVenueFacilitiesDict(repo.db, input); err != nil || !reflect.DeepEqual(input, expected) {
 		if err != nil {
 			t.Fatalf("Unexpected error: %s", err.Error())
 		}
-		if input[0].Facilitiesdict[""] != 1 {
-			t.Errorf("Dict not made properly. Expected to get key %s with value %d, but got value %d",
-				"Desktop", 1, input[0].Facilitiesdict["Desktop"])
+		if !reflect.DeepEqual(input, expected) {
+			t.Errorf("Dict not made properly. Expected to get dict %v but got value %v",
+				expected, input)
+		}
+	}
+}
+
+func TestMakeVenueFacilitiesDict(t *testing.T) {
+	if err := ConnectDataBase(); err != nil {
+		t.Fatalf("Unexpected error. Unable to connect to the database." + err.Error())
+	}
+	input := []models.SearchPage{
+		{
+			ID:              3,
+		},
+	}
+	dict := make(map[string]int)
+	dict["Desktop"] = 7
+	dict["Projector"] = 39
+	dict["Whiteboard"] = 23
+	// taken from database for venue with venueID = 3
+ 	expected := []models.SearchPage{
+		{
+			ID:              3,
+			Facilitiesdict: dict,
+		},
+	}
+
+	if err := MakeVenueFacilitiesDict(DB, input); err != nil || !reflect.DeepEqual(input, expected) {
+		if err != nil {
+			t.Fatalf("Unexpected error: %s", err.Error())
+		}
+		if !reflect.DeepEqual(input, expected) {
+			t.Errorf("Dict not made properly. Expected to get dict %v but got value %v",
+				expected, input)
 		}
 	}
 }

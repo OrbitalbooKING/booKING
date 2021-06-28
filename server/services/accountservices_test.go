@@ -1,13 +1,19 @@
 package services
 
 import (
+	"bytes"
 	"database/sql"
 	"database/sql/driver"
+	"encoding/json"
 	"fmt"
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/jinzhu/gorm"
+	"math/rand"
+	"net/http"
 	"regexp"
+	"server/config"
 	"server/models"
+	"strconv"
 	"testing"
 	"time"
 )
@@ -552,98 +558,86 @@ func TestRetrieveUserBookings_EmptyList(t *testing.T) {
 	}
 }
 
-//func TestRegister_CheckAccountExists_False(t *testing.T) {
-//	mock, repo, err := setup()
-//	if err != nil {
-//		t.Errorf("unexpected error: %s", err.Error())
-//	}
-//
-//	// insert accounts table
-//	headers := []string{"id", "nusnetID", "passwordHash", "name", "facultyID", "gradYear",
-//		"profilePic", "accountTypeID", "point", "createdAt", "lastUpdated", "accountStatusID"}
-//	rows := sqlmock.NewRows(
-//		headers).AddRow(
-//		"1", "e001", "pass", "test", "1", "2022", "testURL", "1", "50", "time", "time", "1")
-//
-//	query := regexp.QuoteMeta(`SELECT * FROM "accounts" WHERE (nusnetid = $1)`)
-//	mock.ExpectQuery(query).WithArgs("e002").WillReturnError()
-//
-//	var account models.Accounts
-//	if err := repo.db.Where("nusnetid = ?", "e002").First(&account).Error; err != nil {
-//		t.Errorf("error was not expected: %s", err.Error())
-//	}
-//	if err := mock.ExpectationsWereMet(); err != nil {
-//		t.Errorf("There were unfulfilled expectations: %s", err)
-//	}
-//}
+func init() {
+	// to generate random number everytime
+	rand.Seed(time.Now().UTC().UnixNano())
+}
 
-//func TestRegister(t *testing.T) {
-//	var receive struct {
-//		Success bool `json:"success"`
-//		Message string `json:"message"`
-//	}
-//	toUseID := "e999"
-//	// test correct input
-//	testCorrectInput := models.CreateAccountInput{
-//		Nusnetid: toUseID, // must be brand new un-used nusnetid
-//		Password: "11",
-//		Name: "TestStudent",
-//		Facultyid: 1,
-//		Gradyear: 2022,
-//		Profilepic: "testURL",
-//	}
-//	toSendCorrect, err := json.Marshal(testCorrectInput)
-//	if err != nil {
-//		fmt.Print(err.Error())
-//		return
-//	}
-//	responseCorrect, err := http.Post(config.HEROKU_HOST + "/api/register", "/sign-up", bytes.NewBuffer(toSendCorrect))
-//	if err != nil {
-//		t.Fatal(err)
-//	}
-//	if responseCorrect.StatusCode != 200 {
-//		t.Fatalf("expected response status code 200, got %d", responseCorrect.StatusCode)
-//	}
-//	if err := json.NewDecoder(responseCorrect.Body).Decode(&receive); err != nil {
-//		t.Fatal(err)
-//	}
-//	expectedSuccess := true
-//	expectedMessage := "Account successfully created!"
-//	if receive.Success != expectedSuccess && receive.Message != expectedMessage {
-//		t.Errorf("Expected Success to be %v, got %v\n" +
-//			"Expected message to be '%v' but got %s\n",
-//			expectedSuccess, receive.Success, expectedMessage, receive.Message)
-//	}
-//
-//	// test when an already existing nus id is input
-//	testExistingInput := models.CreateAccountInput{
-//		Nusnetid: toUseID, // must be already used nusnetid (using the one above since its created already)
-//		Password: "11",
-//		Name: "TestStudent",
-//		Facultyid: 1,
-//		Gradyear: 2022,
-//		Profilepic: "testURL",
-//	}
-//	toSendExisting, err := json.Marshal(testExistingInput)
-//	if err != nil {
-//		fmt.Print(err.Error())
-//		return
-//	}
-//	response, err := http.Post(config.HEROKU_HOST + "/api/register", "/sign-up", bytes.NewBuffer(toSendExisting))
-//	if err != nil {
-//		t.Fatal(err)
-//	}
-//	if response.StatusCode != 400 {
-//		t.Fatalf("expected response status code 400, got %d", response.StatusCode)
-//	}
-//	if err := json.NewDecoder(response.Body).Decode(&receive); err != nil {
-//		t.Fatal(err)
-//	}
-//	expectedSuccess = false
-//	expectedMessage = "Account already exists"
-//	if receive.Success != expectedSuccess && receive.Message != expectedMessage {
-//		t.Errorf("Expected Success to be %v, got %v\n" +
-//			"Expected message to be '%v' but got %s\n",
-//			expectedSuccess, receive.Success, expectedMessage, receive.Message)
-//	}
-//}
+func TestRegister_ValidNewAcc(t *testing.T) {
+	toUseID := "e" + strconv.Itoa(rand.Intn(10000))
+	testCorrectInput := models.CreateAccountInput{
+		Nusnetid: toUseID, // must be brand new un-used nusnetid
+		Password: "11",
+		Name: "TestStudent",
+		Facultyid: 1,
+		Gradyear: 2022,
+		Profilepic: "testURL",
+	}
+	toSendCorrect, err := json.Marshal(testCorrectInput)
+	if err != nil {
+		t.Fatalf("Unexpected error: %s", err.Error())
+		return
+	}
+	URL := config.HEROKU_HOST + "/api/register"
+	responseCorrect, err := http.Post(URL, "application/json", bytes.NewBuffer(toSendCorrect))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if responseCorrect.StatusCode != 200 {
+		t.Fatalf("expected response status code 200, got %d", responseCorrect.StatusCode)
+	}
+
+	var receive struct {
+		Success bool `json:"success"`
+		Message string `json:"message"`
+	}
+	if err := json.NewDecoder(responseCorrect.Body).Decode(&receive); err != nil {
+		t.Fatalf("Unexpected error: %s", err.Error())
+	}
+	expectedSuccess := true
+	expectedMessage := "Account successfully created!"
+	if receive.Success != expectedSuccess && receive.Message != expectedMessage {
+		t.Errorf("Expected Success to be %v, got %v\n" +
+			"Expected message to be '%v' but got %s\n",
+			expectedSuccess, receive.Success, expectedMessage, receive.Message)
+	}
+}
+
+func TestRegister_InvalidUsedAcc(t *testing.T) {
+	toUseID := "e001" // test an already used input
+	testExistingInput := models.CreateAccountInput{
+		Nusnetid: toUseID,
+		Password: "11",
+		Name: "TestStudent",
+		Facultyid: 1,
+		Gradyear: 2022,
+		Profilepic: "testURL",
+	}
+	toSendExisting, err := json.Marshal(testExistingInput)
+	if err != nil {
+		t.Fatalf("Unexpected error: %s", err.Error())
+		return
+	}
+	response, err := http.Post(config.HEROKU_HOST + "/api/register", "/sign-up", bytes.NewBuffer(toSendExisting))
+	if err != nil {
+		t.Fatalf("Unexpected error: %s", err.Error())
+	}
+	if response.StatusCode != 400 {
+		t.Fatalf("expected response status code 400, got %d", response.StatusCode)
+	}
+
+	var receive struct {
+		Success bool `json:"success"`
+		Message string `json:"message"`
+	}
+	if err := json.NewDecoder(response.Body).Decode(&receive); err != nil {
+		t.Fatalf("Unexpected error: %s", err.Error())
+	}
+	expectedSuccess := false
+	expectedMessage := "Account already exists!"
+	if receive.Success != expectedSuccess && receive.Message != expectedMessage {
+		t.Errorf("Expected Success to be %v, got %v\n" +
+			"Expected message to be '%v' but got %s\n",
+			expectedSuccess, receive.Success, expectedMessage, receive.Message)
+	}
+}

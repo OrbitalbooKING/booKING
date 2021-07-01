@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import history from "../history";
+import { useHistory } from "react-router-dom";
 import Axios from "axios";
 import configData from "../config.json";
 import Layout2 from "../layouts/Layout2";
@@ -30,6 +30,8 @@ const useStyles = makeStyles(theme => ({
   
 
 function Home(props) {
+
+    let history = useHistory();
     
     const classes = useStyles();
 
@@ -128,6 +130,7 @@ function Home(props) {
             }
             search.append("buildingName", buildingNameId);
         }
+        
         if (unit !== "") {
             search.append("unitNo", unit);
         }

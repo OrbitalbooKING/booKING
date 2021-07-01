@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-// import history from "../history";
+// import { useHistory } from "react-router-dom";
 // import Axios from "axios";
 // import configData from "../config.json";
 import Layout2 from "../layouts/Layout2";
@@ -10,6 +10,8 @@ import moment from "moment";
 import profilePic from "../assets/profile.png";
 
 function Profile(props) {
+
+    // let history = useHistory();
     
     const getProfile = () => {
         // Axios.get(configData.LOCAL_HOST + "/profile").then(response => {

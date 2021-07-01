@@ -1,8 +1,7 @@
 import '../../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import '../App.css';
 
-import history from '../history';
-import { Link } from "react-router-dom";
+import { Link, useHistory} from "react-router-dom";
 
 import logo from "../assets/logo for website.png";
 
@@ -12,6 +11,8 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 
 
 function Layout2(props) {
+
+    let history = useHistory();
 
     const getHelp = () => {
         history.push({

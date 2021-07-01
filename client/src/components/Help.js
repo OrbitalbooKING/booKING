@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
-import history from "../history";
+import { useHistory } from "react-router-dom";
 import Layout1 from "../layouts/Layout1";
 
 function Help() {
+
+    let history = useHistory();
 
     const [isCopied, setIsCopied] = useState(false);
 

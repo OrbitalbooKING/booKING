@@ -1,8 +1,10 @@
-import history from "../history";
+import { useHistory } from "react-router-dom";
 import Layout1 from "../layouts/Layout1";
 import Unauthorised from "./Unauthorised";
 
 function LogoutSuccess(props) {
+
+    let history = useHistory();
 
     const Login = () => {
         history.push("/sign-in");

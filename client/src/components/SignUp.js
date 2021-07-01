@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import history from "../history";
+import { Link, useHistory } from "react-router-dom";
 import Axios from "axios";
 import configData from "../config.json";
 import Layout1 from "../layouts/Layout1";
@@ -29,6 +28,8 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function SignUpForm() {
+
+    let history = useHistory();
 
     const classes = useStyles();
 

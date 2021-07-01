@@ -1,8 +1,6 @@
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
-import { Router } from 'react-router';
-import { Switch, Route } from "react-router-dom";
-import history from "./history";
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
 import Help from "./components/Help";
 import HelpLoggedIn from "./components/HelpLoggedIn";
@@ -22,7 +20,7 @@ import Profile from "./components/Profile";
 function App() {
 
   return (
-    <Router history={history}>
+    <Router>
       <div>
         <Switch>
           <Route exact path="/"><LoginForm /></Route>

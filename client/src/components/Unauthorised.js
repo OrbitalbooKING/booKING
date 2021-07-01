@@ -1,7 +1,9 @@
-import history from "../history";
+import { useHistory } from "react-router-dom";
 import Layout1 from "../layouts/Layout1";
 
 function Unauthorised() {
+
+    let history = useHistory();
 
     const Login = () => {
         history.push("/sign-in");

@@ -1,8 +1,10 @@
-import history from "../history";
+import { useHistory } from "react-router-dom";
 import Layout2 from "../layouts/Layout2";
 import Unauthorised from "./Unauthorised";
 
 function BookingSuccess(props) {
+
+    let history = useHistory();
 
     const Home = () => {
         history.push({

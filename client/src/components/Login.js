@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import history from "../history";
+import { Link, useHistory } from "react-router-dom";
 import Axios from "axios";
 import configData from "../config.json";
 import Layout1 from "../layouts/Layout1";
@@ -10,6 +9,8 @@ const style = {
 };
 
 function LoginForm() {
+
+    let history = useHistory();
 
     const [details, setDetails] = useState({id: "", password: ""});
     const [error, setError] = useState("Please enter your NUSNET ID and password!");
@@ -28,6 +29,19 @@ function LoginForm() {
                     name: response.data.message.Name
                 }
             });
+            // <Redirect to={{pathname: "/sign-in-success",
+            //         state: { 
+            //             id: response.data.message.Nusnetid,
+            //             name: response.data.message.Name
+            //         }
+            // }} push={true}/>
+            // this.props.history.push({
+            //         pathname: "/sign-in-success",
+            //         state: { 
+            //             id: response.data.message.Nusnetid,
+            //             name: response.data.message.Name
+            //         }
+            //     });
         }).catch((error) => {
             if (error.response) {
                 console.log("response");
@@ -83,3 +97,4 @@ function LoginForm() {
 }
 
 export default LoginForm;
+// export default withRouter(LoginForm);

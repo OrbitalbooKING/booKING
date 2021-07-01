@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import history from "../history";
+import { Link, useHistory } from "react-router-dom";
 import Axios from "axios";
 import configData from "../config.json";
 import Layout1 from "../layouts/Layout1";
@@ -10,6 +9,8 @@ const style = {
 };
 
 function ResetForm() {
+
+    let history = useHistory();
 
     const [details, setDetails] = useState({id: "", password: "", newPassword: ""});
     const [error, setError] = useState("Reset your password!");

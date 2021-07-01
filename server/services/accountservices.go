@@ -25,8 +25,8 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	// check password strength
-	if !regexCheck(c, input) {
+	// check valid nusnetid and password strength
+	if !regexIDCheck(c, input.Nusnetid) || !regexPasswordCheck(c, input.Password) {
 		return
 	}
 
@@ -366,14 +366,14 @@ func RetrieveUserBookings(DB *gorm.DB, user models.User) ([]models.Currentbookin
 }
 
 
-func regexCheck(c *gin.Context, input models.CreateAccountInput) bool {
+func regexPasswordCheck(c *gin.Context, input string) bool {
 	num := `[0-9]{1}`
 	a_z := `[a-z]{1}`
 	A_Z := `[A-Z]{1}`
 	symbol := `[!@#$%^&*()+|_]{1}`
 	errorMessage := "Password must be 6 - 12 characters long, with a mixture of lower " +
 		"and upper case letters, numbers and symbols. "
-	if ok, err := regexp.MatchString(num, input.Password); !ok || err != nil {
+	if ok, err := regexp.MatchString(num, input); !ok || err != nil {
 		if err != nil {
 			errorMessage += err.Error()
 		}
@@ -381,7 +381,7 @@ func regexCheck(c *gin.Context, input models.CreateAccountInput) bool {
 		fmt.Println(errorMessage)
 		return false
 	}
-	if ok, err := regexp.MatchString(a_z, input.Password); !ok || err != nil {
+	if ok, err := regexp.MatchString(a_z, input); !ok || err != nil {
 		if err != nil {
 			errorMessage += err.Error()
 		}
@@ -389,7 +389,7 @@ func regexCheck(c *gin.Context, input models.CreateAccountInput) bool {
 		fmt.Println(errorMessage)
 		return false
 	}
-	if ok, err := regexp.MatchString(A_Z, input.Password); !ok || err != nil {
+	if ok, err := regexp.MatchString(A_Z, input); !ok || err != nil {
 		if err != nil {
 			errorMessage += err.Error()
 		}
@@ -397,7 +397,30 @@ func regexCheck(c *gin.Context, input models.CreateAccountInput) bool {
 		fmt.Println(errorMessage)
 		return false
 	}
-	if ok, err := regexp.MatchString(symbol, input.Password); !ok || err != nil {
+	if ok, err := regexp.MatchString(symbol, input); !ok || err != nil {
+		if err != nil {
+			errorMessage += err.Error()
+		}
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": errorMessage})
+		fmt.Println(errorMessage)
+		return false
+	}
+	return true
+}
+
+func regexIDCheck(c *gin.Context, input string) bool {
+	startE := `^e`
+	sixChar := `[0-9]{7}`
+	errorMessage := "Invalid NUSNET ID. "
+	if ok, err := regexp.MatchString(startE, input); !ok || err != nil {
+		if err != nil {
+			errorMessage += err.Error()
+		}
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": errorMessage})
+		fmt.Println(errorMessage)
+		return false
+	}
+	if ok, err := regexp.MatchString(sixChar, input); !ok || err != nil {
 		if err != nil {
 			errorMessage += err.Error()
 		}

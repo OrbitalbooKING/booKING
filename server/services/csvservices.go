@@ -80,7 +80,7 @@ func LoadAccountTypesCSV() {
 		// convert string to int, for index #0
 		if s, err := strconv.ParseInt(line[0], 10, 0); err != nil {
 			fmt.Printf("Error in conversion from int to string, at csv file line %d. "+err.Error()+"\n", counter-1)
-			return
+			continue
 		} else {
 			tempHold = int(s)
 		}
@@ -92,9 +92,9 @@ func LoadAccountTypesCSV() {
 		}
 		if err := DB.Create(&accountType).Error; err != nil {
 			fmt.Printf("Error in writing entry, at csv file line %d. "+err.Error()+"\n", counter-1)
-			return
+		} else {
+			counter++
 		}
-		counter++
 	}
 
 	fmt.Printf("Successfully written %d lines on accountTypes table.\n", counter-1)
@@ -118,7 +118,7 @@ func LoadAccountStatusesCSV() {
 		// convert string to int, for index #0
 		if s, err := strconv.ParseInt(line[0], 10, 0); err != nil {
 			fmt.Printf("Error in conversion from int to string, at csv file line %d. "+err.Error()+"\n", counter-1)
-			return
+			continue
 		} else {
 			tempHold = int(s)
 		}
@@ -130,9 +130,9 @@ func LoadAccountStatusesCSV() {
 		}
 		if err := DB.Create(&accountStatus).Error; err != nil {
 			fmt.Printf("Error in writing entry, at csv file line %d. "+err.Error()+"\n", counter-1)
-			return
+		} else {
+			counter++
 		}
-		counter++
 	}
 
 	fmt.Printf("Successfully written %d lines on accountStatuses table.\n", counter-1)
@@ -156,7 +156,7 @@ func LoadNotificationTypesCSV() {
 		// convert string to int, for index #0
 		if s, err := strconv.ParseInt(line[0], 10, 0); err != nil {
 			fmt.Printf("Error in conversion from int to string, at csv file line %d. "+err.Error()+"\n", counter-1)
-			return
+			continue
 		} else {
 			tempHold = int(s)
 		}
@@ -168,9 +168,9 @@ func LoadNotificationTypesCSV() {
 		}
 		if err := DB.Create(&notificationType).Error; err != nil {
 			fmt.Printf("Error in writing entry, at csv file line %d. "+err.Error()+"\n", counter-1)
-			return
+		} else {
+			counter++
 		}
-		counter++
 	}
 
 	fmt.Printf("Successfully written %d lines on notificationTypes table.\n", counter-1)
@@ -194,7 +194,7 @@ func LoadVenueStatusesCSV() {
 		// convert string to int, for index #0
 		if s, err := strconv.ParseInt(line[0], 10, 0); err != nil {
 			fmt.Printf("Error in conversion from int to string, at csv file line %d. "+err.Error()+"\n", counter-1)
-			return
+			continue
 		} else {
 			tempHold = int(s)
 		}
@@ -206,9 +206,9 @@ func LoadVenueStatusesCSV() {
 		}
 		if err := DB.Create(&venueStatus).Error; err != nil {
 			fmt.Printf("Error in writing entry, at csv file line %d. "+err.Error()+"\n", counter-1)
-			return
+		} else {
+			counter++
 		}
-		counter++
 	}
 
 	fmt.Printf("Successfully written %d lines on venueStatuses table.\n", counter-1)
@@ -232,7 +232,7 @@ func LoadBookingStatusesCSV() {
 		// convert string to int, for index #0
 		if s, err := strconv.ParseInt(line[0], 10, 0); err != nil {
 			fmt.Printf("Error in conversion from int to string, at csv file line %d. "+err.Error()+"\n", counter-1)
-			return
+			continue
 		} else {
 			tempHold = int(s)
 		}
@@ -243,9 +243,9 @@ func LoadBookingStatusesCSV() {
 		}
 		if err := DB.Create(&bookingStatus).Error; err != nil {
 			fmt.Printf("Error in writing entry, at csv file line %d. "+err.Error()+"\n", counter-1)
-			return
+		} else {
+			counter++
 		}
-		counter++
 	}
 
 	fmt.Printf("Successfully written %d lines on bookingStatuses table.\n", counter-1)
@@ -269,7 +269,7 @@ func LoadFacultiesCSV() {
 		// convert string to int, for index #0
 		if s, err := strconv.ParseInt(line[0], 10, 0); err != nil {
 			fmt.Printf("Error in conversion from int to string, at csv file line %d. "+err.Error()+"\n", counter-1)
-			return
+			continue
 		} else {
 			tempHold = int(s)
 		}
@@ -281,9 +281,9 @@ func LoadFacultiesCSV() {
 		}
 		if err := DB.Create(&faculty).Error; err != nil {
 			fmt.Printf("Error in writing entry, at csv file line %d. "+err.Error()+"\n", counter-1)
-			return
+		} else {
+			counter++
 		}
-		counter++
 	}
 
 	fmt.Printf("Successfully written %d lines on Faculties table.\n", counter-1)
@@ -313,12 +313,12 @@ func LoadRoomTypes() {
 				query := "INSERT INTO roomtypes (id, roomtypename) VALUES (?, ?)"
 				if err := DB.Exec(query, counter, roomType_name); err.Error != nil {
 					fmt.Printf("Error in writing entry at RoomTypes, at csv file line %d\n"+err.Error.Error()+"\n", counter-1)
-					return
+				} else {
+					counter++
 				}
-				counter++
 			} else {
 				fmt.Printf("Error in querying DB, check roomType query. " + err.Error.Error() + "\n")
-				return
+				continue
 			}
 		} else {
 			continue
@@ -353,17 +353,17 @@ func LoadBuildings() {
 				if strings.Contains(building_name, "COM") || strings.EqualFold(string(building_name[0]), "i") {
 					if err := DB.First(&faculty, "facultyname = ?", "SoC").Error; err != nil {
 						fmt.Printf("Error in query for faculty (for SoC). " + err.Error() + "\n")
-						return
+						continue
 					}
 				} else if strings.Contains(building_name, "AS") {
 					if err := DB.First(&faculty, "facultyname = ?", "FASS").Error; err != nil {
 						fmt.Printf("Error in query for faculty (for FASS). " + err.Error() + "\n")
-						return
+						continue
 					}
 				} else {
 					if err := DB.First(&faculty, "facultyname = ?", "Others").Error; err != nil {
 						fmt.Printf("Error in query for faculty (for Others). " + err.Error() + "\n")
-						return
+						continue
 					}
 				}
 
@@ -371,12 +371,13 @@ func LoadBuildings() {
 				query := "INSERT INTO buildings (id, buildingname, facultyid) VALUES (?, ?, ?)"
 				if err := DB.Exec(query, counter, building_name, faculty.ID).Error; err != nil {
 					fmt.Printf("Error in writing entry at Buildings, at csv file line %d\n"+err.Error()+"\n", counter-1)
-					return
+					continue
+				} else {
+					counter++
 				}
-				counter++
 			} else {
 				fmt.Printf("Error in querying DB, check Buildings query. " + err.Error.Error() + "\n")
-				return
+				continue
 			}
 		} else {
 			continue
@@ -426,7 +427,7 @@ func LoadVenues() {
 		}
 		if err := DB.Raw(buildingQuery, tempName).Scan(&building).Error; err != nil {
 			fmt.Println("Error in querying for buildingID. " + err.Error() + "\n")
-			return
+			continue
 		}
 		buildingID := building.ID
 
@@ -435,7 +436,7 @@ func LoadVenues() {
 		roomTypeQuery := "SELECT * FROM roomtypes WHERE roomtypename = ?"
 		if err := DB.Raw(roomTypeQuery, line[4]).Scan(&roomType).Error; err != nil {
 			fmt.Println("Error in querying for roomTypeID. " + err.Error() + "\n")
-			return
+			continue
 		}
 		roomTypeID := roomType.ID
 
@@ -467,9 +468,10 @@ func LoadVenues() {
 
 		if err := DB.Create(&venue).Error; err != nil {
 			fmt.Printf("Error in writing entry, at csv file line %d\n"+err.Error()+"\n", counter-1)
-			return
+			continue
+		} else {
+			counter++
 		}
-		counter++
 	}
 	fmt.Printf("Successfully written %d lines. on Venues table \n", counter-1)
 }
@@ -490,13 +492,11 @@ func LoadVenueTimingsCSV() {
 	toConvert := [3]int{0, 1, 2}
 	var tempHold [3]int
 	for _, line := range csvLines[1:] {
-		counter++
-
 		// convert string to int, for index #0 to #2
 		for index, number := range toConvert {
 			if s, err := strconv.ParseInt(line[number], 10, 0); err != nil {
 				fmt.Printf("Error in conversion from int to string, at csv file line %d\n"+err.Error()+"\n", counter)
-				return
+				continue
 			} else {
 				tempHold[index] = int(s)
 			}
@@ -511,7 +511,9 @@ func LoadVenueTimingsCSV() {
 		}
 		if err := DB.Create(&venueTiming).Error; err != nil {
 			fmt.Printf("Error in writing entry, at csv file line %d. "+err.Error()+"\n", counter-1)
-			return
+			continue
+		} else {
+			counter++
 		}
 	}
 
@@ -533,12 +535,10 @@ func LoadFacilityCSV() {
 	counter := 0
 	var tempHold int
 	for _, line := range csvLines[1:] {
-		counter++
-
 		// convert string to int, for index #0
 		if s, err := strconv.ParseInt(line[0], 10, 0); err != nil {
 			fmt.Printf("Error in conversion from int to string, at csv file line %d. "+err.Error()+"\n", counter-1)
-			return
+			continue
 		} else {
 			tempHold = int(s)
 		}
@@ -550,7 +550,9 @@ func LoadFacilityCSV() {
 		}
 		if err := DB.Create(&facility).Error; err != nil {
 			fmt.Printf("Error in writing entry, at csv file line %d. "+err.Error()+"\n", counter-1)
-			return
+			continue
+		} else {
+			counter++
 		}
 	}
 
@@ -573,13 +575,11 @@ func LoadVenueFacilityCSV() {
 	toConvert := [4]int{0, 1, 2, 3}
 	var tempHold [4]int
 	for _, line := range csvLines[1:] {
-		counter++
-
 		// convert string to int, for index #0 to #2
 		for index, number := range toConvert {
 			if s, err := strconv.ParseInt(line[number], 10, 0); err != nil {
 				fmt.Printf("Error in conversion from int to string, at csv file line %d\n"+err.Error()+"\n", counter)
-				return
+				continue
 			} else {
 				tempHold[index] = int(s)
 			}
@@ -593,7 +593,9 @@ func LoadVenueFacilityCSV() {
 		}
 		if err := DB.Create(&venuefacility).Error; err != nil {
 			fmt.Printf("Error in writing entry, at csv file line %d. "+err.Error()+"\n", counter)
-			return
+			continue
+		} else {
+			counter++
 		}
 	}
 

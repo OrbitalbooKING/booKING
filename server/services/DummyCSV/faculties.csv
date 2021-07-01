@@ -1,4 +1,15 @@
 facultyID,name,description
-1,SoC,School of Computing
-2,FASS,Faculty of Arts and Social Sciences
-3,Others,Others
+1,FASS,Faculty of Arts and Social Sciences
+2,Business,Business School
+3,SoC,School of Computing
+4,SCALE,School of Continuing and Lifelong Education
+5,Dentistry,Faculty of Dentistry
+6,SDE,School of Design & Environment
+7,FoE,Faculty of Engineering
+8,ISEP,Integrative Sciences and Engineering Programme
+9,Law,Faculty of Law
+10,Medicine,Yong Loo Lin School of Medicine
+11,Music,Yong Siew Toh Conservatory of Music
+12,Public Health,Saw See Hock School of Public Health
+13,Public Policy,Lee Kuan Yew School of Public Policy
+14,Science,Faculty of Science

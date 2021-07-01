@@ -2,12 +2,14 @@ package services
 
 import (
 	"fmt"
-	"github.com/jinzhu/gorm"
 	"log"
 	"net/http"
+	"regexp"
 	"server/models"
 	"server/utils"
 	"time"
+
+	"github.com/jinzhu/gorm"
 
 	"github.com/gin-gonic/gin"
 )
@@ -20,6 +22,11 @@ func Register(c *gin.Context) {
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": "Check input fields."})
 		fmt.Println("Error in parsing inputs for account creation.")
+		return
+	}
+
+	// check password strength
+	if !regexCheck(c, input) {
 		return
 	}
 
@@ -266,7 +273,6 @@ func GetBookings(c *gin.Context) {
 	fmt.Println("Successfully retrieved booking details.")
 }
 
-
 func GetAccountTypeDetails(DB *gorm.DB, theType string) (models.Accounttypes, bool, error) {
 	var accountType models.Accounttypes
 	query := "SELECT * FROM accounttypes WHERE accounttypename = ?"
@@ -357,4 +363,47 @@ func RetrieveUserBookings(DB *gorm.DB, user models.User) ([]models.Currentbookin
 		return []models.Currentbookings{}, false, result.Error
 	}
 	return bookings, true, nil
+}
+
+
+func regexCheck(c *gin.Context, input models.CreateAccountInput) bool {
+	num := `[0-9]{1}`
+	a_z := `[a-z]{1}`
+	A_Z := `[A-Z]{1}`
+	symbol := `[!@#$%^&*()+|_]{1}`
+	errorMessage := "Password must be 6 - 12 characters long, with a mixture of lower " +
+		"and upper case letters, numbers and symbols. "
+	if ok, err := regexp.MatchString(num, input.Password); !ok || err != nil {
+		if err != nil {
+			errorMessage += err.Error()
+		}
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": errorMessage})
+		fmt.Println(errorMessage)
+		return false
+	}
+	if ok, err := regexp.MatchString(a_z, input.Password); !ok || err != nil {
+		if err != nil {
+			errorMessage += err.Error()
+		}
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": errorMessage})
+		fmt.Println(errorMessage)
+		return false
+	}
+	if ok, err := regexp.MatchString(A_Z, input.Password); !ok || err != nil {
+		if err != nil {
+			errorMessage += err.Error()
+		}
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": errorMessage})
+		fmt.Println(errorMessage)
+		return false
+	}
+	if ok, err := regexp.MatchString(symbol, input.Password); !ok || err != nil {
+		if err != nil {
+			errorMessage += err.Error()
+		}
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": errorMessage})
+		fmt.Println(errorMessage)
+		return false
+	}
+	return true
 }

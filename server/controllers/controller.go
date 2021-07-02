@@ -12,7 +12,7 @@ import (
 
 func StartAll(r *gin.Engine) {
 	r.Use(middleware.CORSMiddleware())
-	r.Use(static.Serve("/", static.LocalFile("./web", true)))
+	r.Use(static.Serve("/", static.LocalFile("./public", true)))
 
 	api := r.Group("/api")
 

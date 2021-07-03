@@ -14,6 +14,16 @@ func StartAll(r *gin.Engine) {
 	r.Use(middleware.CORSMiddleware())
 	r.Use(static.Serve("/", static.LocalFile("./web", true)))
 
+	r.Use(static.Serve("/", static.LocalFile("./build", true)))
+	r.Use(static.Serve("/login", static.LocalFile("./build", true)))
+	r.Use(static.Serve("/signup", static.LocalFile("./build", true)))
+
+	r.NoRoute(func(c *gin.Context) {
+		c.JSON(404, gin.H{
+			"code": "PAGE_NOT_FOUND", "message": "Page not found", // or use c.File("./public/index.html")
+		})
+	})
+
 	api := r.Group("/api")
 
 	api.POST("/register", services.Register)

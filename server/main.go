@@ -10,8 +10,6 @@ import (
 
 )
 
-const FSPATH = "./build/"
-
 func main() {
 	r := gin.Default()
 	http.Handle("/", http.FileServer(http.Dir("./build")))

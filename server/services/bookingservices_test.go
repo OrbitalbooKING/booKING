@@ -4,26 +4,28 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"github.com/DATA-DOG/go-sqlmock"
-	"github.com/jinzhu/gorm"
 	"reflect"
 	"regexp"
 	"server/models"
 	"testing"
 	"time"
+
+	"github.com/DATA-DOG/go-sqlmock"
+	"github.com/google/uuid"
+	"github.com/jinzhu/gorm"
 )
 
-func setupBookings(table string) (sqlmock.Sqlmock, *Repository, *sqlmock.Rows, error){
+func setupBookings(table string) (sqlmock.Sqlmock, *Repository, *sqlmock.Rows, error) {
 	type Table struct {
 		Headers []string
 	}
 
-	tables := map[string]Table {
+	tables := map[string]Table{
 		"GetBookingsOfDay": {
 			Headers: []string{"cb.eventstart", "sumpax"},
 		},
 		"GetVenueIDAndMaxCapacity": {
-			Headers: []string {"id", "maxcapacity"},
+			Headers: []string{"id", "maxcapacity"},
 		},
 		"GetAllBookingStatusCodes": {
 			Headers: []string{"id", "bookingstatusdescription"},
@@ -69,20 +71,17 @@ func setupBookings(table string) (sqlmock.Sqlmock, *Repository, *sqlmock.Rows, e
 	rows := sqlmock.NewRows(tables[table].Headers)
 	if table == "GetBookingsOfDay" {
 		rows = rows.AddRow("test1", 10).
-					AddRow("test2", 20)
+			AddRow("test2", 20)
 	} else if table == "GetVenueIDAndMaxCapacity" {
 		rows = rows.AddRow(1, 10)
 	} else if table == "GetAllBookingStatusCodes" {
 		rows = rows.AddRow(1, "In the midst of booking").
-					AddRow(2, "Pending approval").
-					AddRow(3, "Approved")
+			AddRow(2, "Pending approval").
+			AddRow(3, "Approved")
 	} else if table == "GetBookingStatusCode" {
 		rows = rows.AddRow(1, "In the midst of booking")
 	} else if table == "GetOperatingHours" {
 		rows = rows.AddRow("test", "test", 10, "test", time.Time{}, time.Time{})
-	} else if table == "GetPendingBookings" {
-		rows = rows.AddRow(1, "test", 10, time.Time{}, time.Time{}, 1).
-					AddRow(2, "test", 10, time.Time{}, time.Time{}, 2)
 	} else if table == "CheckIfOverLimitAndTime_False" {
 		rows = rows.AddRow(time.Time{}, 5)
 	} else if table == "CheckIfOverLimitAndTime_OverPax" {
@@ -153,23 +152,23 @@ func TestMakeTimeslotArr(t *testing.T) {
 	expected := []models.Timeslots{
 		{
 			EventStart: start,
-			EventEnd: ten,
-			Available: true,
+			EventEnd:   ten,
+			Available:  true,
 		},
 		{
 			EventStart: ten,
-			EventEnd: booking1Start,
-			Available: true,
+			EventEnd:   booking1Start,
+			Available:  true,
 		},
 		{
 			EventStart: booking1Start,
-			EventEnd: booking1End,
-			Available: false,
+			EventEnd:   booking1End,
+			Available:  false,
 		},
 		{
 			EventStart: booking1End,
-			EventEnd: end,
-			Available: true,
+			EventEnd:   end,
+			Available:  true,
 		},
 	}
 
@@ -177,7 +176,7 @@ func TestMakeTimeslotArr(t *testing.T) {
 	if !reflect.DeepEqual(timeslots, expected) {
 		t.Errorf("Expected to get array with %v, but got: %v", expected, timeslots)
 	}
-	for i, _ := range timeslots {
+	for i := range timeslots {
 		if timeslots[i].Available != expected[i].Available {
 			t.Errorf("At start timing %v, expected to get timeslot available is %t, but got %t",
 				expected[i].EventStart, expected[i].Available, timeslots[i].Available)
@@ -214,11 +213,11 @@ func TestGetBookingsOfDay(t *testing.T) {
 	expected := []models.UnavailableTimings{
 		{
 			Eventstart: time.Time{},
-			Sumpax: 10,
+			Sumpax:     10,
 		},
 		{
 			Eventstart: time.Time{},
-			Sumpax: 20,
+			Sumpax:     20,
 		},
 	}
 
@@ -293,7 +292,7 @@ func TestGetAllBookingStatusCodes(t *testing.T) {
 	mock.ExpectQuery(query).
 		WithArgs("In the midst of booking", "Pending approval", "Approved").
 		WillReturnRows(rows)
-	expected := []int{1,2,3}
+	expected := []int{1, 2, 3}
 
 	if statusIDArr, err := GetAllBookingStatusCodes(repo.db); reflect.DeepEqual(statusIDArr, expected) || err != nil {
 		if err != nil {
@@ -321,8 +320,7 @@ func TestGetBookingStatusCode(t *testing.T) {
 		Bookingstatusdescription: "In the midst of booking",
 	}
 
-	if statusCode, err := GetBookingStatusCode(repo.db, expected.Bookingstatusdescription);
-	statusCode != expected || err != nil {
+	if statusCode, err := GetBookingStatusCode(repo.db, expected.Bookingstatusdescription); statusCode != expected || err != nil {
 		if err != nil {
 			t.Fatalf("Unexpected error: %s", err.Error())
 		}
@@ -383,19 +381,32 @@ func TestUpdateBookingsStatus(t *testing.T) {
 		t.Errorf("unexpected error: %s", err.Error())
 	}
 
+	bookingOne, err := uuid.NewRandom()
+	if err != nil {
+		t.Fatalf("Unexpectedly unable to generate uuid. " + err.Error())
+	}
+	bookingTwo, err := uuid.NewRandom()
+	if err != nil {
+		t.Fatalf("Unexpectedly unable to generate uuid. " + err.Error())
+	}
+	bookingThree, err := uuid.NewRandom()
+	if err != nil {
+		t.Fatalf("Unexpectedly unable to generate uuid. " + err.Error())
+	}
+
 	query := regexp.QuoteMeta(`UPDATE currentbookings SET bookingstatusid = $1 WHERE id = $2`)
 	mock.ExpectExec(query).
-		WithArgs(1, 1).
+		WithArgs(1, bookingOne).
 		WillReturnResult(sqlmock.NewResult(0, 1))
 	mock.ExpectExec(query).
-		WithArgs(1, 2).
+		WithArgs(1, bookingTwo).
 		WillReturnResult(sqlmock.NewResult(0, 1))
 	mock.ExpectExec(query).
-		WithArgs(1, 3).
+		WithArgs(1, bookingThree).
 		WillReturnResult(sqlmock.NewResult(0, 1))
 
 	input := models.MakeDeleteBookings{
-		BookingID: []int{1, 2, 3},
+		BookingID: []uuid.UUID{bookingOne, bookingTwo, bookingThree},
 	}
 
 	statusCode := models.Bookingstatuses{
@@ -418,42 +429,52 @@ func TestGetPendingBookings(t *testing.T) {
 		t.Errorf("unexpected error: %s", err.Error())
 	}
 
+	bookingOne, err := uuid.NewRandom()
+	if err != nil {
+		t.Fatalf("Unexpectedly unable to generate uuid. " + err.Error())
+	}
+	bookingTwo, err := uuid.NewRandom()
+	if err != nil {
+		t.Fatalf("Unexpectedly unable to generate uuid. " + err.Error())
+	}
+	rows = rows.AddRow(1, "test", 10, time.Time{}, time.Time{}, bookingOne).
+		AddRow(2, "test", 10, time.Time{}, time.Time{}, bookingTwo)
+
 	query := regexp.
 		QuoteMeta(`SELECT v.id AS venueid, v.venuename, currentbookings.id AS bookingid, pax, eventstart, eventend 
 		FROM venues AS v
 		JOIN currentBookings ON v.id = currentBookings.venueid
 		WHERE nusnetid = $1 AND bookingstatusid = $2`)
 	mock.ExpectQuery(query).
-		WithArgs("e001", 1).
+		WithArgs("e001", bookingOne).
 		WillReturnRows(rows)
 	expected := []models.PendingBookings{
 		{
-			Venueid: 1,
-			Venuename: "test",
-			Pax: 10,
+			Venueid:    1,
+			Venuename:  "test",
+			Pax:        10,
 			Eventstart: time.Time{},
-			Eventend: time.Time{},
-			Bookingid: 1,
+			Eventend:   time.Time{},
+			Bookingid:  bookingOne,
 		},
 		{
-			Venueid: 2,
-			Venuename: "test",
-			Pax: 10,
+			Venueid:    2,
+			Venuename:  "test",
+			Pax:        10,
 			Eventstart: time.Time{},
-			Eventend: time.Time{},
-			Bookingid: 2,
+			Eventend:   time.Time{},
+			Bookingid:  bookingTwo,
 		},
 	}
 
-	input := models.User {
+	input := models.User{
 		Nusnetid: "e001",
 	}
-	statusCode := models.Bookingstatuses {
-		ID:                       1,
+	statusCode := models.Bookingstatuses{
+		ID: 1,
 	}
 
-	if pendingBookings, err := GetPendingBookings(repo.db, input, statusCode);
-	reflect.DeepEqual(pendingBookings, expected) || err != nil {
+	if pendingBookings, err := GetPendingBookings(repo.db, input, statusCode); reflect.DeepEqual(pendingBookings, expected) || err != nil {
 		if err != nil {
 			t.Fatalf("Unexpected error: %s", err.Error())
 		}
@@ -481,15 +502,15 @@ func TestInsertBooking_UnderLimit(t *testing.T) {
 
 	overLimitAndTime := false
 	s := models.BookingInput{
-		Nusnetid:     "e001",
-		Pax:          10,
-		Eventstart:   time.Time{},
-		Eventend:     time.Time{},
-		Venueid:      1,
+		Nusnetid:   "e001",
+		Pax:        10,
+		Eventstart: time.Time{},
+		Eventend:   time.Time{},
+		Venueid:    1,
 	}
 	venue := models.Venues{
-		ID:            1,
-		Venuename:     "test",
+		ID:        1,
+		Venuename: "test",
 	}
 	statusCode := models.Bookingstatuses{
 		ID: 1,
@@ -522,13 +543,13 @@ func TestCheckIfOverLimitAndTime_False(t *testing.T) {
 	mock.ExpectQuery(query).WithArgs(AnyTime{}, AnyTime{}, 1, 1, 2, 3).WillReturnRows(rows)
 
 	s := models.BookingInput{
-		Eventstart:   time.Now().Add(time.Hour),
-		Eventend:     time.Time{},
-		Pax: 		  1,
+		Eventstart: time.Now().Add(time.Hour),
+		Eventend:   time.Time{},
+		Pax:        1,
 	}
 	venue := models.Venues{
-		ID:            1,
-		Maxcapacity:   20,
+		ID:          1,
+		Maxcapacity: 20,
 	}
 	statusIDArr := []int{1, 2, 3}
 
@@ -543,7 +564,7 @@ func TestCheckIfOverLimitAndTime_False(t *testing.T) {
 	}
 }
 
-func TestCheckIfOverLimitAndTime_OverPax(t *testing.T) 	{
+func TestCheckIfOverLimitAndTime_OverPax(t *testing.T) {
 	mock, repo, rows, err := setupBookings("CheckIfOverLimitAndTime_OverPax")
 	if err != nil {
 		t.Errorf("unexpected error: %s", err.Error())
@@ -561,13 +582,13 @@ func TestCheckIfOverLimitAndTime_OverPax(t *testing.T) 	{
 		WillReturnRows(rows)
 
 	s := models.BookingInput{
-		Eventstart:   time.Now().Add(time.Hour),
-		Eventend:     time.Time{},
-		Pax: 		  1,
+		Eventstart: time.Now().Add(time.Hour),
+		Eventend:   time.Time{},
+		Pax:        1,
 	}
 	venue := models.Venues{
-		ID:            1,
-		Maxcapacity:   20,
+		ID:          1,
+		Maxcapacity: 20,
 	}
 	statusIDArr := []int{1, 2, 3}
 
@@ -600,13 +621,13 @@ func TestCheckIfOverLimitAndTime_OverTime(t *testing.T) {
 		WillReturnRows(rows)
 
 	s := models.BookingInput{
-		Eventstart:   time.Now().Add(-time.Hour),
-		Eventend:     time.Now(),
-		Pax: 		  1,
+		Eventstart: time.Now().Add(-time.Hour),
+		Eventend:   time.Now(),
+		Pax:        1,
 	}
 	venue := models.Venues{
-		ID:            1,
-		Maxcapacity:   20,
+		ID:          1,
+		Maxcapacity: 20,
 	}
 	statusIDArr := []int{1, 2, 3}
 
@@ -639,13 +660,13 @@ func TestCheckIfOverLimitAndTime_OverBoth(t *testing.T) {
 		WillReturnRows(rows)
 
 	s := models.BookingInput{
-		Eventstart:   time.Now().Add(-time.Hour),
-		Eventend:     time.Now(),
-		Pax: 		  1,
+		Eventstart: time.Now().Add(-time.Hour),
+		Eventend:   time.Now(),
+		Pax:        1,
 	}
 	venue := models.Venues{
-		ID:            1,
-		Maxcapacity:   20,
+		ID:          1,
+		Maxcapacity: 20,
 	}
 	statusIDArr := []int{1, 2, 3}
 
@@ -704,15 +725,24 @@ func TestDeleteBookingFromTable_Success(t *testing.T) {
 		t.Errorf("unexpected error: %s", err.Error())
 	}
 
+	bookingOne, err := uuid.NewRandom()
+	if err != nil {
+		t.Fatalf("Unexpectedly unable to generate uuid. " + err.Error())
+	}
+	bookingTwo, err := uuid.NewRandom()
+	if err != nil {
+		t.Fatalf("Unexpectedly unable to generate uuid. " + err.Error())
+	}
+
 	query := regexp.QuoteMeta(`DELETE FROM currentBookings WHERE id = $1`)
 	mock.MatchExpectationsInOrder(false)
 	mock.ExpectBegin()
-	mock.ExpectExec(query).WithArgs(1).WillReturnResult(sqlmock.NewResult(1, 1))
-	mock.ExpectExec(query).WithArgs(2).WillReturnResult(sqlmock.NewResult(1, 1))
+	mock.ExpectExec(query).WithArgs(bookingOne).WillReturnResult(sqlmock.NewResult(1, 1))
+	mock.ExpectExec(query).WithArgs(bookingTwo).WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectCommit()
 
 	input := models.MakeDeleteBookings{
-		BookingID: []int{1, 2},
+		BookingID: []uuid.UUID{bookingOne, bookingTwo},
 	}
 	expected := len(input.BookingID)
 
@@ -732,23 +762,31 @@ func TestDeleteBookingFromTable_Error(t *testing.T) {
 		t.Errorf("unexpected error: %s", err.Error())
 	}
 
-	errorMessage := fmt.Sprintf("Error in deleting booking for booking with booking id = %d\n", 2)
+	bookingOne, err := uuid.NewRandom()
+	if err != nil {
+		t.Fatalf("Unexpectedly unable to generate uuid. " + err.Error())
+	}
+	bookingTwo, err := uuid.NewRandom()
+	if err != nil {
+		t.Fatalf("Unexpectedly unable to generate uuid. " + err.Error())
+	}
+
+	errorMessage := fmt.Sprintf("Error in deleting booking for booking with booking id = %v\n", bookingTwo)
 	expected := errors.New(errorMessage)
 
 	query := regexp.QuoteMeta(`DELETE FROM currentBookings WHERE id = $1`)
 	mock.MatchExpectationsInOrder(false)
 	mock.ExpectBegin()
-	mock.ExpectExec(query).WithArgs(1).WillReturnResult(sqlmock.NewResult(1, 1))
-	mock.ExpectExec(query).WithArgs(2).WillReturnError(expected)
+	mock.ExpectExec(query).WithArgs(bookingOne).WillReturnResult(sqlmock.NewResult(1, 1))
+	mock.ExpectExec(query).WithArgs(bookingTwo).WillReturnError(expected)
 	mock.ExpectCommit()
 
 	input := models.MakeDeleteBookings{
-		BookingID: []int{1, 2},
+		BookingID: []uuid.UUID{bookingOne, bookingTwo},
 	}
 
 	expectedCount := 1
-	if count, err := DeleteBookingFromTable(repo.db, input);
-	expectedCount != count || err == nil || err.Error() != expected.Error() {
+	if count, err := DeleteBookingFromTable(repo.db, input); expectedCount != count || err == nil || err.Error() != expected.Error() {
 		if err == nil {
 			t.Fatalf("Expected there to be an error but there is none")
 		}

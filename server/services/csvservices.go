@@ -41,7 +41,7 @@ func ReadCSVFromUrl(url string) ([][]string, error) {
 		} else if statusCode == 511 {
 			return nil, errors.New("network authentication required to gain network access")
 		} else {
-			return nil, errors.New(fmt.Sprintf("unable to reach website with status code %d", resp.StatusCode))
+			return nil, fmt.Errorf("unable to reach website with status code %d", resp.StatusCode)
 		}
 	}
 
@@ -488,7 +488,7 @@ func LoadVenueTimingsCSV() {
 		fmt.Println(successMessage)
 	}
 
-	counter := 0
+	counter := 1
 	toConvert := [3]int{0, 1, 2}
 	var tempHold [3]int
 	for _, line := range csvLines[1:] {
@@ -532,7 +532,7 @@ func LoadFacilityCSV() {
 		fmt.Println(successMessage)
 	}
 
-	counter := 0
+	counter := 1
 	var tempHold int
 	for _, line := range csvLines[1:] {
 		// convert string to int, for index #0
@@ -571,7 +571,7 @@ func LoadVenueFacilityCSV() {
 		fmt.Println(successMessage)
 	}
 
-	counter := 0
+	counter := 1
 	toConvert := [4]int{0, 1, 2, 3}
 	var tempHold [4]int
 	for _, line := range csvLines[1:] {

@@ -1,6 +1,10 @@
 package models
 
-import "time"
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
 
 type Bookingstatuses struct {
 	ID                       int    `csv:"bookingStatusID"`
@@ -50,7 +54,7 @@ type BookingInput struct {
 }
 
 type Retrievebookings struct {
-	ID int
+	ID uuid.UUID
 }
 
 type PendingBookings struct {
@@ -59,11 +63,11 @@ type PendingBookings struct {
 	Pax        int
 	Eventstart time.Time
 	Eventend   time.Time
-	Bookingid  int
+	Bookingid  uuid.UUID
 }
 
 type MakeDeleteBookings struct {
-	BookingID []int `json:"bookingID" form:"bookingID"`
+	BookingID []string `json:"bookingID" form:"bookingID"`
 }
 
 type Currentbookings struct {

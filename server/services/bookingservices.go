@@ -3,10 +3,11 @@ package services
 import (
 	"errors"
 	"fmt"
-	"github.com/jinzhu/gorm"
 	"net/http"
 	"server/models"
 	"time"
+
+	"github.com/jinzhu/gorm"
 
 	"github.com/gin-gonic/gin"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
@@ -161,7 +162,7 @@ func MakePendingBooking(c *gin.Context) {
 		}
 	}
 
-	successMsg := fmt.Sprintf("Successfully recorded %d bookings!", counter)
+	successMsg := fmt.Sprintf("Successfully recorded %d booking(s)!", counter)
 	c.JSON(http.StatusOK, gin.H{"message": successMsg})
 	fmt.Println(successMsg)
 }
@@ -169,10 +170,6 @@ func MakePendingBooking(c *gin.Context) {
 // DELETE /delete_pending_booking
 // deletes a pending booking and updated the db
 func DeletePendingBooking(c *gin.Context) {
-	const (
-		ERROR_STRING = "DeletePendingBooking"
-	)
-
 	var input models.MakeDeleteBookings
 	if err := c.ShouldBindQuery(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": "Check input booking IDs in URL parameter."})
@@ -183,10 +180,10 @@ func DeletePendingBooking(c *gin.Context) {
 	counter, err := DeleteBookingFromTable(DB, input)
 	if err != nil {
 		c.JSON(http.StatusExpectationFailed, gin.H{"error": err.Error(), "message": err.Error()})
-		fmt.Printf(err.Error())
+		fmt.Println(err.Error())
 	}
 
-	returnMessage := fmt.Sprintf("Successfully deleted %d pending bookings.", counter)
+	returnMessage := fmt.Sprintf("Successfully deleted %d pending booking(s).", counter)
 	c.JSON(http.StatusOK, gin.H{"success": true, "message": returnMessage})
 	fmt.Println(returnMessage)
 }
@@ -223,8 +220,7 @@ func GetBookingsOfDay(DB *gorm.DB, input models.TimingSearchInput,
 		" AND cb.bookingstatusid IN (?)" +
 		" GROUP BY cb.eventstart"
 
-	if err := DB.Raw(timingsQuery, input.Eventstart, input.Eventend, venue.ID, statusIDArr).Scan(&timingWithPax).Error;
-		err != nil {
+	if err := DB.Raw(timingsQuery, input.Eventstart, input.Eventend, venue.ID, statusIDArr).Scan(&timingWithPax).Error; err != nil {
 		return nil, err
 	}
 	return timingWithPax, nil
@@ -284,7 +280,7 @@ func UpdateBookingsStatus(DB *gorm.DB, input models.MakeDeleteBookings, statusCo
 	var errorMessage string
 	for _, bookingID := range input.BookingID {
 		if err := DB.Exec(execQuery, statusCode.ID, bookingID).Error; err != nil {
-			errorMessage += fmt.Sprintf("Error in confirming booking with bookingid %d. with error\n"+ err.Error(), bookingID)
+			errorMessage += fmt.Sprintf("Error in confirming booking with bookingid %d. with error\n"+err.Error(), bookingID)
 		} else {
 			counter++
 		}
@@ -328,7 +324,6 @@ func InsertBooking(DB *gorm.DB, overLimitAndTime bool, s models.BookingInput, ve
 			Bookingstatusid: statusCode.ID,
 			Lastupdated:     time.Now(),
 		}
-		fmt.Println(currentBooking)
 		if err := DB.Create(&currentBooking).Error; err != nil {
 			errorMessage := "Error in creating pending booking. " + err.Error()
 			return false, errors.New(errorMessage)
@@ -345,8 +340,7 @@ func CheckIfOverLimitAndTime(DB *gorm.DB, s models.BookingInput, venue models.Ve
 		" AND cb.venueid = ?" +
 		" AND cb.bookingstatusid IN (?)" +
 		" GROUP BY cb.eventstart"
-	if result := DB.Raw(paxQuery, s.Eventstart, s.Eventend, venue.ID, statusIDArr).Scan(&paxCheck);
-	result.Error != nil {
+	if result := DB.Raw(paxQuery, s.Eventstart, s.Eventend, venue.ID, statusIDArr).Scan(&paxCheck); result.Error != nil {
 		if result.RowsAffected == 0 {
 		} else {
 			return false, result.Error
@@ -375,7 +369,7 @@ func DeleteBookingFromTable(DB *gorm.DB, input models.MakeDeleteBookings) (int, 
 	var errorMessage string
 	for _, s := range input.BookingID {
 		if err := DB.Exec(deleteQuery, s).Error; err != nil {
-			errorMessage += fmt.Sprintf("Error in deleting booking for booking with booking id = %d\n", s)
+			errorMessage += fmt.Sprintf("Error in deleting booking for booking with booking id = %v\n", s)
 		} else {
 			counter++
 		}

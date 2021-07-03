@@ -1,6 +1,8 @@
 CREATE DATABASE goauth WITH OWNER = postgres ENCODING = 'UTF8' TABLESPACE = pg_default CONNECTION
 LIMIT = - 1;
 
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 CREATE TABLE IF NOT EXISTS accountTypes (
     id SERIAL PRIMARY KEY,
     accountTypeName VARCHAR(250),
@@ -91,7 +93,7 @@ CREATE TABLE IF NOT EXISTS accounts (
 );
 
 CREATE TABLE IF NOT EXISTS currentBookings (
-    id SERIAL PRIMARY KEY,
+    id uuid PRIMARY KEY DEFAULT uuid_generate_v4 (),
     nusnetID VARCHAR(8) REFERENCES accounts(nusnetID),
     venueID INT REFERENCES venues,
     pax INT,
@@ -105,7 +107,7 @@ CREATE TABLE IF NOT EXISTS currentBookings (
 CREATE TABLE IF NOT EXISTS notifications (
     id SERIAL PRIMARY KEY,
     notificationTypeID INT REFERENCES notificationTypes,
-    bookingID INT REFERENCES currentBookings
+    bookingID uuid REFERENCES currentBookings
 );
 
 CREATE TABLE IF NOT EXISTS venueFacilities (

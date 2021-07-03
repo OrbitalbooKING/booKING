@@ -14,9 +14,9 @@ func StartAll(r *gin.Engine) {
 	r.Use(middleware.CORSMiddleware())
 	r.Use(static.Serve("/", static.LocalFile("./web", true)))
 
-	r.LoadHTMLFiles("/client/public/index.html")
+// 	r.LoadHTMLFiles("/client/public/index.html")
 	r.NoRoute(func(c *gin.Context) {
-		 c.File("/client/public/index.html")
+		 c.File("./web")
 	})
 
 	api := r.Group("/api")

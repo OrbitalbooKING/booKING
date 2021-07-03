@@ -173,6 +173,10 @@ func ResetPassword(c *gin.Context) {
 		return
 	}
 
+	if !regexPasswordCheck(c, input.Password) {
+		return
+	}
+
 	// check if account already exists
 	if !GetAccountExists(DB, input) {
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Account does not exist!"})

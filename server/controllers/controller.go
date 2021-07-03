@@ -14,14 +14,10 @@ func StartAll(r *gin.Engine) {
 	r.Use(middleware.CORSMiddleware())
 	r.Use(static.Serve("/", static.LocalFile("./web", true)))
 
+	r.LoadHTMLFiles("/client/public/index.html")
 	r.NoRoute(func(c *gin.Context) {
 		 c.File("/client/public/index.html")
 	})
-
-	//r.LoadHTMLFiles("./public/index.html")
-	//r.GET("/", func(c *gin.Context) {
-	//	c.File("./public/index.html")
-	//})
 
 	api := r.Group("/api")
 

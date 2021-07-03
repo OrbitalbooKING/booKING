@@ -742,7 +742,7 @@ func TestDeleteBookingFromTable_Success(t *testing.T) {
 	mock.ExpectCommit()
 
 	input := models.MakeDeleteBookings{
-		BookingID: []uuid.UUID{bookingOne, bookingTwo},
+		BookingID: []string{bookingOne.String(), bookingTwo.String()},
 	}
 	expected := len(input.BookingID)
 
@@ -782,7 +782,7 @@ func TestDeleteBookingFromTable_Error(t *testing.T) {
 	mock.ExpectCommit()
 
 	input := models.MakeDeleteBookings{
-		BookingID: []uuid.UUID{bookingOne, bookingTwo},
+		BookingID: []string{bookingOne.String(), bookingTwo.String()},
 	}
 
 	expectedCount := 1

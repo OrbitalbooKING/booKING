@@ -14,14 +14,15 @@ func StartAll(r *gin.Engine) {
 	r.Use(middleware.CORSMiddleware())
 	r.Use(static.Serve("/", static.LocalFile("./web", true)))
 
-	r.Use(static.Serve("/", static.LocalFile("./build", true)))
-	r.Use(static.Serve("/sign-in", static.LocalFile("./build", true)))
-	r.Use(static.Serve("/sign-up", static.LocalFile("./build", true)))
+	//r.NoRoute(func(c *gin.Context) {
+	//	c.JSON(404, gin.H{
+	//		"code": "PAGE_NOT_FOUND", "message": "Page not found", // or use c.File("./public/index.html")
+	//	})
+	//})
 
-	r.NoRoute(func(c *gin.Context) {
-		c.JSON(404, gin.H{
-			"code": "PAGE_NOT_FOUND", "message": "Page not found", // or use c.File("./public/index.html")
-		})
+	r.LoadHTMLFiles("./public/index.html")
+	r.GET("/", func(c *gin.Context) {
+		c.File("./public/index.html")
 	})
 
 	api := r.Group("/api")

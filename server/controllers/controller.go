@@ -20,10 +20,10 @@ func StartAll(r *gin.Engine) {
 	//	})
 	//})
 
-	r.LoadHTMLFiles("./public/index.html")
-	r.GET("/", func(c *gin.Context) {
-		c.File("./public/index.html")
-	})
+	//r.LoadHTMLFiles("./public/index.html")
+	//r.GET("/", func(c *gin.Context) {
+	//	c.File("./public/index.html")
+	//})
 
 	api := r.Group("/api")
 

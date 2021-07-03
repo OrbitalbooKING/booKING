@@ -15,7 +15,7 @@ func StartAll(r *gin.Engine) {
 	r.Use(static.Serve("/", static.LocalFile("./web", true)))
 
 	r.NoRoute(func(c *gin.Context) {
-		 c.File("../../client/public/index.html")
+		 c.File("/client/public/index.html")
 	})
 
 	//r.LoadHTMLFiles("./public/index.html")

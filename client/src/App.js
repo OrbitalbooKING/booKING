@@ -16,7 +16,7 @@ import BookingOverview from "./components/BookingOverview";
 import BookingSuccess from "./components/BookingSuccess";
 import LogoutSuccess from "./components/LogoutSuccess";
 import Profile from "./components/Profile";
-import Unathorised from "./components/Unauthorised";
+import Unauthorised from "./components/Unauthorised";
 
 function App() {
 

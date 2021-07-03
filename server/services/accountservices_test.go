@@ -564,7 +564,7 @@ func init() {
 }
 
 func TestRegister_ValidNewAcc(t *testing.T) {
-	toUseID := "e" + strconv.Itoa(rand.Intn(10000))
+	toUseID := "e" + strconv.Itoa(rand.Intn(10000000))
 	testCorrectInput := models.CreateAccountInput{
 		Nusnetid: toUseID, // must be brand new un-used nusnetid
 		Password: "11",
@@ -578,7 +578,7 @@ func TestRegister_ValidNewAcc(t *testing.T) {
 		t.Fatalf("Unexpected error: %s", err.Error())
 		return
 	}
-	URL := config.HEROKU_HOST + "/api/register"
+	URL := config.HEROKU_HOST + "/sign-up"
 	responseCorrect, err := http.Post(URL, "application/json", bytes.NewBuffer(toSendCorrect))
 	if err != nil {
 		t.Fatal(err)
@@ -618,7 +618,7 @@ func TestRegister_InvalidUsedAcc(t *testing.T) {
 		t.Fatalf("Unexpected error: %s", err.Error())
 		return
 	}
-	response, err := http.Post(config.HEROKU_HOST + "/api/register", "/sign-up", bytes.NewBuffer(toSendExisting))
+	response, err := http.Post(config.HEROKU_HOST, "/sign-up", bytes.NewBuffer(toSendExisting))
 	if err != nil {
 		t.Fatalf("Unexpected error: %s", err.Error())
 	}

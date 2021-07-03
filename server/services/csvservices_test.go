@@ -46,25 +46,3 @@ func TestReadCSVFromUrl_NOCSV(t *testing.T) {
 	}
 }
 
-//func TestLoadAccountTypesCSV(t *testing.T) {
-//	//accountType := models.Accounttypes{
-//	//	ID:                     1,
-//	//	Accounttypename:        "Student",
-//	//	Accounttypedescription: "For students, basic rights",
-//	//}
-//	//
-//	//db, mock, err := sqlmock.New()
-//	//if err != nil {
-//	//	t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
-//	//}
-//	//defer db.Close()
-//	//
-//	//sqlmock.
-//	//	NewRows([]string{"id", "accounttypename", "accounttypedescription"})
-//	//mock.ExpectBegin()
-//	//query := "INSERT INTO accountTypes(id, accounttypename, accounttypedescription) VALUES (?, ?, ?)" +
-//	//		" RETURNING id"
-//	//mock.ExpectExec(query).WithArgs(accountType.ID,
-//	//	accountType.Accounttypename, accountType.Accounttypedescription).WillReturnResult(accountType.ID)
-//}
-

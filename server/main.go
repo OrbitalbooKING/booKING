@@ -19,6 +19,5 @@ func main() {
 		fmt.Println("Database connected successfully.")
 	}
 	services.LoadAllCSV()
-
 	controllers.StartAll(r)
 }

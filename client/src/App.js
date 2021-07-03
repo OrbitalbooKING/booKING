@@ -16,7 +16,6 @@ import BookingOverview from "./components/BookingOverview";
 import BookingSuccess from "./components/BookingSuccess";
 import LogoutSuccess from "./components/LogoutSuccess";
 import Profile from "./components/Profile";
-import Unauthorised from "./components/Unauthorised";
 
 function App() {
 
@@ -59,9 +58,6 @@ function App() {
           <Route exact path="/profile" render={props=>(
             <Profile {...props} />)}
           />
-          <Route path="*">
-            <Unauthorised />
-          </Route>
         </Switch>
       </div>
     </Router>

@@ -406,7 +406,7 @@ func TestUpdateBookingsStatus(t *testing.T) {
 		WillReturnResult(sqlmock.NewResult(0, 1))
 
 	input := models.MakeDeleteBookings{
-		BookingID: []uuid.UUID{bookingOne, bookingTwo, bookingThree},
+		BookingID: []string{bookingOne.String(), bookingTwo.String(), bookingThree.String()},
 	}
 
 	statusCode := models.Bookingstatuses{

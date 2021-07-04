@@ -3,6 +3,9 @@ import { Link, useHistory } from "react-router-dom";
 import Axios from "axios";
 import configData from "../config.json";
 import Layout1 from "../layouts/Layout1";
+import Home from "./Home"
+
+import * as Cookies from "js-cookie";
 
 const style = {
     padding: 5
@@ -21,27 +24,26 @@ function LoginForm() {
         Axios.post(configData.LOCAL_HOST + "/login", {
             NUSNET_ID: details.id,
             password: details.password,
-        }).then(response => { 
-            history.push({
-                pathname: "/sign-in-success",
-                state: { 
-                    id: response.data.message.Nusnetid,
-                    name: response.data.message.Name
-                }
+        }).then(response => {
+
+            let inFifteenMinutes = new Date(new Date().getTime() + 1 * 60 * 1000);
+            Cookies.set("name", response.data.message.Name, {
+                sameSite: 'None', secure: true,
+                expires: inFifteenMinutes
             });
-            // <Redirect to={{pathname: "/sign-in-success",
-            //         state: { 
-            //             id: response.data.message.Nusnetid,
-            //             name: response.data.message.Name
-            //         }
-            // }} push={true}/>
-            // this.props.history.push({
-            //         pathname: "/sign-in-success",
-            //         state: { 
-            //             id: response.data.message.Nusnetid,
-            //             name: response.data.message.Name
-            //         }
-            //     });
+            Cookies.set("id", response.data.message.Nusnetid, {
+                sameSite: 'None', secure: true,
+                expires: inFifteenMinutes
+            });
+
+            // history.push({
+            //     pathname: "/sign-in-success",
+            //     state: { 
+            //         id: response.data.message.Nusnetid,
+            //         name: response.data.message.Name
+            //     }
+            // });
+            history.push("/sign-in-success");
         }).catch((error) => {
             if (error.response) {
                 console.log("response");
@@ -65,36 +67,40 @@ function LoginForm() {
     };
 
     return (
-        <Layout1>
-            <div className="parent">
-                <div className="content">
-                    <form>
-                        <h3>Sign In</h3>
+        <>
+        {Cookies.get("name") === undefined && Cookies.get("id") === undefined
+            ? <Layout1>
+                <div className="parent">
+                    <div className="content">
+                        <form>
+                            <h3>Sign In</h3>
 
-                        <div className="error">
-                            <span className="message">{error}</span>
-                        </div>
+                            <div className="error">
+                                <span className="message">{error}</span>
+                            </div>
 
-                        <div className="form-group" style={style}>
-                            <input type="text" className="form-control" placeholder="NUSNET ID" onChange={e => setDetails({...details, id: e.target.value})} value={details.id} />
-                        </div>
+                            <div className="form-group" style={style}>
+                                <input type="text" className="form-control" placeholder="NUSNET ID" onChange={e => setDetails({...details, id: e.target.value})} value={details.id} />
+                            </div>
 
-                        <div className="form-group" style={style}>
-                            <input type="password" className="form-control" placeholder="Password" onChange={e => setDetails({...details, password: e.target.value})} value={details.password} />
-                        </div>
+                            <div className="form-group" style={style}>
+                                <input type="password" className="form-control" placeholder="Password" onChange={e => setDetails({...details, password: e.target.value})} value={details.password} />
+                            </div>
 
-                        <div style={style}>
-                            <p className="forgot-password text-right">
-                                <Link to="/reset-password">Forgot password?</Link>
-                            </p>
-                            <button style={{float: 'left', margin: 5}} type="submit" className="btn btn-primary btn-block" onClick={handleClick}>Sign In</button>
-                        </div>
-                    </form>
+                            <div style={style}>
+                                <p className="forgot-password text-right">
+                                    <Link to="/reset-password">Forgot password?</Link>
+                                </p>
+                                <button style={{float: 'left', margin: 5}} type="submit" className="btn btn-primary btn-block" onClick={handleClick}>Sign In</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-            </div>
-        </Layout1>
+            </Layout1>
+            : <Home />
+        }
+    </>
     );
 }
 
 export default LoginForm;
-// export default withRouter(LoginForm);

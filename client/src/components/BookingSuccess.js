@@ -2,24 +2,27 @@ import { useHistory } from "react-router-dom";
 import Layout2 from "../layouts/Layout2";
 import Unauthorised from "./Unauthorised";
 
-function BookingSuccess(props) {
+import * as Cookies from "js-cookie";
+
+function BookingSuccess() {
 
     let history = useHistory();
 
     const Home = () => {
-        history.push({
-            pathname: "/home",
-            state: {
-                id: props.location.state.id,
-                name: props.location.state.name
-            }
-        });
+        // history.push({
+        //     pathname: "/home",
+        //     state: {
+        //         id: props.location.state.id,
+        //         name: props.location.state.name
+        //     }
+        // });
+        history.push("/home");
     };
 
     return (
         <>
-            {props.location.state !== undefined 
-                ? <Layout2 id={props.location.state.id} name={props.location.state.name} action="Booking success!">
+            {Cookies.get("name") === undefined && Cookies.get("id") === undefined
+                ? <Layout2 id={Cookies.get("id")} name={Cookies.get("name")} action="Booking success!">
                         <div className="parent">
                             <div className="welcome-page">
                                 <h2>You have successfully made your bookings!</h2>

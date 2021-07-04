@@ -489,10 +489,10 @@ function Booking() {
                                             <div style={{width: 150, textAlign: 'center', alignSelf: 'center'}}>{Cookies.get("buildingName")} {Cookies.get("unit")} </div>
                                             <div style={{width: 80, textAlign: 'center', alignSelf: 'center'}}>{Cookies.get("capacity")} </div>
                                             <div style={{display: 'flex', width: 120, textAlign: 'center', alignSelf: 'center'}}>
-                                                <br />{Cookies.get("projector") === "undefined" ? "" : Cookies.get("projector") === 1 ? Cookies.get("projector") + " projector" : Cookies.get("projector") + " projectors"}
-                                                <br />{Cookies.get("screen") === "undefined" ? "" : Cookies.get("screen") === 1 ? Cookies.get("screen") + " screen" : Cookies.get("screen") + " screens"}
-                                                <br />{Cookies.get("desktop") === "undefined" ? "" : Cookies.get("desktop") === 1 ? Cookies.get("desktop") + " desktop" : Cookies.get("desktop") + " desktops"}
-                                                <br />{Cookies.get("whiteboard") === "undefined" ? "" : Cookies.get("whiteboard") === 1 ? Cookies.get("whiteboard") + " whiteboard" : Cookies.get("whiteboard") + " whiteboards"}
+                                                <br />{(Cookies.get("projector") === "undefined" || Cookies.get("projector") === undefined) ? "" : Cookies.get("projector") === 1 ? Cookies.get("projector") + " projector" : Cookies.get("projector") + " projectors"}
+                                                <br />{(Cookies.get("screen") === "undefined" || Cookies.get("screen") === undefined) ? "" : Cookies.get("screen") === 1 ? Cookies.get("screen") + " screen" : Cookies.get("screen") + " screens"}
+                                                <br />{(Cookies.get("desktop") === "undefined" || Cookies.get("desktop") === undefined) ? "" : Cookies.get("desktop") === 1 ? Cookies.get("desktop") + " desktop" : Cookies.get("desktop") + " desktops"}
+                                                <br />{(Cookies.get("whiteboard") === "undefined" || Cookies.get("whiteboard") === undefined) ? "" : Cookies.get("whiteboard") === 1 ? Cookies.get("whiteboard") + " whiteboard" : Cookies.get("whiteboard") + " whiteboards"}
                                             </div>
                                         </div>
                                     </div>

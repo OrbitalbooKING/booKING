@@ -612,42 +612,42 @@ function Home() {
         //     }
         // });
 
-        let inFifteenMinutes = new Date(new Date().getTime() + 1 * 60 * 1000);
+        let inThreeHours = 0.125;
             Cookies.set("venueType", val.Roomtypename, {
                 sameSite: 'None', secure: true,
-                expires: inFifteenMinutes
+                expires: inThreeHours
             });
             Cookies.set("venueName", val.Venuename, {
                 sameSite: 'None', secure: true,
-                expires: inFifteenMinutes
+                expires: inThreeHours
             });
             Cookies.set("buildingName", val.Buildingname, {
                 sameSite: 'None', secure: true,
-                expires: inFifteenMinutes
+                expires: inThreeHours
             });
             Cookies.set("unit", val.Unit, {
                 sameSite: 'None', secure: true,
-                expires: inFifteenMinutes
+                expires: inThreeHours
             });
             Cookies.set("capacity", val.Maxcapacity, {
                 sameSite: 'None', secure: true,
-                expires: inFifteenMinutes
+                expires: inThreeHours
             });
             Cookies.set("projector", val.Facilitiesdict.Projector, {
                 sameSite: 'None', secure: true,
-                expires: inFifteenMinutes
+                expires: inThreeHours
             });
             Cookies.set("screen", val.Facilitiesdict.Screen, {
                 sameSite: 'None', secure: true,
-                expires: inFifteenMinutes
+                expires: inThreeHours
             });
             Cookies.set("desktop", val.Facilitiesdict.Desktop, {
                 sameSite: 'None', secure: true,
-                expires: inFifteenMinutes
+                expires: inThreeHours
             });
             Cookies.set("whiteboard", val.Facilitiesdict.Whiteboard, {
                 sameSite: 'None', secure: true,
-                expires: inFifteenMinutes
+                expires: inThreeHours
             });
 
         history.push("/booking");

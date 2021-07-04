@@ -26,14 +26,14 @@ function LoginForm() {
             password: details.password,
         }).then(response => {
 
-            let inFifteenMinutes = new Date(new Date().getTime() + 1 * 60 * 1000);
+            let inThreeHours = 0.125;
             Cookies.set("name", response.data.message.Name, {
                 sameSite: 'None', secure: true,
-                expires: inFifteenMinutes
+                expires: inThreeHours
             });
             Cookies.set("id", response.data.message.Nusnetid, {
                 sameSite: 'None', secure: true,
-                expires: inFifteenMinutes
+                expires: inThreeHours
             });
 
             // history.push({

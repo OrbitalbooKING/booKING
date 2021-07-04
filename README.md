@@ -19,7 +19,7 @@ To maximise the venue and resources usage in School of Computing, we hope to hel
 - [User Guide](https://docs.google.com/document/d/1zvFvemhVmstVMCiOg0dLkmLf1wWBZFmuWxLuLHR_zJg/edit?usp=sharing)
 - [Developer Guide](https://docs.google.com/document/d/1SV7XcLXzWC8Oh0ZJ9_ezHnF3e7drr1Ee3bozCdLTEl8/edit?usp=sharing)
 - [Prototype on Figma](https://www.figma.com/file/StFYx2rDrqAGr74XKgNIck/booKING?node-id=3%3A20)
-- [Prototype on Heroku](http://orbitalbooking.herokuapp.com)
+- [Prototype on Heroku](https://orbitalbooking.herokuapp.com)
 - [Video](https://drive.google.com/file/d/1vGCY2l3TweOiyNjKtW0HgWrqVh6GVa57/view?usp=sharing)
 - [Poster](https://drive.google.com/file/d/1n0D9r45ZNvhBg2152Rb4YcsB8wWRc8oz/view?usp=sharing)
 - [Cognitive Walkthrough](https://drive.google.com/file/d/1qtbvl8xnwmnuFjW62ugDXUMCpetBr5eh/view?usp=sharing)

@@ -3,6 +3,9 @@ import { Link, useHistory } from "react-router-dom";
 import Axios from "axios";
 import configData from "../config.json";
 import Layout1 from "../layouts/Layout1";
+import Home from "./Home";
+
+import * as Cookies from "js-cookie";
 
 const style = {
     padding: 5
@@ -59,38 +62,43 @@ function ResetForm() {
     };
 
     return (
-        <Layout1>
-            <div className="parent">
-                <div className="content">
-                    <form>
-                        <h3>Reset password</h3>
+        <> 
+        {Cookies.get("name") === undefined && Cookies.get("name") === undefined
+            ? <Layout1>
+                <div className="parent">
+                    <div className="content">
+                        <form>
+                            <h3>Reset password</h3>
 
-                        <div className="error">
-                            <span className="message">{error}</span>
-                        </div>
+                            <div className="error">
+                                <span className="message">{error}</span>
+                            </div>
 
-                        <div className="form-group" style={style}>
-                            <input type="text" className="form-control" placeholder="NUSNET ID"  onChange={e => setDetails({...details, id: e.target.value})} value={details.id} />
-                        </div>
+                            <div className="form-group" style={style}>
+                                <input type="text" className="form-control" placeholder="NUSNET ID"  onChange={e => setDetails({...details, id: e.target.value})} value={details.id} />
+                            </div>
 
-                        <div className="form-group" style={style}>
-                            <input type="password" className="form-control" placeholder="Password" onChange={e => setDetails({...details, password: e.target.value})} value={details.password} />
-                        </div>
+                            <div className="form-group" style={style}>
+                                <input type="password" className="form-control" placeholder="Password" onChange={e => setDetails({...details, password: e.target.value})} value={details.password} />
+                            </div>
 
-                        <div className="form-group" style={style}>
-                            <input type="password" className="form-control" placeholder="Re-enter password" onChange={e => setDetails({...details, newPassword: e.target.value})} value={details.newPassword} />
-                        </div>
+                            <div className="form-group" style={style}>
+                                <input type="password" className="form-control" placeholder="Re-enter password" onChange={e => setDetails({...details, newPassword: e.target.value})} value={details.newPassword} />
+                            </div>
 
-                        <div style={style}>
-                            <p className="forgot-password text-right">
-                                <Link to="/sign-in">Sign in</Link>
-                            </p>
-                            <button style={{float: 'left'}} type="submit" className="btn btn-primary btn-block" onClick={handleClick}>Reset</button>
-                        </div>
-                    </form>
+                            <div style={style}>
+                                <p className="forgot-password text-right">
+                                    <Link to="/sign-in">Sign in</Link>
+                                </p>
+                                <button style={{float: 'left'}} type="submit" className="btn btn-primary btn-block" onClick={handleClick}>Reset</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-            </div>
-        </Layout1>
+            </Layout1>
+            : <Home />
+        }
+    </>
     );
 }
 

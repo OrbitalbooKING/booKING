@@ -9,6 +9,8 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 
+import * as Cookies from "js-cookie";
+
 
 function Layout2(props) {
 
@@ -32,6 +34,10 @@ function Layout2(props) {
     };
     
     const logout = () => {
+
+        Cookies.remove("name", {sameSite: 'None', secure: true});
+        Cookies.remove("id", {sameSite: 'None', secure: true});
+
         history.push({
             pathname: "/logout",
             state: {

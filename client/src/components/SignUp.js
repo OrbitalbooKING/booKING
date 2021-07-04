@@ -3,6 +3,7 @@ import { Link, useHistory } from "react-router-dom";
 import Axios from "axios";
 import configData from "../config.json";
 import Layout1 from "../layouts/Layout1";
+import Home from "./Home";
 
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -10,6 +11,8 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import { makeStyles } from "@material-ui/core/styles";
+
+import * as Cookies from "js-cookie";
 
 const style = {
     padding: 5
@@ -47,27 +50,6 @@ function SignUpForm() {
     const handleFacultyChange = (event) => {
         setFaculty(event.target.value);
     };
-
-    // const facultyList = [
-    //     "College of Humanities and Sciences (CHS)",
-    //     "Business & Accountancy",
-    //     "Computing",
-    //     "Dentistry",
-    //     "Design & Environment",
-    //     "Engineering",
-    //     "Law",
-    //     "Medicine",
-    //     "Nursing",
-    //     "Pharmacy",
-    //     "Music",
-    //     "Special Programmes",
-    //     "Concurrent Degree Programmes",
-    //     "Minor Programmes",
-    //     "Joint Degree Programmes",
-    //     "Double Major Programmes",
-    //     "Double Degree Programmes",
-    //     "Part-Time Programmes"
-    // ];
 
     const [facultyList, setFacultyList] = useState();
 
@@ -154,82 +136,87 @@ function SignUpForm() {
     }, []);
 
     return (
-        <Layout1>
-            <div className="parent">
-                <div className="sign-up">
-                    <form>
-                        <h3>Sign Up</h3>
+        <>
+        {Cookies.get("name") === undefined && Cookies.get("id") === undefined
+            ? <Layout1>
+                <div className="parent">
+                    <div className="sign-up">
+                        <form>
+                            <h3>Sign Up</h3>
 
-                        <div className="error">
-                            <span className="message">{error}</span>
-                        </div>
+                            <div className="error">
+                                <span className="message">{error}</span>
+                            </div>
 
-                        <div className="form-group" style={style}>
-                            <input type="text" className="form-control" placeholder="Username"  onChange={e => setDetails({...details, username: e.target.value})} value={details.username} />
-                        </div> 
-                        
-                        <div className="form-group" style={style}>
-                            <input style={{width: '60%', float: 'left'}}type="text" className="form-control" placeholder="NUSNET ID"  onChange={e => setDetails({...details, id: e.target.value})} value={details.id} />
-                            <div><FormControl style={{width: '40%', float: 'left'}}>
-                                <InputLabel id="demo-simple-select-label">Grad. year</InputLabel>
+                            <div className="form-group" style={style}>
+                                <input type="text" className="form-control" placeholder="Username"  onChange={e => setDetails({...details, username: e.target.value})} value={details.username} />
+                            </div> 
+                            
+                            <div className="form-group" style={style}>
+                                <input style={{width: '60%', float: 'left'}}type="text" className="form-control" placeholder="NUSNET ID"  onChange={e => setDetails({...details, id: e.target.value})} value={details.id} />
+                                <div><FormControl style={{width: '40%', float: 'left'}}>
+                                    <InputLabel id="demo-simple-select-label">Grad. year</InputLabel>
+                                    <Select
+                                    labelId="demo-simple-select-label"
+                                    id="demo-simple-select"
+                                    value={gradYear === undefined ? "" : gradYear}
+                                    onChange={handleGradYearChange}
+                                    input={<Input />}
+                                    MenuProps={{ classes: { paper: classes.menuPaper } }}
+                                    >
+                                    {Array.from({ length: (10) / 1}, (_, i) => currentYear + (i * 1)).map((val, key) => {
+                                        if (val === undefined) {
+                                            return <MenuItem value={val} key={key}>Blank</MenuItem>;
+                                        } else {
+                                            return <MenuItem value={val} key={key}>{val}</MenuItem>;
+                                        }
+                                    })}
+                                    </Select>
+                                </FormControl></div>
+                            </div>
+                            
+                            <FormControl style={{width: '100%', padding: 5}}>
+                                <InputLabel id="demo-simple-select-label">Faculty</InputLabel>
                                 <Select
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
-                                value={gradYear === undefined ? "" : gradYear}
-                                onChange={handleGradYearChange}
+                                value={faculty === undefined ? "" : faculty}
+                                onChange={handleFacultyChange}
                                 input={<Input />}
                                 MenuProps={{ classes: { paper: classes.menuPaper } }}
-                                >
-                                {Array.from({ length: (10) / 1}, (_, i) => currentYear + (i * 1)).map((val, key) => {
+                                >                 
+                                {facultyList === undefined ? "" : Object.entries(facultyList).sort().map((val, key) => {
+                                    // console.log(val[1].Facultydescription)
                                     if (val === undefined) {
-                                        return <MenuItem value={val} key={key}>Blank</MenuItem>;
+                                        return <MenuItem value={val[1].Facultydescription} key={key}>Blank</MenuItem>;
                                     } else {
-                                        return <MenuItem value={val} key={key}>{val}</MenuItem>;
+                                        return <MenuItem value={val[1].Facultydescription} key={key}>{val[1].Facultydescription}</MenuItem>;
                                     }
                                 })}
                                 </Select>
-                            </FormControl></div>
-                        </div>
-                        
-                        <FormControl style={{width: '100%', padding: 5}}>
-                            <InputLabel id="demo-simple-select-label">Faculty</InputLabel>
-                            <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={faculty === undefined ? "" : faculty}
-                            onChange={handleFacultyChange}
-                            input={<Input />}
-                            MenuProps={{ classes: { paper: classes.menuPaper } }}
-                            >                 
-                            {facultyList === undefined ? "" : Object.entries(facultyList).sort().map((val, key) => {
-                                // console.log(val[1].Facultydescription)
-                                if (val === undefined) {
-                                    return <MenuItem value={val[1].Facultydescription} key={key}>Blank</MenuItem>;
-                                } else {
-                                    return <MenuItem value={val[1].Facultydescription} key={key}>{val[1].Facultydescription}</MenuItem>;
-                                }
-                            })}
-                            </Select>
-                        </FormControl>
+                            </FormControl>
 
-                        <div className="form-group" style={style}>
-                            <input type="password" className="form-control" placeholder="Password" onChange={e => setDetails({...details, password: e.target.value})} value={details.password} />
-                        </div>
+                            <div className="form-group" style={style}>
+                                <input type="password" className="form-control" placeholder="Password" onChange={e => setDetails({...details, password: e.target.value})} value={details.password} />
+                            </div>
 
-                        <div className="form-group" style={style}>
-                            <input type="password" className="form-control" placeholder="Re-enter password" onChange={e => setDetails({...details, confirmPassword: e.target.value})} value={details.confirmPassword} />
-                        </div>
+                            <div className="form-group" style={style}>
+                                <input type="password" className="form-control" placeholder="Re-enter password" onChange={e => setDetails({...details, confirmPassword: e.target.value})} value={details.confirmPassword} />
+                            </div>
 
-                        <div style={style}>
-                            <p className="forgot-password text-right">
-                                Already registered? <Link to="/sign-in">Sign in</Link>
-                            </p>
-                            <button style={{float: 'left'}} type="submit" className="btn btn-primary btn-block" onClick={submitForm}>Sign Up</button>
-                        </div>
-                    </form>
+                            <div style={style}>
+                                <p className="forgot-password text-right">
+                                    Already registered? <Link to="/sign-in">Sign in</Link>
+                                </p>
+                                <button style={{float: 'left'}} type="submit" className="btn btn-primary btn-block" onClick={submitForm}>Sign Up</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-            </div>
-        </Layout1>
+            </Layout1>
+            : <Home />
+        }
+    </>
     );
 }
 

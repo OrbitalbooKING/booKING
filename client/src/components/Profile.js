@@ -8,8 +8,9 @@ import Unauthorised from "./Unauthorised";
 import moment from "moment";
 
 import profilePic from "../assets/profile.png";
+import Cookies from "js-cookie";
 
-function Profile(props) {
+function Profile() {
 
     // let history = useHistory();
     
@@ -95,8 +96,8 @@ function Profile(props) {
     
     return (
         <>
-            {props.location.state !== undefined 
-                ? <Layout2 id={props.location.state.id} name={props.location.state.name} action="Viewing profile">
+            {Cookies.get("name") !== undefined && Cookies.get("id") !== undefined
+                ? <Layout2 id={Cookies.get("id")} name={Cookies.get("name")} action="Viewing profile">
                         <div className="parent">
                             <div className="home-page">
                                 <div className="profile">

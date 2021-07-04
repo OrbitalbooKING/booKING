@@ -21,6 +21,8 @@ import { Calendar, DateObject } from "react-multi-date-picker";
 
 import moment from "moment";
 
+import * as Cookies from "js-cookie";
+
 const useStyles = makeStyles(theme => ({
     formControl: {
       margin: theme.spacing(1),
@@ -34,7 +36,7 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-function Booking(props) {
+function Booking() {
 
     let history = useHistory();
 
@@ -85,8 +87,8 @@ function Booking(props) {
 
         search.append("eventStart", toIsoString(eventStart));
         search.append("eventEnd", toIsoString(eventEnd));
-        search.append("buildingName", props.location.state.buildingName);
-        search.append("unitNo", props.location.state.unit);
+        search.append("buildingName", Cookies.get("buildingName"));
+        search.append("unitNo", Cookies.get("unit"));
         search.append("pax", capacity);
         
         Axios.get(configData.LOCAL_HOST + "/timings", 
@@ -146,7 +148,7 @@ function Booking(props) {
         
         let search = new URLSearchParams();
 
-        search.append("NUSNET_ID", props.location.state.id);
+        search.append("NUSNET_ID", Cookies.get("id"));
         
         Axios.get(configData.LOCAL_HOST + "/get_pending_booking", 
         {
@@ -192,9 +194,9 @@ function Booking(props) {
         }
 
         let data = {};
-        data["NUSNET_ID"] = props.location.state.id;
-        data["unitNo"] = props.location.state.unit;
-        data["buildingName"] = props.location.state.buildingName;
+        data["NUSNET_ID"] = Cookies.get("id");
+        data["unitNo"] = Cookies.get("unit");
+        data["buildingName"] = Cookies.get("buildingName");
         data["pax"] = capacity;
         data["eventStart"] = start;
         data["eventEnd"] = end;
@@ -334,19 +336,20 @@ function Booking(props) {
 
     const checkoutCart = () => {
         if (cart !== undefined) {
-            history.push({
-                pathname: "/booking-overview",
-                state: { 
-                    id: props.location.state.id,
-                    name: props.location.state.name,
-                    venueType: props.location.state.venueType,
-                    venueName: props.location.state.venueName,
-                    buildingName: props.location.state.buildingName,
-                    unit: props.location.state.unit,
-                    capacity: props.location.state.capacity,
-                    equipment: props.location.state.equipment
-                }
-            });
+            // history.push({
+            //     pathname: "/booking-overview",
+            //     state: { 
+            //         id: props.location.state.id,
+            //         name: props.location.state.name,
+            //         venueType: props.location.state.venueType,
+            //         venueName: props.location.state.venueName,
+            //         buildingName: props.location.state.buildingName,
+            //         unit: props.location.state.unit,
+            //         capacity: props.location.state.capacity,
+            //         equipment: props.location.state.equipment
+            //     }
+            // });
+            history.push("/booking-overview");
         }
     };
     
@@ -465,8 +468,8 @@ function Booking(props) {
 
     return (
         <>
-            {props.location.state !== undefined 
-                ? <Layout2 id={props.location.state.id} name={props.location.state.name} action="Make a booking">
+            {Cookies.get("name") !== undefined && Cookies.get("id") !== undefined
+                ? <Layout2 id={Cookies.get("id")} name={Cookies.get("name")} action="Make a booking">
                         <div className="parent">
                             <div className="home-page">
                                 <div className="booking-selector">
@@ -481,15 +484,15 @@ function Booking(props) {
                                     </div>
                                     <div className="display-selected-venue" style={{height: 'auto'}}>
                                         <div style={{display: 'flex', flexDirection: 'row'}}>
-                                            <div style={{width: 240, textAlign: 'center', alignSelf: 'center'}}>{props.location.state.venueType} </div>
-                                            <div style={{width: 260, textAlign: 'center', alignSelf: 'center'}}>{props.location.state.venueName} </div>
-                                            <div style={{width: 150, textAlign: 'center', alignSelf: 'center'}}>{props.location.state.buildingName} {props.location.state.unit} </div>
-                                            <div style={{width: 80, textAlign: 'center', alignSelf: 'center'}}>{props.location.state.capacity} </div>
+                                            <div style={{width: 240, textAlign: 'center', alignSelf: 'center'}}>{Cookies.get("venueType")} </div>
+                                            <div style={{width: 260, textAlign: 'center', alignSelf: 'center'}}>{Cookies.get("venueName")} </div>
+                                            <div style={{width: 150, textAlign: 'center', alignSelf: 'center'}}>{Cookies.get("buildingName")} {Cookies.get("unit")} </div>
+                                            <div style={{width: 80, textAlign: 'center', alignSelf: 'center'}}>{Cookies.get("capacity")} </div>
                                             <div style={{display: 'flex', width: 120, textAlign: 'center', alignSelf: 'center'}}>
-                                                <br />{props.location.state.equipment.Projector === undefined ? "" : props.location.state.equipment.Projector === 1 ? props.location.state.equipment.Projector + " projector" : props.location.state.equipment.Projector + " projectors"}
-                                                <br />{props.location.state.equipment.Screen === undefined ? "" : props.location.state.equipment.Screen === 1 ? props.location.state.equipment.Screen + " screen" : props.location.state.equipment.Screen + " screens"}
-                                                <br />{props.location.state.equipment.Desktop === undefined ? "" : props.location.state.equipment.Desktop === 1 ? props.location.state.equipment.Desktop + " desktop" : props.location.state.equipment.Desktop + " desktops"}
-                                                <br />{props.location.state.equipment.Whiteboard === undefined ? "" : props.location.state.equipment.Whiteboard === 1 ? props.location.state.equipment.Whiteboard + " whiteboard" : props.location.state.equipment.Whiteboard + " whiteboards"}
+                                                <br />{(Cookies.get("projector") === "undefined" || Cookies.get("projector") === undefined) ? "" : Cookies.get("projector") === 1 ? Cookies.get("projector") + " projector" : Cookies.get("projector") + " projectors"}
+                                                <br />{(Cookies.get("screen") === "undefined" || Cookies.get("screen") === undefined) ? "" : Cookies.get("screen") === 1 ? Cookies.get("screen") + " screen" : Cookies.get("screen") + " screens"}
+                                                <br />{(Cookies.get("desktop") === "undefined" || Cookies.get("desktop") === undefined) ? "" : Cookies.get("desktop") === 1 ? Cookies.get("desktop") + " desktop" : Cookies.get("desktop") + " desktops"}
+                                                <br />{(Cookies.get("whiteboard") === "undefined" || Cookies.get("whiteboard") === undefined) ? "" : Cookies.get("whiteboard") === 1 ? Cookies.get("whiteboard") + " whiteboard" : Cookies.get("whiteboard") + " whiteboards"}
                                             </div>
                                         </div>
                                     </div>
@@ -504,7 +507,7 @@ function Booking(props) {
                                                 input={<Input />}
                                                 MenuProps={{ classes: { paper: classes.menuPaper } }}
                                             >
-                                            {Array.from({length: props.location.state.capacity + 1}, (v, i) => i).map((val, key) => {
+                                            {Array.from({length: Cookies.get("capacity") + 1}, (v, i) => i).map((val, key) => {
                                                 if (val === 0) {
                                                     return <MenuItem value={val} key={key}>Please select</MenuItem>;
                                                 } else {

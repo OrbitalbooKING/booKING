@@ -31,33 +31,40 @@ function App() {
           <Route exact path="/sign-in"><LoginForm /></Route>
           <Route exact path="/sign-up"><SignUpForm /></Route>
           <Route exact path="/reset-password"><ResetForm /></Route>
-          <Route exact path="/sign-in-success" render={props=>(
+          {/* <Route exact path="/sign-in-success" render={props=>(
             <LoginSuccess {...props} />)}
-          />
+          /> */}
+          <Route exact path="/sign-in-success"><LoginSuccess /></Route>
           <Route exact path="/sign-up-success" render={props=>(
             <SignUpSuccess {...props} />)}
           />
           <Route exact path="/reset-password-success" render={props=>(
             <ResetSuccess {...props} />)}
           />
-          <Route exact path="/home" render={props=>(
+          {/* <Route exact path="/home" render={props=>(
             <Home {...props} />)}
-          />
-          <Route exact path="/booking" render={props=>(
+          /> */}
+          <Route exact path="/home"><Home /></Route>
+          {/* wipe cookies for venues when go to home */}
+          {/* <Route exact path="/booking" render={props=>(
             <Booking {...props} />)}
-          />
-          <Route exact path="/booking-overview" render={props=>(
+          /> */}
+          <Route exact path="/booking"><Booking /></Route>
+          {/* <Route exact path="/booking-overview" render={props=>(
             <BookingOverview {...props} />)}
-          />
-          <Route exact path="/booking-success" render={props=>(
+          /> */}
+          <Route exact path="/booking-overview"><BookingOverview /></Route>
+          {/* <Route exact path="/booking-success" render={props=>(
             <BookingSuccess {...props} />)}
-          />
+          /> */}
+          <Route exact path="/booking-success"><BookingSuccess /></Route>
           <Route exact path="/logout" render={props=>(
             <LogoutSuccess {...props} />)}
           />
-          <Route exact path="/profile" render={props=>(
+          {/* <Route exact path="/profile" render={props=>(
             <Profile {...props} />)}
-          />
+          /> */}
+          <Route exact path="/profile"><Profile /></Route>
         </Switch>
       </div>
     </Router>

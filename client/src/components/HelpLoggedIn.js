@@ -3,7 +3,9 @@ import { CopyToClipboard } from "react-copy-to-clipboard";
 import { useHistory } from "react-router-dom";
 import Layout2 from "../layouts/Layout2";
 
-function HelpLoggedIn(props) {
+import * as Cookies from "js-cookie";
+
+function HelpLoggedIn() {
 
     let history = useHistory();
 
@@ -27,7 +29,7 @@ function HelpLoggedIn(props) {
     }, []);
 
     return (
-        <Layout2 id={props.location.state.id} name={props.location.state.name} action="Viewing help">
+        <Layout2 id={Cookies.get("id")} name={Cookies.get("name")} action="Viewing help">
             <div className="parent">
                 <div className="welcome-page">
                     <div style={{overflowWrap: 'break-word', wordBreak: 'break-all'}}>

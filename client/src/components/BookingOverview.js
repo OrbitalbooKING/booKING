@@ -7,7 +7,9 @@ import Unauthorised from "./Unauthorised";
 
 import moment from "moment";
 
-function BookingOverview(props) {
+import * as Cookies from "js-cookie";
+
+function BookingOverview() {
 
     let history = useHistory();
 
@@ -17,7 +19,7 @@ function BookingOverview(props) {
         
         let search = new URLSearchParams();
 
-        search.append("NUSNET_ID", props.location.state.id);
+        search.append("NUSNET_ID", Cookies.get("id"));
         
         Axios.get(configData.LOCAL_HOST + "/get_pending_booking", 
         {
@@ -60,13 +62,14 @@ function BookingOverview(props) {
             {
                 bookingID: tempArr
             }).then(response => { 
-                history.push({
-                    pathname: "/booking-success",
-                    state: {
-                        id: props.location.state.id,
-                        name: props.location.state.name
-                    }
-                });
+                // history.push({
+                //     pathname: "/booking-success",
+                //     state: {
+                //         id: props.location.state.id,
+                //         name: props.location.state.name
+                //     }
+                // });
+                history.push("/booking-success");
             }).catch((error) => {
                 if (error.response) {
                     console.log("response");
@@ -106,8 +109,8 @@ function BookingOverview(props) {
 
     return (
         <>
-            {props.location.state !== undefined 
-                ? <Layout2 id={props.location.state.id} name={props.location.state.name} action="Booking overview">
+            {Cookies.get("name") !== undefined && Cookies.get("id") !== undefined 
+                ? <Layout2 id={Cookies.get("id")} name={Cookies.get("name")} action="Booking overview">
                     <div className="parent">
                         <div className="home-page">
                             <div className="booking-overview">
@@ -122,15 +125,15 @@ function BookingOverview(props) {
                                     </div>
                                     <div className="display-selected-venue" style={{height: 'auto'}}>
                                         <div style={{display: 'flex', flexDirection: 'row'}}>
-                                            <div style={{width: 240, textAlign: 'center', alignSelf: 'center'}}>{props.location.state.venueType} </div>
-                                            <div style={{width: 260, textAlign: 'center', alignSelf: 'center'}}>{props.location.state.venueName} </div>
-                                            <div style={{width: 150, textAlign: 'center', alignSelf: 'center'}}>{props.location.state.buildingName} {props.location.state.unit} </div>
-                                            <div style={{width: 80, textAlign: 'center', alignSelf: 'center'}}>{props.location.state.capacity} </div>
+                                            <div style={{width: 240, textAlign: 'center', alignSelf: 'center'}}>{Cookies.get("venueType")} </div>
+                                            <div style={{width: 260, textAlign: 'center', alignSelf: 'center'}}>{Cookies.get("venueName")} </div>
+                                            <div style={{width: 150, textAlign: 'center', alignSelf: 'center'}}>{Cookies.get("buildingName")} {Cookies.get("unit")} </div>
+                                            <div style={{width: 80, textAlign: 'center', alignSelf: 'center'}}>{Cookies.get("capacity")} </div>
                                             <div style={{display: 'flex', width: 120, textAlign: 'center', alignSelf: 'center'}}>
-                                                <br />{props.location.state.equipment.Projector === undefined ? "" : props.location.state.equipment.Projector === 1 ? props.location.state.equipment.Projector + " projector" : props.location.state.equipment.Projector + " projectors"}
-                                                <br />{props.location.state.equipment.Screen === undefined ? "" : props.location.state.equipment.Screen === 1 ? props.location.state.equipment.Screen + " screen" : props.location.state.equipment.Screen + " screens"}
-                                                <br />{props.location.state.equipment.Desktop === undefined ? "" : props.location.state.equipment.Desktop === 1 ? props.location.state.equipment.Desktop + " desktop" : props.location.state.equipment.Desktop + " desktops"}
-                                                <br />{props.location.state.equipment.Whiteboard === undefined ? "" : props.location.state.equipment.Whiteboard === 1 ? props.location.state.equipment.Whiteboard + " whiteboard" : props.location.state.equipment.Whiteboard + " whiteboards"}
+                                                <br />{(Cookies.get("projector") === "undefined" || Cookies.get("projector") === undefined) ? "" : Cookies.get("projector") === 1 ? Cookies.get("projector") + " projector" : Cookies.get("projector") + " projectors"}
+                                                <br />{(Cookies.get("screen") === "undefined" || Cookies.get("screen") === undefined) ? "" : Cookies.get("screen") === 1 ? Cookies.get("screen") + " screen" : Cookies.get("screen") + " screens"}
+                                                <br />{(Cookies.get("desktop") === "undefined" || Cookies.get("desktop") === undefined) ? "" : Cookies.get("desktop") === 1 ? Cookies.get("desktop") + " desktop" : Cookies.get("desktop") + " desktops"}
+                                                <br />{(Cookies.get("whiteboard") === "undefined" || Cookies.get("whiteboard") === undefined) ? "" : Cookies.get("whiteboard") === 1 ? Cookies.get("whiteboard") + " whiteboard" : Cookies.get("whiteboard") + " whiteboards"}
                                             </div>
                                         </div>
                                     </div>

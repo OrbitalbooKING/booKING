@@ -7,11 +7,13 @@ import (
 	"server/controllers"
 
 	"server/services"
+
 )
 
 func main() {
 	r := gin.Default()
 	http.Handle("/", http.FileServer(http.Dir("./build")))
+
 	if err := services.ConnectDataBase(); err != nil {
 		fmt.Println("Database not connected successfully. " + err.Error())
 		panic(err)

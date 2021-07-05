@@ -13,10 +13,7 @@ import (
 func StartAll(r *gin.Engine) {
 	r.Use(middleware.CORSMiddleware())
 	r.Use(static.Serve("/", static.LocalFile("./web", true)))
-
-	r.NoRoute(func(c *gin.Context) {
-		 c.File("./web")
-	})
+	r.NoRoute(func(c *gin.Context) { c.File("./web") })
 
 	api := r.Group("/api")
 

@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"math/rand"
 	"net/http"
-	"server/config"
-	"server/models"
+	"github.com/OrbitalbooKING/bookING/server/config"
+	"github.com/OrbitalbooKING/bookING/server/models"
 	"strconv"
 	"strings"
 )

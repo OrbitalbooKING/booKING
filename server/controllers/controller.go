@@ -18,7 +18,7 @@ func StartAll(r *gin.Engine) {
 	api := r.Group("/api")
 
 	api.POST("/register", services.Register)
-	api.GET("/get_faculty", services.GetFaculty)
+	api.GET("/get_faculty", services.GetFaculties)
 	api.POST("/login", services.Login)
 	api.PATCH("/reset", services.ResetPassword)
 	api.GET("/home", services.GetVenues)

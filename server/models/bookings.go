@@ -80,3 +80,14 @@ type Currentbookings struct {
 	Bookingstatusid int
 	Lastupdated     time.Time
 }
+
+type BookingDetails struct {
+	Venuename                string
+	Buildingname             string
+	Unit                     string
+	Eventstart               time.Time
+	Pax                      int
+	ID                       uuid.UUID
+	Bookingstatusdescription string
+	Sharable                 bool
+}

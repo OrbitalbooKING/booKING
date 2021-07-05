@@ -7,7 +7,7 @@ const (
 	DB_PASSWORD = "root"
 	DB_NAME     = "goauth"
 	LOCAL_HOST  = "localhost:3002"
-	HEROKU_HOST = "https://shielded-peak-15351.herokuapp.com"
+	HEROKU_HOST = "https://orbitalbooking.herokuapp.com"
 
 	CSV_MAIN_DIRECTORY    = "https://raw.githubusercontent.com/OrbitalbooKING/booKING/main/server"
 	ACCOUNTTYPES_CSV      = CSV_MAIN_DIRECTORY + "/services/DummyCSV/accountTypes.csv"

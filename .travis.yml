@@ -3,5 +3,8 @@ language: go
 go: 
 - master
 
+before_install:
+  - go get github.com/OrbitalbooKING/booKING/server
+
 script:
 - go test ./..

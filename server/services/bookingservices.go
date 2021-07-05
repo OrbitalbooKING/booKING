@@ -80,7 +80,7 @@ func MakeBooking(c *gin.Context) {
 		fmt.Println("Check execQuery." + err.Error())
 	}
 
-	returnMessage := fmt.Sprintf("Successfully confirmed %d bookings!", counter)
+	returnMessage := fmt.Sprintf("Successfully confirmed %d booking(s)!", counter)
 	c.JSON(http.StatusOK, gin.H{"success": true, "message": returnMessage})
 	fmt.Println(returnMessage)
 }

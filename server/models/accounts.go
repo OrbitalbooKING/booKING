@@ -17,6 +17,22 @@ type Accounts struct {
 	Accountstatusid int
 }
 
+type AccountDetailed struct {
+	ID              int    `json:"id"`
+	Nusnetid        string `json:"NUSNET_ID"`
+	Passwordhash    string `json:"password"`
+	Name            string
+	Facultyid       int
+	Facultyname     string
+	Gradyear        int
+	Profilepic      string
+	Accounttypeid   int
+	Points          int
+	Createdat       time.Time
+	Lastupdated     time.Time
+	Accountstatusid int
+}
+
 type User struct {
 	Nusnetid string `json:"NUSNET_ID" form:"NUSNET_ID"`
 	Password string `json:"password" form:"password"`

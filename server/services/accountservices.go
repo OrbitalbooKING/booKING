@@ -79,7 +79,7 @@ func Register(c *gin.Context) {
 		Passwordhash:    input.Password,
 		Name:            input.Name,
 		Facultyid:       input.Facultyid,
-		Gradyear:        input.Facultyid,
+		Gradyear:        input.Gradyear,
 		Profilepic:      input.Profilepic,
 		Accounttypeid:   accountType.ID,
 		Points:          50,
@@ -91,15 +91,15 @@ func Register(c *gin.Context) {
 	if err := CreateAccount(DB, account); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "error": "Unable to create account"})
 		fmt.Println("Unable to crete account. " + err.Error() + "\n")
+	} else {
+		c.JSON(http.StatusOK, gin.H{"success": true, "message": "Account successfully created!"})
+		log.Println("Account successfully created!")
 	}
-
-	c.JSON(http.StatusOK, gin.H{"success": true, "message": "Account successfully created!"})
-	log.Println("Account successfully created!")
 }
 
 // GET /get_faculty
 // get a list of faculties to populate registration field
-func GetFaculty(c *gin.Context) {
+func GetFaculties(c *gin.Context) {
 	facultyList, exists, err := GetFacultyList(DB)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Unable to get list of faculties."})
@@ -245,7 +245,7 @@ func GetProfile(c *gin.Context) {
 	}
 
 	// get account from user input
-	account, exists, err := GetAccount(DB, user)
+	account, exists, err := GetAccountDetailed(DB, user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": "Check database query"})
 		fmt.Println("Error in retrieving profile details from Database. " + err.Error() + "\n")
@@ -254,6 +254,7 @@ func GetProfile(c *gin.Context) {
 	if !exists {
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Account does not exist"})
 		fmt.Println("account does not exist. " + err.Error() + "\n")
+		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{"data": account})
@@ -278,10 +279,10 @@ func GetBookings(c *gin.Context) {
 	if !exists {
 		c.JSON(http.StatusOK, gin.H{"message": "User has no bookings"})
 		fmt.Println("User has no bookings")
+	} else {
+		c.JSON(http.StatusOK, gin.H{"data": booking})
+		fmt.Println("Successfully retrieved booking details.")
 	}
-
-	c.JSON(http.StatusOK, gin.H{"data": booking})
-	fmt.Println("Successfully retrieved booking details.")
 }
 
 func GetAccountTypeDetails(DB *gorm.DB, theType string) (models.Accounttypes, bool, error) {
@@ -363,19 +364,22 @@ func UpdateAccountPassword(DB *gorm.DB, retrieved models.Accounts, input models.
 	return nil
 }
 
-func RetrieveUserBookings(DB *gorm.DB, user models.User) ([]models.Currentbookings, bool, error) {
-	var bookings []models.Currentbookings
-	query := "SELECT * FROM currentbookings WHERE nusnetid = ?"
+func RetrieveUserBookings(DB *gorm.DB, user models.User) ([]models.BookingDetails, bool, error) {
+	var bookings []models.BookingDetails
+	query := "SELECT * FROM currentbookings" +
+		" JOIN venues ON venues.id = currentbookings.venueid" +
+		" JOIN buildings ON buildings.id = venues.buildingid" +
+		" JOIN bookingstatuses ON bookingstatuses.id = currentbookings.bookingstatusid" +
+		" WHERE nusnetid = ?"
 	result := DB.Raw(query, user.Nusnetid).Scan(&bookings)
 	if result.Error == gorm.ErrRecordNotFound {
-		return []models.Currentbookings{}, false, nil
+		return []models.BookingDetails{}, false, nil
 	}
 	if result.Error != nil {
-		return []models.Currentbookings{}, false, result.Error
+		return []models.BookingDetails{}, false, result.Error
 	}
 	return bookings, true, nil
 }
-
 
 func regexPasswordCheck(c *gin.Context, input string) bool {
 	num := `[0-9]{1}`
@@ -440,4 +444,32 @@ func regexIDCheck(c *gin.Context, input string) bool {
 		return false
 	}
 	return true
+}
+
+func GetFaculty(DB *gorm.DB, id int) (models.Faculties, bool, error) {
+	var faculty models.Faculties
+	query := "SELECT * FROM faculties WHERE id = ?"
+	result := DB.Raw(query, id).Scan(&faculty)
+	if result.Error == gorm.ErrRecordNotFound {
+		return models.Faculties{}, false, nil
+	}
+	if result.Error != nil {
+		return models.Faculties{}, false, result.Error
+	}
+	return faculty, true, nil
+}
+
+func GetAccountDetailed(DB *gorm.DB, input models.User) (models.AccountDetailed, bool, error) {
+	var retrieved models.AccountDetailed
+	query := "SELECT * FROM accounts" +
+		" JOIN faculties ON faculties.id = accounts.facultyid" +
+		" WHERE nusnetid = ?"
+	result := DB.Raw(query, input.Nusnetid).Scan(&retrieved)
+	if result.Error == gorm.ErrRecordNotFound {
+		return models.AccountDetailed{}, false, nil
+	}
+	if result.Error != nil {
+		return models.AccountDetailed{}, false, result.Error
+	}
+	return retrieved, true, nil
 }

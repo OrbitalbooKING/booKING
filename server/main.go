@@ -4,16 +4,14 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"server/controllers"
+	"github.com/OrbitalbooKING/bookING/server/controllers"
 
-	"server/services"
-
+	"github.com/OrbitalbooKING/bookING/server/services"
 )
 
 func main() {
 	r := gin.Default()
 	http.Handle("/", http.FileServer(http.Dir("./build")))
-
 	if err := services.ConnectDataBase(); err != nil {
 		fmt.Println("Database not connected successfully. " + err.Error())
 		panic(err)

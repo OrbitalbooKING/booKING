@@ -6,7 +6,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"reflect"
 	"regexp"
-	"server/models"
+	"github.com/OrbitalbooKING/bookING/server/models"
 	"testing"
 	"time"
 )

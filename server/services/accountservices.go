@@ -5,8 +5,8 @@ import (
 	"log"
 	"net/http"
 	"regexp"
-	"server/models"
-	"server/utils"
+	"github.com/OrbitalbooKING/bookING/server/models"
+	"github.com/OrbitalbooKING/bookING/server/utils"
 	"time"
 
 	"github.com/jinzhu/gorm"

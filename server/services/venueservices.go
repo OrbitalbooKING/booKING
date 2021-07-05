@@ -5,7 +5,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"log"
 	"net/http"
-	"server/models"
+	"github.com/OrbitalbooKING/bookING/server/models"
 	"time"
 
 	"github.com/gin-gonic/gin"

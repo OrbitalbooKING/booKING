@@ -2,9 +2,9 @@ package controllers
 
 import (
 	"os"
-	"server/config"
-	"server/middleware"
-	"server/services"
+	"github.com/OrbitalbooKING/bookING/server/config"
+	"github.com/OrbitalbooKING/bookING/middleware"
+	"github.com/OrbitalbooKING/bookING/server/services"
 
 	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
@@ -13,10 +13,7 @@ import (
 func StartAll(r *gin.Engine) {
 	r.Use(middleware.CORSMiddleware())
 	r.Use(static.Serve("/", static.LocalFile("./web", true)))
-
-	r.NoRoute(func(c *gin.Context) {
-		 c.File("./web")
-	})
+	r.NoRoute(func(c *gin.Context) { c.File("./web") })
 
 	api := r.Group("/api")
 

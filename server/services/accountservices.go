@@ -7,6 +7,7 @@ import (
 	"regexp"
 	"server/models"
 	"server/utils"
+	"strings"
 	"time"
 
 	"github.com/jinzhu/gorm"
@@ -24,6 +25,9 @@ func Register(c *gin.Context) {
 		fmt.Println("Error in parsing inputs for account creation.")
 		return
 	}
+
+	// converts id to lowercase
+	input.Nusnetid = strings.ToLower(input.Nusnetid)
 
 	// check valid nusnetid and password strength
 	if !regexIDCheck(c, input.Nusnetid) || !regexPasswordCheck(c, input.Password) {
@@ -119,7 +123,10 @@ func Login(c *gin.Context) {
 		return
 	}
 
+	// converts id to lowercase
+	input.Nusnetid = strings.ToLower(input.Nusnetid)
 	retrieved, exists, err := GetAccount(DB, input)
+
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Invalid NUSNET ID!"})
 		fmt.Println("Invalid NUSNET ID input. " + err.Error() + "\n")

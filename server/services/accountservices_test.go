@@ -564,7 +564,8 @@ func init() {
 }
 
 func TestRegister_ValidNewAcc(t *testing.T) {
-	toUseID := "e" + strconv.Itoa(rand.Intn(10000000))
+	// using e9xxxxx to prevent testing with an actual id as current nusnet id starts with e0
+	toUseID := "e9" + strconv.Itoa(rand.Intn(1000000))
 	testCorrectInput := models.CreateAccountInput{
 		Nusnetid: toUseID, // must be brand new un-used nusnetid
 		Password: "11",
@@ -604,11 +605,11 @@ func TestRegister_ValidNewAcc(t *testing.T) {
 }
 
 func TestRegister_InvalidUsedAcc(t *testing.T) {
-	toUseID := "e001" // test an already used input
+	toUseID := "e0123456" // test an already used input
 	testExistingInput := models.CreateAccountInput{
 		Nusnetid: toUseID,
-		Password: "11",
-		Name: "TestStudent",
+		Password: "Ab@123",
+		Name: "test",
 		Facultyid: 1,
 		Gradyear: 2022,
 		Profilepic: "testURL",
@@ -618,21 +619,24 @@ func TestRegister_InvalidUsedAcc(t *testing.T) {
 		t.Fatalf("Unexpected error: %s", err.Error())
 		return
 	}
-	response, err := http.Post(config.HEROKU_HOST, "/sign-up", bytes.NewBuffer(toSendExisting))
+	response, err := http.Post(config.HEROKU_HOST + "/sign-up", "application/json", bytes.NewBuffer(toSendExisting))
 	if err != nil {
 		t.Fatalf("Unexpected error: %s", err.Error())
 	}
-	if response.StatusCode != 400 {
-		t.Fatalf("expected response status code 400, got %d", response.StatusCode)
+	if response.StatusCode != 200 {
+		t.Fatalf("expected response status code 200, got %d", response.StatusCode)
 	}
 
 	var receive struct {
 		Success bool `json:"success"`
 		Message string `json:"message"`
 	}
+
+	fmt.Println(response.Body)
 	if err := json.NewDecoder(response.Body).Decode(&receive); err != nil {
 		t.Fatalf("Unexpected error: %s", err.Error())
 	}
+
 	expectedSuccess := false
 	expectedMessage := "Account already exists!"
 	if receive.Success != expectedSuccess && receive.Message != expectedMessage {

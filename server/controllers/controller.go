@@ -27,11 +27,14 @@ func StartAll(r *gin.Engine) {
 	api.GET("/get_profile", services.GetProfile)
 	api.GET("/get_bookings", services.GetBookings)
 
+	api.GET("/get_booking_requests", services.GetBookingRequests)
+	api.PUT("/approve_bookings", services.ApproveBookings)
+
 	api.GET("/timings", services.GetTimings)
 	api.PUT("/make_booking", services.MakeBooking)
 	api.GET("/get_pending_booking", services.GetPendingBooking)
 	api.POST("/make_pending_booking", services.MakePendingBooking)
-	api.DELETE("/delete_pending_booking", services.DeletePendingBooking)
+	api.DELETE("/delete_bookings", services.DeleteBookings)
 
 	// PUT for updating account
 

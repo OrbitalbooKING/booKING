@@ -128,7 +128,7 @@ func Login(c *gin.Context) {
 	retrieved, exists, err := GetAccount(DB, input)
 
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Invalid NUSNET ID!"})
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "Invalid NUSNET ID!"})
 		fmt.Println("Invalid NUSNET ID input. " + err.Error() + "\n")
 	}
 	if !exists {
@@ -146,7 +146,7 @@ func Login(c *gin.Context) {
 	// get online status code
 	statusCode, exists, err := GetAccountStatus(DB, "Online")
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Unable to retrieve online status code. "})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Unable to retrieve online status code. "})
 		fmt.Println("Unable to retrieve online status code. " + err.Error() + "\n")
 		return
 	}
@@ -161,12 +161,24 @@ func Login(c *gin.Context) {
 		fmt.Println("Unable to update account logged in status. " + err.Error() + "\n")
 	}
 
-	user := models.LoginOutput{
-		Nusnetid: input.Nusnetid,
-		Name:     retrieved.Name,
+	accountType, exists, err := GetAccountType(DB, retrieved.Accounttypeid)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Unable to retrieve account type. "})
+		fmt.Println("Unable to retrieve account type. " + err.Error() + "\n")
+		return
 	}
-	c.JSON(http.StatusOK, gin.H{"success": true, "message": user})
-	fmt.Println("Log in successful!")
+	if !exists {
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "Account type does not exist."})
+		fmt.Println("Account type does not exist. " + err.Error() + "\n")
+	} else {
+		user := models.LoginOutput{
+			Nusnetid:        input.Nusnetid,
+			Name:            retrieved.Name,
+			Accounttypename: accountType.Accounttypename,
+		}
+		c.JSON(http.StatusOK, gin.H{"success": true, "message": user})
+		fmt.Println("Log in successful!")
+	}
 }
 
 // PATCH /reset
@@ -261,30 +273,6 @@ func GetProfile(c *gin.Context) {
 	fmt.Println("Successfully retrieved profile details.")
 }
 
-// GET /get_bookings
-// Find all the current and past bookings tied to a particular account
-func GetBookings(c *gin.Context) {
-	var user models.User
-	if err := c.BindQuery(&user); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": "Check input NUSNET_ID"})
-		fmt.Println("Error in reading input NUSNET_ID. " + err.Error() + "\n")
-		return
-	}
-
-	booking, exists, err := RetrieveUserBookings(DB, user)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": "Check database query"})
-		fmt.Println("Error in retrieving booking details from Database. " + err.Error() + "\n")
-	}
-	if !exists {
-		c.JSON(http.StatusOK, gin.H{"message": "User has no bookings"})
-		fmt.Println("User has no bookings")
-	} else {
-		c.JSON(http.StatusOK, gin.H{"data": booking})
-		fmt.Println("Successfully retrieved booking details.")
-	}
-}
-
 func GetAccountTypeDetails(DB *gorm.DB, theType string) (models.Accounttypes, bool, error) {
 	var accountType models.Accounttypes
 	query := "SELECT * FROM accounttypes WHERE accounttypename = ?"
@@ -362,23 +350,6 @@ func UpdateAccountPassword(DB *gorm.DB, retrieved models.Accounts, input models.
 		return err
 	}
 	return nil
-}
-
-func RetrieveUserBookings(DB *gorm.DB, user models.User) ([]models.BookingDetails, bool, error) {
-	var bookings []models.BookingDetails
-	query := "SELECT * FROM currentbookings" +
-		" JOIN venues ON venues.id = currentbookings.venueid" +
-		" JOIN buildings ON buildings.id = venues.buildingid" +
-		" JOIN bookingstatuses ON bookingstatuses.id = currentbookings.bookingstatusid" +
-		" WHERE nusnetid = ?"
-	result := DB.Raw(query, user.Nusnetid).Scan(&bookings)
-	if result.Error == gorm.ErrRecordNotFound {
-		return []models.BookingDetails{}, false, nil
-	}
-	if result.Error != nil {
-		return []models.BookingDetails{}, false, result.Error
-	}
-	return bookings, true, nil
 }
 
 func regexPasswordCheck(c *gin.Context, input string) bool {
@@ -472,4 +443,17 @@ func GetAccountDetailed(DB *gorm.DB, input models.User) (models.AccountDetailed,
 		return models.AccountDetailed{}, false, result.Error
 	}
 	return retrieved, true, nil
+}
+
+func GetAccountType(DB *gorm.DB, typeID int) (models.Accounttypes, bool, error) {
+	query := "SELECT * FROM accounttypes WHERE id = ?"
+	var accountType models.Accounttypes
+	result := DB.Raw(query, typeID).Scan(&accountType)
+	if result.Error == gorm.ErrRecordNotFound {
+		return models.Accounttypes{}, false, nil
+	}
+	if result.Error != nil {
+		return models.Accounttypes{}, false, result.Error
+	}
+	return accountType, true, nil
 }

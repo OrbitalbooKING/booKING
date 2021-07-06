@@ -91,3 +91,16 @@ type BookingDetails struct {
 	Bookingstatusdescription string
 	Sharable                 bool
 }
+
+type BookingRequests struct {
+	Nusnetid                 string
+	Facultydescription       string
+	Venuename                string
+	Buildingname             string
+	Unit                     string
+	Eventstart               time.Time
+	Pax                      int
+	ID                       uuid.UUID `json:"BookingID"`
+	Bookingstatusdescription string
+	Sharable                 bool
+}

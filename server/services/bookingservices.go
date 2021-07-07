@@ -377,19 +377,21 @@ func RetrieveUserBookings(DB *gorm.DB, user models.User) ([]models.BookingDetail
 	return bookings, true, nil
 }
 
-func RetrieveBooking(DB *gorm.DB, input models.URLBooking) (models.BookingDetails, bool, error) {
-	var bookings models.BookingDetails
+func RetrieveBooking(DB *gorm.DB, input models.URLBooking) (models.BookingRequests, bool, error) {
+	var bookings models.BookingRequests
 	query := "SELECT * FROM currentbookings" +
 		" JOIN venues ON venues.id = currentbookings.venueid" +
 		" JOIN buildings ON buildings.id = venues.buildingid" +
 		" JOIN bookingstatuses ON bookingstatuses.id = currentbookings.bookingstatusid" +
+		" JOIN accounts ON accounts.nusnetid = currentbookings.nusnetid" +
+		" JOIN faculties ON accounts.facultyid = faculties.id" +
 		" WHERE currentbookings.id = ?"
 	result := DB.Raw(query, input.BookingID).Scan(&bookings)
 	if result.Error == gorm.ErrRecordNotFound {
-		return models.BookingDetails{}, false, nil
+		return models.BookingRequests{}, false, nil
 	}
 	if result.Error != nil {
-		return models.BookingDetails{}, false, result.Error
+		return models.BookingRequests{}, false, result.Error
 	}
 	return bookings, true, nil
 }

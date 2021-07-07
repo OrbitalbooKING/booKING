@@ -447,7 +447,7 @@ func TestGetPendingBookings(t *testing.T) {
 		JOIN currentBookings ON v.id = currentBookings.venueid
 		WHERE nusnetid = $1 AND bookingstatusid = $2`)
 	mock.ExpectQuery(query).
-		WithArgs("e001", bookingOne).
+		WithArgs("e001", 1).
 		WillReturnRows(rows)
 	expected := []models.PendingBookings{
 		{
@@ -738,8 +738,8 @@ func TestDeleteBookingFromTable_Success(t *testing.T) {
 	query := regexp.QuoteMeta(`DELETE FROM currentBookings WHERE id = $1`)
 	mock.MatchExpectationsInOrder(false)
 	mock.ExpectBegin()
-	mock.ExpectExec(query).WithArgs(bookingOne).WillReturnResult(sqlmock.NewResult(1, 1))
-	mock.ExpectExec(query).WithArgs(bookingTwo).WillReturnResult(sqlmock.NewResult(1, 1))
+	mock.ExpectExec(query).WithArgs(bookingOne).WillReturnResult(sqlmock.NewResult(0, 1))
+	mock.ExpectExec(query).WithArgs(bookingTwo).WillReturnResult(sqlmock.NewResult(0, 1))
 	mock.ExpectCommit()
 
 	input := models.MakeDeleteBookings{

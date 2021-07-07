@@ -1,9 +1,9 @@
 package utils
 
 import (
-	"errors"
 	"fmt"
-	"server/models"
+
+	"github.com/OrbitalbooKING/booKING/server/models"
 
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"golang.org/x/crypto/bcrypt"
@@ -11,7 +11,7 @@ import (
 
 // HashPassword hashes user password
 func HashPassword(user *models.User) error {
-	hashError := errors.New(fmt.Sprintf("unable to hash password for user %s", user.Nusnetid))
+	hashError := fmt.Errorf("unable to hash password for user %s", user.Nusnetid)
 	bytes, err := bcrypt.GenerateFromPassword([]byte(user.Password), 10)
 	if err != nil {
 		fmt.Printf("Unable to hash password " + err.Error())

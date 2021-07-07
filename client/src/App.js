@@ -17,6 +17,15 @@ import BookingSuccess from "./components/BookingSuccess";
 import LogoutSuccess from "./components/LogoutSuccess";
 import Profile from "./components/Profile";
 
+import HelpStaff from "./components/HelpStaff";
+import StaffLoginSuccess from "./components/StaffLoginSuccess";
+import StaffHome from "./components/StaffHome";
+import StaffVenues from "./components/StaffVenues";
+import StaffProfile from "./components/StaffProfile";
+import ApprovalOverview from "./components/ApprovalOverview"
+import ApprovalSuccess from "./components/ApprovalSuccess";
+import ErrorPage from "./components/ErrorPage";
+
 function App() {
 
   return (
@@ -25,46 +34,38 @@ function App() {
         <Switch>
           <Route exact path="/"><LoginForm /></Route>
           <Route exact path="/help"><Help /></Route>
-          <Route exact path="/help-logged-in" render={props=>(
-            <HelpLoggedIn {...props} />)}
-          />
+          <Route exact path="/help-logged-in"><HelpLoggedIn /></Route>
           <Route exact path="/sign-in"><LoginForm /></Route>
           <Route exact path="/sign-up"><SignUpForm /></Route>
           <Route exact path="/reset-password"><ResetForm /></Route>
-          {/* <Route exact path="/sign-in-success" render={props=>(
+          {/* <Route exact path="/sign-in-success"><LoginSuccess /></Route> */}
+          <Route exact path="/sign-in-success" render={props=>(
             <LoginSuccess {...props} />)}
-          /> */}
-          <Route exact path="/sign-in-success"><LoginSuccess /></Route>
+          />
           <Route exact path="/sign-up-success" render={props=>(
             <SignUpSuccess {...props} />)}
           />
           <Route exact path="/reset-password-success" render={props=>(
             <ResetSuccess {...props} />)}
           />
-          {/* <Route exact path="/home" render={props=>(
-            <Home {...props} />)}
-          /> */}
           <Route exact path="/home"><Home /></Route>
-          {/* wipe cookies for venues when go to home */}
-          {/* <Route exact path="/booking" render={props=>(
-            <Booking {...props} />)}
-          /> */}
           <Route exact path="/booking"><Booking /></Route>
-          {/* <Route exact path="/booking-overview" render={props=>(
-            <BookingOverview {...props} />)}
-          /> */}
           <Route exact path="/booking-overview"><BookingOverview /></Route>
-          {/* <Route exact path="/booking-success" render={props=>(
-            <BookingSuccess {...props} />)}
-          /> */}
           <Route exact path="/booking-success"><BookingSuccess /></Route>
           <Route exact path="/logout" render={props=>(
             <LogoutSuccess {...props} />)}
           />
-          {/* <Route exact path="/profile" render={props=>(
-            <Profile {...props} />)}
-          /> */}
           <Route exact path="/profile"><Profile /></Route>
+          <Route exact path="/help-staff"><HelpStaff /></Route>
+          <Route exact path="/staff-sign-in-success"><StaffLoginSuccess /></Route>
+          <Route exact path="/staff-home"><StaffHome /></Route>
+          <Route exact path="/staff-venues"><StaffVenues /></Route>
+          <Route exact path="/staff-profile"><StaffProfile /></Route>
+          <Route exact path="/approval-overview"><ApprovalOverview /></Route>
+          <Route exact path="/approval-success" render={props=>(
+            <ApprovalSuccess {...props} />)}
+          />
+          <Route exact path="*"><ErrorPage /></Route>
         </Switch>
       </div>
     </Router>

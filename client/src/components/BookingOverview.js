@@ -56,7 +56,6 @@ function BookingOverview() {
             for (let i = 0; i < cart.length; i++) {
                 tempArr.push(cart[i].Bookingid);
             }
-            console.log(tempArr);
 
             Axios.put(configData.LOCAL_HOST + "/make_booking", 
             {
@@ -115,28 +114,28 @@ function BookingOverview() {
                         <div className="home-page">
                             <div className="booking-overview">
                                 <div className="display-selected-venue-header">
-                                        <div style={{display: 'flex', flexDirection: 'row'}}>
-                                            <div style={{width: 240, textAlign: 'center', alignSelf: 'center'}}>Venue type </div>
-                                            <div style={{width: 260, textAlign: 'center', alignSelf: 'center'}}>Venue name </div>
-                                            <div style={{width: 150, textAlign: 'center', alignSelf: 'center'}}>Location </div>
-                                            <div style={{width: 80, textAlign: 'center', alignSelf: 'center'}}>Max capacity </div>
-                                            <div style={{width: 120, textAlign: 'center', alignSelf: 'center'}}>Equipment </div>
+                                    <div style={{display: 'flex', flexDirection: 'row'}}>
+                                        <div style={{width: 240, textAlign: 'center', alignSelf: 'center'}}>Venue type </div>
+                                        <div style={{width: 260, textAlign: 'center', alignSelf: 'center'}}>Venue name </div>
+                                        <div style={{width: 150, textAlign: 'center', alignSelf: 'center'}}>Location </div>
+                                        <div style={{width: 80, textAlign: 'center', alignSelf: 'center'}}>Max capacity </div>
+                                        <div style={{width: 120, textAlign: 'center', alignSelf: 'center'}}>Equipment </div>
+                                    </div>
+                                </div>
+                                <div className="display-selected-venue" style={{height: 'auto'}}>
+                                    <div style={{display: 'flex', flexDirection: 'row'}}>
+                                        <div style={{width: 240, textAlign: 'center', alignSelf: 'center'}}>{Cookies.get("venueType")} </div>
+                                        <div style={{width: 260, textAlign: 'center', alignSelf: 'center'}}>{Cookies.get("venueName")} </div>
+                                        <div style={{width: 150, textAlign: 'center', alignSelf: 'center'}}>{Cookies.get("buildingName")} {Cookies.get("unit")} </div>
+                                        <div style={{width: 80, textAlign: 'center', alignSelf: 'center'}}>{Cookies.get("capacity")} </div>
+                                        <div style={{display: 'flex', width: 120, textAlign: 'center', alignSelf: 'center'}}>
+                                            <br />{(Cookies.get("projector") === "undefined" || Cookies.get("projector") === undefined) ? "" : Cookies.get("projector") === 1 ? Cookies.get("projector") + " projector" : Cookies.get("projector") + " projectors"}
+                                            <br />{(Cookies.get("screen") === "undefined" || Cookies.get("screen") === undefined) ? "" : Cookies.get("screen") === 1 ? Cookies.get("screen") + " screen" : Cookies.get("screen") + " screens"}
+                                            <br />{(Cookies.get("desktop") === "undefined" || Cookies.get("desktop") === undefined) ? "" : Cookies.get("desktop") === 1 ? Cookies.get("desktop") + " desktop" : Cookies.get("desktop") + " desktops"}
+                                            <br />{(Cookies.get("whiteboard") === "undefined" || Cookies.get("whiteboard") === undefined) ? "" : Cookies.get("whiteboard") === 1 ? Cookies.get("whiteboard") + " whiteboard" : Cookies.get("whiteboard") + " whiteboards"}
                                         </div>
                                     </div>
-                                    <div className="display-selected-venue" style={{height: 'auto'}}>
-                                        <div style={{display: 'flex', flexDirection: 'row'}}>
-                                            <div style={{width: 240, textAlign: 'center', alignSelf: 'center'}}>{Cookies.get("venueType")} </div>
-                                            <div style={{width: 260, textAlign: 'center', alignSelf: 'center'}}>{Cookies.get("venueName")} </div>
-                                            <div style={{width: 150, textAlign: 'center', alignSelf: 'center'}}>{Cookies.get("buildingName")} {Cookies.get("unit")} </div>
-                                            <div style={{width: 80, textAlign: 'center', alignSelf: 'center'}}>{Cookies.get("capacity")} </div>
-                                            <div style={{display: 'flex', width: 120, textAlign: 'center', alignSelf: 'center'}}>
-                                                <br />{(Cookies.get("projector") === "undefined" || Cookies.get("projector") === undefined) ? "" : Cookies.get("projector") === 1 ? Cookies.get("projector") + " projector" : Cookies.get("projector") + " projectors"}
-                                                <br />{(Cookies.get("screen") === "undefined" || Cookies.get("screen") === undefined) ? "" : Cookies.get("screen") === 1 ? Cookies.get("screen") + " screen" : Cookies.get("screen") + " screens"}
-                                                <br />{(Cookies.get("desktop") === "undefined" || Cookies.get("desktop") === undefined) ? "" : Cookies.get("desktop") === 1 ? Cookies.get("desktop") + " desktop" : Cookies.get("desktop") + " desktops"}
-                                                <br />{(Cookies.get("whiteboard") === "undefined" || Cookies.get("whiteboard") === undefined) ? "" : Cookies.get("whiteboard") === 1 ? Cookies.get("whiteboard") + " whiteboard" : Cookies.get("whiteboard") + " whiteboards"}
-                                            </div>
-                                        </div>
-                                    </div>
+                                </div>
                                 <div style={{margin: '0 auto', height: 300, width: 550, paddingLeft: 20}}><div style={{textAlign: 'center'}}>Selected Timeslots:</div>
                                     <div style = 
                                     {{overflowY: "auto", height: 250}}

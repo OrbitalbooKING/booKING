@@ -1,7 +1,6 @@
 import { useHistory } from "react-router-dom";
 import Layout1 from "../layouts/Layout1";
 import Unauthorised from "./Unauthorised";
-import LoginForm from "./Login";
 
 function LogoutSuccess(props) {
 
@@ -24,7 +23,7 @@ function LogoutSuccess(props) {
                             </div>
                         </div>
                     </Layout1>
-                : <LoginForm />
+                : <Unauthorised />
             }
         </>
     );

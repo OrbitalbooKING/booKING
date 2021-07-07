@@ -3,7 +3,8 @@ package services
 import (
 	"fmt"
 	"os"
-	"server/config"
+
+	"github.com/OrbitalbooKING/booKING/server/config"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"

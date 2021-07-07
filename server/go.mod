@@ -1,4 +1,4 @@
-module server
+module github.com/OrbitalbooKING/booKING/server
 
 go 1.16
 

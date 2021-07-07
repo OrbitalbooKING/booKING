@@ -1,8 +1,9 @@
 package utils
 
 import (
-	"server/models"
 	"testing"
+
+	"github.com/OrbitalbooKING/booKING/server/models"
 )
 
 func TestHashPassword_ValidInput(t *testing.T) {

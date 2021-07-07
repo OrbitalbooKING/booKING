@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 // import { useHistory } from "react-router-dom";
 import Axios from "axios";
 import configData from "../config.json";
-import Layout2 from "../layouts/Layout2";
+import Layout3 from "../layouts/Layout3";
 import Unauthorised from "./Unauthorised";
 
 import moment from "moment";
@@ -10,7 +10,7 @@ import moment from "moment";
 import profilePic from "../assets/profile.png";
 import Cookies from "js-cookie";
 
-function Profile() {
+function StaffProfile() {
 
     // let history = useHistory();
     
@@ -138,7 +138,7 @@ function Profile() {
     return (
         <>
             {Cookies.get("name") !== undefined && Cookies.get("id") !== undefined
-                ? <Layout2 id={Cookies.get("id")} name={Cookies.get("name")} action="Viewing profile">
+                ? <Layout3 id={Cookies.get("id")} name={Cookies.get("name")} action="Viewing profile">
                         <div className="parent">
                             <div className="home-page">
                                 <div className="profile">
@@ -232,11 +232,11 @@ function Profile() {
                                 </div>
                             </div>
                         </div>
-                    </Layout2>                
+                    </Layout3>                
                 : <Unauthorised />
             }
         </>
     );
 }
 
-export default Profile;
+export default StaffProfile;

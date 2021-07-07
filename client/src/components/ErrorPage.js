@@ -1,26 +1,24 @@
 import { useHistory } from "react-router-dom";
-import Layout1 from "../layouts/Layout1";
 
-function Unauthorised() {
+function ErrorPage() {
 
     let history = useHistory();
 
-    const Login = () => {
-        history.push("/sign-in");
+    const Home = () => {
+        history.push("/home");
     };
 
     return (
-        <Layout1>
-            <div className="parent">
-                <div className="welcome-page">
-                    <div> 
-                        <h2>Please login!</h2>
-                        <button style={{float: 'left'}} type="submit" className="btn btn-primary btn-block" onClick={Login}>Login</button>
-                    </div>
+        <div>
+            <div className="welcome-page">
+                <h1>Error 404</h1>
+                <p>The page you are looking for doesn't exist!</p>
+                <div>
+                    <button style={{float: 'left'}} type="submit" className="btn btn-primary btn-block" onClick={Home}>Home</button>
                 </div>
             </div>
-        </Layout1>
+        </div>
     );
 }
 
-export default Unauthorised;
+export default ErrorPage;

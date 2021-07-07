@@ -36,14 +36,14 @@ function LoginForm() {
                 expires: inThreeHours
             });
 
-            // history.push({
-            //     pathname: "/sign-in-success",
-            //     state: { 
-            //         id: response.data.message.Nusnetid,
-            //         name: response.data.message.Name
-            //     }
-            // });
-            history.push("/sign-in-success");
+            history.push({
+                pathname: "/sign-in-success",
+                state: { 
+                    id: response.data.message.Nusnetid,
+                    name: response.data.message.Name
+                }
+            });
+            
         }).catch((error) => {
             if (error.response) {
                 console.log("response");

@@ -1,4 +1,6 @@
-# booKING
+[![Build Status](https://travis-ci.com/OrbitalbooKING/booKING.svg?branch=main)](https://travis-ci.com/OrbitalbooKING/booKING)
+<br />
+# booKING 
 
 ## Orbital 2021 
 ![](./assets/logo.png)

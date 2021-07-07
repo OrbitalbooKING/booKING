@@ -6,10 +6,11 @@ import (
 	"fmt"
 	"math/rand"
 	"net/http"
-	"server/config"
-	"server/models"
 	"strconv"
 	"strings"
+
+	"github.com/OrbitalbooKING/booKING/server/config"
+	"github.com/OrbitalbooKING/booKING/server/models"
 )
 
 // func to read csv files from URL

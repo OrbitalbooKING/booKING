@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"net/http"
-	"server/controllers"
 
-	"server/services"
+	"github.com/OrbitalbooKING/booKING/server/controllers"
+	"github.com/gin-gonic/gin"
+
+	"github.com/OrbitalbooKING/booKING/server/services"
 )
 
 func main() {

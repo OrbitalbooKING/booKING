@@ -233,7 +233,7 @@ function Booking() {
 
                 search.append("bookingID", cart[i].Bookingid);
                 
-                Axios.delete(configData.LOCAL_HOST + "/delete_pending_booking", 
+                Axios.delete(configData.LOCAL_HOST + "/delete_bookings", 
                 {
                     params: search,
                 }
@@ -269,7 +269,7 @@ function Booking() {
         let search = new URLSearchParams();
         search.append("bookingID", value.Bookingid);               
 
-        Axios.delete(configData.LOCAL_HOST + "/delete_pending_booking", 
+        Axios.delete(configData.LOCAL_HOST + "/delete_bookings", 
         {
             params: search,
         }
@@ -305,7 +305,7 @@ function Booking() {
                 search.append("bookingID", cart[i].Bookingid);               
                 
             }
-            Axios.delete(configData.LOCAL_HOST + "/delete_pending_booking", 
+            Axios.delete(configData.LOCAL_HOST + "/delete_bookings", 
             {
                 params: search,
             }

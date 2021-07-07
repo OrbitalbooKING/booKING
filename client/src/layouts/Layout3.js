@@ -12,16 +12,20 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import * as Cookies from "js-cookie";
 
 
-function Layout2(props) {
+function Layout3(props) {
 
     let history = useHistory();
 
     const getHelp = () => {
-        history.push("/help-logged-in");
+        history.push("/help-staff");
+    };
+
+    const getVenues = () => {
+        history.push("/staff-venues");
     };
     
     const viewProfile = () => {
-        history.push("/profile");
+        history.push("/staff-profile");
     };
     
     const logout = () => {
@@ -63,6 +67,7 @@ function Layout2(props) {
                     </div> */}
                     <div className="container">
                         <Nav className="mr-auto">
+                            <Nav.Link onClick={getVenues}>Venues</Nav.Link>   
                             <div style={{margin: '0 auto', alignSelf: 'center'}}>
                             </div>                         
                             <Nav.Link onClick={getHelp}>Help</Nav.Link>
@@ -82,4 +87,4 @@ function Layout2(props) {
     );
 }
 
-export default Layout2;
+export default Layout3;

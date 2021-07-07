@@ -6,9 +6,10 @@ import (
 	"fmt"
 	"reflect"
 	"regexp"
-	"server/models"
 	"testing"
 	"time"
+
+	"github.com/OrbitalbooKING/booKING/server/models"
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/google/uuid"
@@ -446,7 +447,7 @@ func TestGetPendingBookings(t *testing.T) {
 		JOIN currentBookings ON v.id = currentBookings.venueid
 		WHERE nusnetid = $1 AND bookingstatusid = $2`)
 	mock.ExpectQuery(query).
-		WithArgs("e001", bookingOne).
+		WithArgs("e001", 1).
 		WillReturnRows(rows)
 	expected := []models.PendingBookings{
 		{
@@ -737,8 +738,8 @@ func TestDeleteBookingFromTable_Success(t *testing.T) {
 	query := regexp.QuoteMeta(`DELETE FROM currentBookings WHERE id = $1`)
 	mock.MatchExpectationsInOrder(false)
 	mock.ExpectBegin()
-	mock.ExpectExec(query).WithArgs(bookingOne).WillReturnResult(sqlmock.NewResult(1, 1))
-	mock.ExpectExec(query).WithArgs(bookingTwo).WillReturnResult(sqlmock.NewResult(1, 1))
+	mock.ExpectExec(query).WithArgs(bookingOne).WillReturnResult(sqlmock.NewResult(0, 1))
+	mock.ExpectExec(query).WithArgs(bookingTwo).WillReturnResult(sqlmock.NewResult(0, 1))
 	mock.ExpectCommit()
 
 	input := models.MakeDeleteBookings{
@@ -771,7 +772,7 @@ func TestDeleteBookingFromTable_Error(t *testing.T) {
 		t.Fatalf("Unexpectedly unable to generate uuid. " + err.Error())
 	}
 
-	errorMessage := fmt.Sprintf("Error in deleting booking for booking with booking id = %v\n", bookingTwo)
+	errorMessage := fmt.Sprintf("Error in deleting booking for booking with booking id = %v\n ", bookingTwo)
 	expected := errors.New(errorMessage)
 
 	query := regexp.QuoteMeta(`DELETE FROM currentBookings WHERE id = $1`)

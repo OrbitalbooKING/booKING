@@ -2,9 +2,10 @@ package controllers
 
 import (
 	"os"
-	"server/config"
-	"server/middleware"
-	"server/services"
+
+	"github.com/OrbitalbooKING/booKING/server/config"
+	"github.com/OrbitalbooKING/booKING/server/middleware"
+	"github.com/OrbitalbooKING/booKING/server/services"
 
 	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
@@ -26,12 +27,16 @@ func StartAll(r *gin.Engine) {
 
 	api.GET("/get_profile", services.GetProfile)
 	api.GET("/get_bookings", services.GetBookings)
+	api.GET("/check_booking", services.CheckBooking)
+
+	api.GET("/get_booking_requests", services.GetBookingRequests)
+	api.PUT("/approve_bookings", services.ApproveBookings)
 
 	api.GET("/timings", services.GetTimings)
 	api.PUT("/make_booking", services.MakeBooking)
 	api.GET("/get_pending_booking", services.GetPendingBooking)
 	api.POST("/make_pending_booking", services.MakePendingBooking)
-	api.DELETE("/delete_pending_booking", services.DeletePendingBooking)
+	api.DELETE("/delete_bookings", services.DeleteBookings)
 
 	// PUT for updating account
 

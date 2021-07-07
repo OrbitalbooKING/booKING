@@ -54,7 +54,11 @@ type BookingInput struct {
 }
 
 type Retrievebookings struct {
-	ID uuid.UUID
+	ID uuid.UUID `form:"bookingID"`
+}
+
+type URLBooking struct {
+	BookingID string `form:"bookingID"`
 }
 
 type PendingBookings struct {
@@ -88,6 +92,19 @@ type BookingDetails struct {
 	Eventstart               time.Time
 	Pax                      int
 	ID                       uuid.UUID
+	Bookingstatusdescription string
+	Sharable                 bool
+}
+
+type BookingRequests struct {
+	Nusnetid                 string
+	Facultydescription       string
+	Venuename                string
+	Buildingname             string
+	Unit                     string
+	Eventstart               time.Time
+	Pax                      int
+	ID                       uuid.UUID `json:"BookingID"`
 	Bookingstatusdescription string
 	Sharable                 bool
 }

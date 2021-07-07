@@ -2,11 +2,12 @@ package services
 
 import (
 	"fmt"
-	"github.com/jinzhu/gorm"
 	"log"
 	"net/http"
-	"server/models"
 	"time"
+
+	"github.com/OrbitalbooKING/booKING/server/models"
+	"github.com/jinzhu/gorm"
 
 	"github.com/gin-gonic/gin"
 )
@@ -17,8 +18,8 @@ func GetVenues(c *gin.Context) {
 	// get all the venues
 	searchPage, err := GetSearchPage(DB)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Unable to populate venues. "+ err.Error()})
-		fmt.Println("Unable to populate venues. "+ err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Unable to populate venues. " + err.Error()})
+		fmt.Println("Unable to populate venues. " + err.Error())
 		return
 	}
 
@@ -71,7 +72,6 @@ func SearchVenues(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": searchPage})
 	fmt.Println("Return successful!")
 }
-
 
 func GetVenueArr(DB *gorm.DB, filters []models.SearchPage) ([]models.SearchPage, bool, error) {
 	// make into v.id in filters into an array

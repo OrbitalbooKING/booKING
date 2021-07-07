@@ -39,8 +39,9 @@ type User struct {
 }
 
 type LoginOutput struct {
-	Nusnetid string
-	Name     string
+	Nusnetid        string
+	Name            string
+	Accounttypename string
 }
 
 type CreateAccountInput struct {

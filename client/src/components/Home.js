@@ -597,7 +597,7 @@ function Home() {
         });
     };
 
-    const Book = (val) => () => {
+    const book = (val) => () => {
         // history.push({
         //     pathname: "/booking",
         //     state: { 
@@ -692,8 +692,6 @@ function Home() {
         if (startDate > endDate) {
             setEndDate(null);
         }
-
-        console.log(Cookies.get("name"));
         
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [startDate]);
@@ -842,7 +840,10 @@ function Home() {
                                                         <br />{val.Facilitiesdict.Screen === undefined ? "" : val.Facilitiesdict.Screen === 1 ? val.Facilitiesdict.Screen + " screen" : val.Facilitiesdict.Screen + " screens"}
                                                         <br />{val.Facilitiesdict.Desktop === undefined ? "" : val.Facilitiesdict.Desktop === 1 ? val.Facilitiesdict.Desktop + " desktop" : val.Facilitiesdict.Desktop + " desktops"}
                                                         <br />{val.Facilitiesdict.Whiteboard === undefined ? "" : val.Facilitiesdict.Whiteboard === 1 ? val.Facilitiesdict.Whiteboard + " whiteboard" : val.Facilitiesdict.Whiteboard + " whiteboards"}
-                                                    </div><div style={{width: 80, textAlign: 'center', alignSelf: 'center'}}><button type="submit" className="btn btn-primary btn-block" onClick={Book(val)}>Book</button></div>
+                                                    </div>
+                                                    <div style={{width: 80, textAlign: 'center', alignSelf: 'center'}}>
+                                                        <button type="submit" className="btn btn-primary btn-block" onClick={book(val)}>Book</button>
+                                                    </div>
                                                 </div>
                                                 
                                             </div>

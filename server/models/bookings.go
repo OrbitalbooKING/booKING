@@ -54,7 +54,11 @@ type BookingInput struct {
 }
 
 type Retrievebookings struct {
-	ID uuid.UUID
+	ID uuid.UUID `form:"bookingID"`
+}
+
+type URLBooking struct {
+	BookingID string `form:"bookingID"`
 }
 
 type PendingBookings struct {

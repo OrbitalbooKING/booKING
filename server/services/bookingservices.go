@@ -275,6 +275,31 @@ func ApproveBookings(c *gin.Context) {
 	}
 }
 
+// GET /check_booking
+// gets a specific booking based on its booking id
+func CheckBooking(c *gin.Context) {
+	var input models.URLBooking
+	if err := c.BindQuery(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": "Check input booking ID"})
+		fmt.Println("Error in reading input booking ID. " + err.Error() + "\n")
+		return
+	}
+
+	booking, exists, err := RetrieveBooking(DB, input)
+	if err != nil {
+		errorMessage := fmt.Sprintf("Error retrieving booking. " + err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"message": errorMessage})
+		fmt.Println(errorMessage)
+	}
+	if !exists {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "No such booking."})
+		fmt.Println("No such booking found.")
+	} else {
+		c.JSON(http.StatusOK, gin.H{"data": booking})
+		fmt.Println("Successfully retrieved booking.")
+	}
+}
+
 func RetrieveBookingRequests(DB *gorm.DB, statusIDs []int) ([]models.BookingRequests, bool, error) {
 	// get list of bookings that fit into the statusIDs
 	query := "SELECT * FROM currentbookings" +
@@ -348,6 +373,23 @@ func RetrieveUserBookings(DB *gorm.DB, user models.User) ([]models.BookingDetail
 	}
 	if result.Error != nil {
 		return []models.BookingDetails{}, false, result.Error
+	}
+	return bookings, true, nil
+}
+
+func RetrieveBooking(DB *gorm.DB, input models.URLBooking) (models.BookingDetails, bool, error) {
+	var bookings models.BookingDetails
+	query := "SELECT * FROM currentbookings" +
+		" JOIN venues ON venues.id = currentbookings.venueid" +
+		" JOIN buildings ON buildings.id = venues.buildingid" +
+		" JOIN bookingstatuses ON bookingstatuses.id = currentbookings.bookingstatusid" +
+		" WHERE currentbookings.id = ?"
+	result := DB.Raw(query, input.BookingID).Scan(&bookings)
+	if result.Error == gorm.ErrRecordNotFound {
+		return models.BookingDetails{}, false, nil
+	}
+	if result.Error != nil {
+		return models.BookingDetails{}, false, result.Error
 	}
 	return bookings, true, nil
 }
@@ -495,7 +537,7 @@ func DeleteBookingFromTable(DB *gorm.DB, input models.MakeDeleteBookings) (int, 
 	var errorMessage string
 	for _, s := range input.BookingID {
 		if err := DB.Exec(deleteQuery, s).Error; err != nil {
-			errorMessage += fmt.Sprintf("Error in deleting booking for booking with booking id = %v\n " + err.Error(), s)
+			errorMessage += err.Error()
 		} else {
 			counter++
 		}

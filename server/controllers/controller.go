@@ -27,6 +27,7 @@ func StartAll(r *gin.Engine) {
 
 	api.GET("/get_profile", services.GetProfile)
 	api.GET("/get_bookings", services.GetBookings)
+	api.GET("/check_booking", services.CheckBooking)
 
 	api.GET("/get_booking_requests", services.GetBookingRequests)
 	api.PUT("/approve_bookings", services.ApproveBookings)

@@ -311,33 +311,33 @@ func TestMakeVenueFacilitiesDict_Stubbed(t *testing.T) {
 	}
 }
 
-func TestMakeVenueFacilitiesDict(t *testing.T) {
-	if err := ConnectDataBase(); err != nil {
-		t.Fatalf("Unexpected error. Unable to connect to the database." + err.Error())
-	}
-	input := []models.SearchPage{
-		{
-			ID: 3,
-		},
-	}
-	dict := make(map[string]int)
-	dict["Desktop"] = 21
-	dict["Whiteboard"] = 45
-	// taken from database for venue with venueID = 3
-	expected := []models.SearchPage{
-		{
-			ID:             3,
-			Facilitiesdict: dict,
-		},
-	}
-
-	if err := MakeVenueFacilitiesDict(DB, input); err != nil || !reflect.DeepEqual(input, expected) {
-		if err != nil {
-			t.Fatalf("Unexpected error: %s", err.Error())
-		}
-		if !reflect.DeepEqual(input, expected) {
-			t.Errorf("Dict not made properly. Expected to get dict %v but got value %v",
-				expected, input)
-		}
-	}
-}
+//func TestMakeVenueFacilitiesDict(t *testing.T) {
+//	if err := ConnectDataBase(); err != nil {
+//		t.Fatalf("Unexpected error. Unable to connect to the database." + err.Error())
+//	}
+//	input := []models.SearchPage{
+//		{
+//			ID: 3,
+//		},
+//	}
+//	dict := make(map[string]int)
+//	dict["Desktop"] = 21
+//	dict["Whiteboard"] = 45
+//	// taken from database for venue with venueID = 3
+//	expected := []models.SearchPage{
+//		{
+//			ID:             3,
+//			Facilitiesdict: dict,
+//		},
+//	}
+//
+//	if err := MakeVenueFacilitiesDict(DB, input); err != nil || !reflect.DeepEqual(input, expected) {
+//		if err != nil {
+//			t.Fatalf("Unexpected error: %s", err.Error())
+//		}
+//		if !reflect.DeepEqual(input, expected) {
+//			t.Errorf("Dict not made properly. Expected to get dict %v but got value %v",
+//				expected, input)
+//		}
+//	}
+//}

@@ -772,7 +772,7 @@ func TestDeleteBookingFromTable_Error(t *testing.T) {
 		t.Fatalf("Unexpectedly unable to generate uuid. " + err.Error())
 	}
 
-	errorMessage := fmt.Sprintf("Error in deleting booking for booking with booking id = %v\n", bookingTwo)
+	errorMessage := fmt.Sprintf("Error in deleting booking for booking with booking id = %v\n ", bookingTwo)
 	expected := errors.New(errorMessage)
 
 	query := regexp.QuoteMeta(`DELETE FROM currentBookings WHERE id = $1`)

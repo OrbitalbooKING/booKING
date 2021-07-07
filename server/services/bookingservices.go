@@ -495,7 +495,7 @@ func DeleteBookingFromTable(DB *gorm.DB, input models.MakeDeleteBookings) (int, 
 	var errorMessage string
 	for _, s := range input.BookingID {
 		if err := DB.Exec(deleteQuery, s).Error; err != nil {
-			errorMessage += fmt.Sprintf("Error in deleting booking for booking with booking id = %v\n", s)
+			errorMessage += fmt.Sprintf("Error in deleting booking for booking with booking id = %v\n " + err.Error(), s)
 		} else {
 			counter++
 		}

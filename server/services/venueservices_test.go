@@ -321,9 +321,8 @@ func TestMakeVenueFacilitiesDict(t *testing.T) {
 		},
 	}
 	dict := make(map[string]int)
-	dict["Desktop"] = 7
-	dict["Projector"] = 39
-	dict["Whiteboard"] = 23
+	dict["Desktop"] = 21
+	dict["Whiteboard"] = 45
 	// taken from database for venue with venueID = 3
 	expected := []models.SearchPage{
 		{

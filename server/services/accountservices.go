@@ -91,10 +91,10 @@ func Register(c *gin.Context) {
 
 	if err := CreateAccount(DB, account); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "error": "Unable to create account"})
-		fmt.Println("Unable to crete account. " + err.Error() + "\n")
+		fmt.Println("Unable to create account. " + err.Error() + "\n")
 	} else {
 		c.JSON(http.StatusOK, gin.H{"success": true, "message": "Account successfully created!"})
-		log.Println("Account successfully created!")
+		fmt.Println("Account successfully created!")
 	}
 }
 

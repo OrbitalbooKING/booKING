@@ -6,9 +6,10 @@ import (
 	"fmt"
 	"reflect"
 	"regexp"
-	"server/models"
 	"testing"
 	"time"
+
+	"github.com/OrbitalbooKING/booKING/server/models"
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/google/uuid"

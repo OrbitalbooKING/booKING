@@ -2,9 +2,10 @@ package controllers
 
 import (
 	"os"
-	"server/config"
-	"server/middleware"
-	"server/services"
+
+	"github.com/OrbitalbooKING/booKING/server/config"
+	"github.com/OrbitalbooKING/booKING/server/middleware"
+	"github.com/OrbitalbooKING/booKING/server/services"
 
 	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"

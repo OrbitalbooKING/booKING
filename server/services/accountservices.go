@@ -5,10 +5,11 @@ import (
 	"log"
 	"net/http"
 	"regexp"
-	"server/models"
-	"server/utils"
 	"strings"
 	"time"
+
+	"github.com/OrbitalbooKING/booKING/server/models"
+	"github.com/OrbitalbooKING/booKING/server/utils"
 
 	"github.com/jinzhu/gorm"
 

@@ -2,26 +2,27 @@ package services
 
 import (
 	"database/sql"
-	"github.com/DATA-DOG/go-sqlmock"
-	"github.com/jinzhu/gorm"
 	"reflect"
 	"regexp"
-	"server/models"
 	"testing"
 	"time"
+
+	"github.com/DATA-DOG/go-sqlmock"
+	"github.com/OrbitalbooKING/booKING/server/models"
+	"github.com/jinzhu/gorm"
 )
 
-func setupVenues(table string) (sqlmock.Sqlmock, *Repository, *sqlmock.Rows, error){
+func setupVenues(table string) (sqlmock.Sqlmock, *Repository, *sqlmock.Rows, error) {
 	type Table struct {
 		Headers []string
 	}
 
-	tables := map[string]Table {
+	tables := map[string]Table{
 		"VenueIDArrQuery": {
 			Headers: []string{"v.id", "v.venuename", "v.unit", "buildingname", "buildingid", "v.maxcapacity",
 				"roomtypename", "v.roomtypeid", "venuestatusname", "v.mapphoto", "v.floorplan"},
 		},
-		"VenueIDArrAfterFilter" : {
+		"VenueIDArrAfterFilter": {
 			Headers: []string{"v.id"},
 		},
 		"FacilityIDArr": {
@@ -53,24 +54,24 @@ func setupVenues(table string) (sqlmock.Sqlmock, *Repository, *sqlmock.Rows, err
 	rows := sqlmock.NewRows(tables[table].Headers)
 	if table == "CurrentBookings" {
 		rows = rows.AddRow(1, "e001", 1, 10, time.Time{}, time.Time{}, time.Time{}, 1, time.Time{}).
-					AddRow(1, "e001", 1, 10, time.Time{}, time.Time{}, time.Time{}, 1, time.Time{}).
-					AddRow(1, "e001", 1, 10, time.Time{}, time.Time{}, time.Time{}, 1, time.Time{})
+			AddRow(1, "e001", 1, 10, time.Time{}, time.Time{}, time.Time{}, 1, time.Time{}).
+			AddRow(1, "e001", 1, 10, time.Time{}, time.Time{}, time.Time{}, 1, time.Time{})
 	} else if table == "VenueIDArrQuery" {
 		rows = rows.AddRow(2, "test", "01-01", "test", 1, 10, "test", 1, "test", "test", "test").
-					AddRow(3, "test", "01-01", "test", 1, 10, "test", 1, "test", "test", "test").
-					AddRow(4, "test", "01-01", "test", 1, 10, "test", 1, "test", "test", "test")
+			AddRow(3, "test", "01-01", "test", 1, 10, "test", 1, "test", "test", "test").
+			AddRow(4, "test", "01-01", "test", 1, 10, "test", 1, "test", "test", "test")
 	} else if table == "VenueIDArrAfterFilter" {
 		rows = rows.AddRow(1).
-					AddRow(2)
+			AddRow(2)
 	} else if table == "FacilityIDArr" {
 		rows = rows.AddRow(1, "Desktop", "CRHHBSWE").
-					AddRow(2, "Projector", "OGAFZFXT")
+			AddRow(2, "Projector", "OGAFZFXT")
 	} else if table == "VenuesAndFacilities" {
 		rows = rows.AddRow(1, 1, 1, 1, "Desktop").
-					AddRow(2, 1, 2, 1, "Projector")
+			AddRow(2, 1, 2, 1, "Projector")
 	} else if table == "SearchPage" {
 		rows = rows.AddRow(1, "test", "test", "test", 1, 1, "test", 1, "test", "test", "test").
-					AddRow(2, "test", "test", "test", 1, 1, "test", 1, "test", "test", "test")
+			AddRow(2, "test", "test", "test", 1, 1, "test", 1, "test", "test", "test")
 	}
 
 	return mock, repository, rows, nil
@@ -84,13 +85,13 @@ func TestGetVenueArr_ValidInput(t *testing.T) {
 
 	input := []models.SearchPage{
 		{
-			ID:              2,
+			ID: 2,
 		},
 		{
-			ID:              3,
+			ID: 3,
 		},
 		{
-			ID:              4,
+			ID: 4,
 		},
 	}
 
@@ -102,10 +103,9 @@ func TestGetVenueArr_ValidInput(t *testing.T) {
 		JOIN roomtypes ON roomtypes.id = v.roomtypeid 
 		JOIN venuestatuses ON venuestatuses.id = v.venuestatusid`)
 
-	mock.ExpectQuery(query).WithArgs(2,3,4).WillReturnRows(rows)
+	mock.ExpectQuery(query).WithArgs(2, 3, 4).WillReturnRows(rows)
 
-	if searchPage, exists, err := GetVenueArr(repo.db, input);
-	searchPage == nil || !exists || err != nil || len(searchPage) != len(input) {
+	if searchPage, exists, err := GetVenueArr(repo.db, input); searchPage == nil || !exists || err != nil || len(searchPage) != len(input) {
 		if err != nil {
 			t.Fatalf("Unexpected error: %s", err.Error())
 		}
@@ -129,13 +129,13 @@ func TestGetVenueArr_InvalidInput(t *testing.T) {
 
 	input := []models.SearchPage{
 		{
-			ID:              2,
+			ID: 2,
 		},
 		{
-			ID:              3,
+			ID: 3,
 		},
 		{
-			ID:              4,
+			ID: 4,
 		},
 	}
 
@@ -147,10 +147,9 @@ func TestGetVenueArr_InvalidInput(t *testing.T) {
 		JOIN roomtypes ON roomtypes.id = v.roomtypeid 
 		JOIN venuestatuses ON venuestatuses.id = v.venuestatusid`)
 
-	mock.ExpectQuery(query).WithArgs(2,3,4).WillReturnError(gorm.ErrRecordNotFound)
+	mock.ExpectQuery(query).WithArgs(2, 3, 4).WillReturnError(gorm.ErrRecordNotFound)
 
-	if searchPage, exists, err := GetVenueArr(repo.db, input);
-		searchPage != nil || exists || err != nil {
+	if searchPage, exists, err := GetVenueArr(repo.db, input); searchPage != nil || exists || err != nil {
 		if err != nil {
 			t.Fatalf("Unexpected error: %s", err.Error())
 		}
@@ -186,7 +185,7 @@ func TestGetVenueIDArrAfterFilter(t *testing.T) {
 
 	mock.ExpectQuery(query).WillReturnRows(rows)
 
-	if searchPage, err := GetVenueIDArrAfterFilter(repo.db, input, []int{1, 2}); err != nil || len(searchPage) != 2{
+	if searchPage, err := GetVenueIDArrAfterFilter(repo.db, input, []int{1, 2}); err != nil || len(searchPage) != 2 {
 		if err != nil {
 			t.Fatalf("Unexpected error: %s", err.Error())
 		}
@@ -203,7 +202,7 @@ func TestGetFacilityIDArr(t *testing.T) {
 	}
 
 	input := models.SearchInput{
-		Equipment:  []string{"Desktop", "Projector"},
+		Equipment: []string{"Desktop", "Projector"},
 	}
 	query := regexp.QuoteMeta(`SELECT id FROM facilities WHERE facilityname = $1`)
 
@@ -231,7 +230,7 @@ func TestGetVenueFacilities(t *testing.T) {
 	}
 
 	input := models.SearchPage{
-		ID:              1,
+		ID: 1,
 	}
 	query := regexp.
 		QuoteMeta(`SELECT * FROM public.Venuefacilities 
@@ -269,7 +268,7 @@ func TestGetSearchPage(t *testing.T) {
 			t.Fatalf("Unexpected error: %s", err.Error())
 		}
 		if len(searchPage) != 2 {
-			t.Errorf("Incorrect number of entries. Expected: %d, got: %d", 2,  len(searchPage))
+			t.Errorf("Incorrect number of entries. Expected: %d, got: %d", 2, len(searchPage))
 		}
 	}
 }
@@ -282,7 +281,7 @@ func TestMakeVenueFacilitiesDict_Stubbed(t *testing.T) {
 
 	input := []models.SearchPage{
 		{
-			ID:              1,
+			ID: 1,
 		},
 	}
 	query := regexp.
@@ -296,8 +295,8 @@ func TestMakeVenueFacilitiesDict_Stubbed(t *testing.T) {
 	dict["Projector"] = 1
 	expected := []models.SearchPage{
 		{
-				ID:              1,
-				Facilitiesdict: dict,
+			ID:             1,
+			Facilitiesdict: dict,
 		},
 	}
 
@@ -318,7 +317,7 @@ func TestMakeVenueFacilitiesDict(t *testing.T) {
 	}
 	input := []models.SearchPage{
 		{
-			ID:              3,
+			ID: 3,
 		},
 	}
 	dict := make(map[string]int)
@@ -326,9 +325,9 @@ func TestMakeVenueFacilitiesDict(t *testing.T) {
 	dict["Projector"] = 39
 	dict["Whiteboard"] = 23
 	// taken from database for venue with venueID = 3
- 	expected := []models.SearchPage{
+	expected := []models.SearchPage{
 		{
-			ID:              3,
+			ID:             3,
 			Facilitiesdict: dict,
 		},
 	}

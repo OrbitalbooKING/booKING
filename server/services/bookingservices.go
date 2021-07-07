@@ -4,8 +4,9 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"server/models"
 	"time"
+
+	"github.com/OrbitalbooKING/booKING/server/models"
 
 	"github.com/jinzhu/gorm"
 

@@ -362,7 +362,9 @@ func GetBookingsOfDay(DB *gorm.DB, input models.TimingSearchInput,
 
 func RetrieveUserBookings(DB *gorm.DB, user models.User) ([]models.BookingDetails, bool, error) {
 	var bookings []models.BookingDetails
-	query := "SELECT * FROM currentbookings" +
+	query := "SELECT venuename, buildingname, buildings.id AS buildingid, unit, eventstart, pax, currentbookings.id as bookingid," +
+		" bookingstatusdescription" +
+		" FROM currentbookings" +
 		" JOIN venues ON venues.id = currentbookings.venueid" +
 		" JOIN buildings ON buildings.id = venues.buildingid" +
 		" JOIN bookingstatuses ON bookingstatuses.id = currentbookings.bookingstatusid" +
@@ -464,8 +466,9 @@ func UpdateBookingsStatus(DB *gorm.DB, input models.MakeDeleteBookings, statusCo
 
 func GetPendingBookings(DB *gorm.DB, input models.User, statusCode models.Bookingstatuses) ([]models.PendingBookings, error) {
 	var pendingBookings []models.PendingBookings
-	pendingQuery := "SELECT v.id AS venueid, v.venuename, currentbookings.id AS bookingid, pax, eventstart, eventend FROM venues AS v" +
-		" JOIN currentBookings ON v.id = currentBookings.venueid" +
+	pendingQuery := "SELECT v.id AS venueid, v.venuename, buildings.id AS buildingid, buildingname, currentbookings.id AS bookingid, pax, eventstart, eventend FROM venues AS v" +
+		" JOIN currentBookings ON v.id = currentBookings.venueid " +
+		" JOIN buildings ON v.buildingid = buildings.id" +
 		" WHERE nusnetid = ? AND bookingstatusid = ?"
 	if result := DB.Raw(pendingQuery, input.Nusnetid, statusCode.ID).Scan(&pendingBookings); result.Error != nil {
 		if result.RowsAffected == 0 {

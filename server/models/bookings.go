@@ -62,12 +62,14 @@ type URLBooking struct {
 }
 
 type PendingBookings struct {
-	Venueid    int
-	Venuename  string
-	Pax        int
-	Eventstart time.Time
-	Eventend   time.Time
-	Bookingid  uuid.UUID
+	Venueid      int
+	Venuename    string
+	Buildingid   int
+	Buildingname string
+	Pax          int
+	Eventstart   time.Time
+	Eventend     time.Time
+	Bookingid    uuid.UUID
 }
 
 type MakeDeleteBookings struct {
@@ -88,10 +90,11 @@ type Currentbookings struct {
 type BookingDetails struct {
 	Venuename                string
 	Buildingname             string
+	Buildingid               int
 	Unit                     string
 	Eventstart               time.Time
 	Pax                      int
-	ID                       uuid.UUID
+	Bookingid                uuid.UUID
 	Bookingstatusdescription string
 	Sharable                 bool
 }

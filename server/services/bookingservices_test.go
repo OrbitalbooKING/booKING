@@ -442,9 +442,10 @@ func TestGetPendingBookings(t *testing.T) {
 		AddRow(2, "test", 10, time.Time{}, time.Time{}, bookingTwo)
 
 	query := regexp.
-		QuoteMeta(`SELECT v.id AS venueid, v.venuename, currentbookings.id AS bookingid, pax, eventstart, eventend 
-		FROM venues AS v
-		JOIN currentBookings ON v.id = currentBookings.venueid
+		QuoteMeta(`SELECT v.id AS venueid, v.venuename, buildings.id AS buildingid, buildingname, 
+		currentbookings.id AS bookingid, pax, eventstart, eventend FROM venues AS v 
+		JOIN currentBookings ON v.id = currentBookings.venueid 
+		JOIN buildings ON v.buildingid = buildings.id
 		WHERE nusnetid = $1 AND bookingstatusid = $2`)
 	mock.ExpectQuery(query).
 		WithArgs("e001", 1).

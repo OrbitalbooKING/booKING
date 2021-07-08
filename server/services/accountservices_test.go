@@ -480,7 +480,9 @@ func TestRetrieveUserBookings_Exists(t *testing.T) {
 		t.Errorf("unexpected error: %s", err.Error())
 	}
 
-	query := regexp.QuoteMeta(`SELECT * FROM currentbookings
+	query := regexp.QuoteMeta(`SELECT venuename, buildingname, buildings.id AS buildingid, unit, eventstart, pax, 
+		currentbookings.id as bookingid, bookingstatusdescription
+		FROM currentbookings
 		JOIN venues ON venues.id = currentbookings.venueid
 		JOIN buildings ON buildings.id = venues.buildingid
 		JOIN bookingstatuses ON bookingstatuses.id = currentbookings.bookingstatusid
@@ -543,7 +545,9 @@ func TestRetrieveUserBookings_EmptyList(t *testing.T) {
 		t.Errorf("unexpected error: %s", err.Error())
 	}
 
-	query := regexp.QuoteMeta(`SELECT * FROM currentbookings
+	query := regexp.QuoteMeta(`SELECT venuename, buildingname, buildings.id AS buildingid, unit, eventstart, pax, 
+		currentbookings.id as bookingid, bookingstatusdescription
+		FROM currentbookings
 		JOIN venues ON venues.id = currentbookings.venueid
 		JOIN buildings ON buildings.id = venues.buildingid
 		JOIN bookingstatuses ON bookingstatuses.id = currentbookings.bookingstatusid

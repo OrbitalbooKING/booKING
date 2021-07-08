@@ -466,7 +466,8 @@ func UpdateBookingsStatus(DB *gorm.DB, input models.MakeDeleteBookings, statusCo
 
 func GetPendingBookings(DB *gorm.DB, input models.User, statusCode models.Bookingstatuses) ([]models.PendingBookings, error) {
 	var pendingBookings []models.PendingBookings
-	pendingQuery := "SELECT v.id AS venueid, v.venuename, buildings.id AS buildingid, buildingname, currentbookings.id AS bookingid, pax, eventstart, eventend FROM venues AS v" +
+	pendingQuery := "SELECT v.id AS venueid, v.venuename, buildings.id AS buildingid, buildingname," +
+		" currentbookings.id AS bookingid, pax, eventstart, eventend FROM venues AS v" +
 		" JOIN currentBookings ON v.id = currentBookings.venueid " +
 		" JOIN buildings ON v.buildingid = buildings.id" +
 		" WHERE nusnetid = ? AND bookingstatusid = ?"

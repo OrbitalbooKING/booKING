@@ -6,13 +6,14 @@ import (
 	"database/sql/driver"
 	"encoding/json"
 	"fmt"
-	"github.com/google/uuid"
 	"math/rand"
 	"net/http"
 	"regexp"
 	"strconv"
 	"testing"
 	"time"
+
+	"github.com/google/uuid"
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/OrbitalbooKING/booKING/server/config"

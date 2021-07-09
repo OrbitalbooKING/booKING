@@ -519,7 +519,7 @@ func TestInsertBooking_UnderLimit(t *testing.T) {
 	}
 
 	expectedSuccess := true
-	if success, err := InsertBooking(repo.db, overLimitAndTime, s, venue, statusCode); !success || err != nil {
+	if _, success, err := InsertBooking(repo.db, overLimitAndTime, s, venue, statusCode); !success || err != nil {
 		if err != nil {
 			t.Fatalf("Unexpected error: %s", err.Error())
 		}

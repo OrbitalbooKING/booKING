@@ -77,6 +77,7 @@ type MakeDeleteBookings struct {
 }
 
 type Currentbookings struct {
+	ID              uuid.UUID
 	Nusnetid        string
 	Venueid         int
 	Pax             int

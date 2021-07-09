@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/OrbitalbooKING/booKING/server/models"
+	"github.com/google/uuid"
 
 	"github.com/jinzhu/gorm"
 
@@ -153,7 +154,7 @@ func MakePendingBooking(c *gin.Context) {
 			fmt.Println("Check timingsQuery " + err.Error() + "\n")
 		}
 
-		added, err := InsertBooking(DB, overLimitAndTime, s, venue, statusCode)
+		ID, added, err := InsertBooking(DB, overLimitAndTime, s, venue, statusCode)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": err.Error()})
 			fmt.Println(err.Error())
@@ -161,6 +162,25 @@ func MakePendingBooking(c *gin.Context) {
 		if added {
 			counter++
 		}
+		// after 15 min, pending booking should be deleted
+		time.AfterFunc(time.Minute*15, func() {
+			// do not execute if booking becomes confirmed/already deleted
+			checkBooking, exists, err := RetrieveBooking(DB, models.URLBooking{BookingID: ID.String()})
+			if err != nil {
+				errorMessage := fmt.Sprintf("Unable to check on status of booking %s after 15 minutes", ID.String())
+				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": errorMessage})
+			} else if exists && checkBooking.Bookingstatusdescription == "In the midst of booking" {
+				var temp models.MakeDeleteBookings
+				temp.BookingID = []string{ID.String()}
+				if _, err := DeleteBookingFromTable(DB, temp); err != nil {
+					errorMessage := fmt.Sprintf("Unable to remove pending booking %s after 15 minutes.", ID.String())
+					c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": errorMessage})
+				} else {
+					deletedMessage := fmt.Sprintf("Deleted pending booking %s as it has been 15 minutes.", ID.String())
+					fmt.Println(deletedMessage)
+				}
+			}
+		})
 	}
 
 	successMsg := fmt.Sprintf("Successfully recorded %d booking(s)!", counter)
@@ -481,12 +501,12 @@ func GetPendingBookings(DB *gorm.DB, input models.User, statusCode models.Bookin
 	return pendingBookings, nil
 }
 
-func InsertBooking(DB *gorm.DB, overLimitAndTime bool, s models.BookingInput, venue models.Venues, statusCode models.Bookingstatuses) (bool, error) {
+func InsertBooking(DB *gorm.DB, overLimitAndTime bool, s models.BookingInput, venue models.Venues, statusCode models.Bookingstatuses) (uuid.UUID, bool, error) {
 	// pump into bookings table
 	if overLimitAndTime {
 		errorMessage := fmt.Sprintf("Unable to make booking for venue %s at time %s to time %s as there are not enough available slots left, or event time has already past.",
 			s.Eventstart, s.Eventend, venue.Venuename)
-		return false, errors.New(errorMessage)
+		return uuid.UUID{}, false, errors.New(errorMessage)
 	} else {
 		currentBooking := models.Currentbookings{
 			Nusnetid:        s.Nusnetid,
@@ -498,11 +518,12 @@ func InsertBooking(DB *gorm.DB, overLimitAndTime bool, s models.BookingInput, ve
 			Bookingstatusid: statusCode.ID,
 			Lastupdated:     time.Now(),
 		}
-		if err := DB.Create(&currentBooking).Error; err != nil {
-			errorMessage := "Error in creating pending booking. " + err.Error()
-			return false, errors.New(errorMessage)
+		if result := DB.Create(&currentBooking); result.Error != nil {
+			errorMessage := "Error in creating pending booking. " + result.Error.Error()
+			return uuid.UUID{}, false, errors.New(errorMessage)
+		} else {
+			return currentBooking.ID, true, nil
 		}
-		return true, nil
 	}
 }
 

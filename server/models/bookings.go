@@ -65,6 +65,7 @@ type URLBooking struct {
 type PendingBookings struct {
 	Venueid      int
 	Venuename    string
+	Unit         string
 	Buildingid   int
 	Buildingname string
 	Pax          int

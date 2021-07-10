@@ -494,12 +494,12 @@ func TestInsertBooking_UnderLimit(t *testing.T) {
 	}
 
 	query := regexp.
-		QuoteMeta(`INSERT INTO "currentbookings" ("nusnetid","venueid","pax","createdat","eventstart","eventend","bookingstatusid","lastupdated") VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING "currentbookings".*`)
+		QuoteMeta(`INSERT INTO "currentbookings" ("nusnetid","venueid","pax","createdat","eventstart","eventend","bookingstatusid","lastupdated") VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING "currentbookings"."id"`)
 
 	mock.ExpectBegin()
-	mock.ExpectExec(query).
+	mock.ExpectQuery(query).
 		WithArgs("e001", 1, 10, AnyTime{}, AnyTime{}, AnyTime{}, 1, AnyTime{}).
-		WillReturnResult(sqlmock.NewResult(1, 1))
+		WillReturnRows(sqlmock.NewRows([]string{"id"}).AddRow(uuid.UUID{}))
 	mock.ExpectCommit()
 
 	overLimitAndTime := false
@@ -521,7 +521,7 @@ func TestInsertBooking_UnderLimit(t *testing.T) {
 	expectedSuccess := true
 	if _, success, err := InsertBooking(repo.db, overLimitAndTime, s, venue, statusCode); !success || err != nil {
 		if err != nil {
-			t.Fatalf("Unexpected error: %s", err.Error())
+			t.Errorf("Unexpected error: %s", err.Error())
 		}
 		if !success {
 			t.Errorf("Expected success to be %t, but got it to be %t", expectedSuccess, success)

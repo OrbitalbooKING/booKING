@@ -23,6 +23,7 @@ type TimingSearchInput struct {
 	Eventstart   time.Time `form:"eventStart"`
 	Eventend     time.Time `form:"eventEnd"`
 	Pax          int       `form:"pax"`
+	Sharable     bool      `form:"sharable"`
 }
 
 type UnavailableTimings struct {

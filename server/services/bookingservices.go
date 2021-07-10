@@ -353,11 +353,17 @@ func MakeTimeslotArr(operatingHours models.UnavailableTimings, timingWithPax []m
 		temp.Available = true
 
 		for _, s := range timingWithPax {
-			if s.Eventstart.Hour() == start.Hour() && (input.Pax > venue.Maxcapacity-s.Sumpax) { // edit here to use a proper equals method
-				temp.Available = false
+			if s.Eventstart.Hour() == start.Hour() { // edit here to use a proper equals method
+				if input.Pax > venue.Maxcapacity-s.Sumpax {
+					temp.Available = false
+				}
+
+				// not sharable means if venue already has booking it should not be available
+				if !input.Sharable && s.Sumpax > 0 {
+					temp.Available = false
+				}
 			}
 		}
-
 		timeslots = append(timeslots, temp)
 	}
 	return timeslots

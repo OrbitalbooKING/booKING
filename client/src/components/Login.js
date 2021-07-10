@@ -27,6 +27,7 @@ function LoginForm() {
         }).then(response => {
 
             let inThreeHours = 0.125;
+            // let inThreeHours = 0.0006944444;
             Cookies.set("name", response.data.message.Name, {
                 sameSite: 'None', secure: true,
                 expires: inThreeHours
@@ -35,6 +36,10 @@ function LoginForm() {
                 sameSite: 'None', secure: true,
                 expires: inThreeHours
             });
+
+            let expiration = new Date();
+            expiration.setMinutes(expiration.getMinutes() + 1);
+            sessionStorage.setItem("sessionExpiry", expiration.toUTCString());
 
             history.push({
                 pathname: "/sign-in-success",

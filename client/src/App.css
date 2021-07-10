@@ -146,6 +146,13 @@ body, html, #root {
   padding-bottom: 15px;
 }
 
+.calendar-error {
+  width: 200px;
+  text-align: center;
+  overflow-wrap: break-word;
+  padding-bottom: 15px;
+}
+
 .logo {
   height: 25px;
   width: 75px;
@@ -237,6 +244,33 @@ body, html, #root {
   transition: all .3s;
 }
 
+.column {
+  width: auto;
+  margin: auto;
+  background: #ffffff;
+  padding: 10px 20px 10px 20px;
+  border-radius: 15px;
+  transition: all .3s;
+  margin-right: 20px;
+}
+
+.display-old-header {
+  width: auto;
+  margin: auto;
+  background: #ffffff;
+  padding: 10px 20px 10px 20px;
+  transition: all .3s;
+}
+
+.display-old {
+  width: auto;
+  margin: auto;
+  background: #e5e5e5;
+  padding: 10px 20px 10px 20px;
+  border-radius: 15px;
+  transition: all .3s;
+}
+
 .searchbar {
   width: 1000px;
   background: #ffffff;
@@ -257,12 +291,12 @@ body, html, #root {
 }
 
 .booking-selector {
-  width: 1150px;
-  height: 550px;
+  width: 1060px;
+  height: 540px;
   margin: auto;
   background: #ffffff;
   box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
-  padding: 20px 55px 20px 55px;
+  padding: 20px 20px 20px 20px;
   border-radius: 15px;
   transition: all .3s;
 }
@@ -288,6 +322,7 @@ body, html, #root {
 
 .booking-overview {
   width: 950px;
+  height: 530px;
   margin: auto;
   background: #ffffff;
   padding: 10px 20px 10px 20px;

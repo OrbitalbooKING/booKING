@@ -14,7 +14,7 @@ function Unauthorised() {
             <div className="parent">
                 <div className="welcome-page">
                     <div> 
-                        <h2>Please login!</h2>
+                        <h2>{sessionStorage.getItem("sessionExpiry") !== null ? "Session expired. Please login!" : "Unauthorised. Please login!"}</h2>
                         <button style={{float: 'left'}} type="submit" className="btn btn-primary btn-block" onClick={Login}>Login</button>
                     </div>
                 </div>

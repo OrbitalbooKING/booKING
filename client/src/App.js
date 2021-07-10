@@ -22,9 +22,14 @@ import StaffLoginSuccess from "./components/StaffLoginSuccess";
 import StaffHome from "./components/StaffHome";
 import StaffVenues from "./components/StaffVenues";
 import StaffProfile from "./components/StaffProfile";
-import ApprovalOverview from "./components/ApprovalOverview"
+import ApprovalOverview from "./components/ApprovalOverview";
 import ApprovalSuccess from "./components/ApprovalSuccess";
 import ErrorPage from "./components/ErrorPage";
+
+import EditHome from "./components/EditHome";
+import EditBooking from "./components/EditBooking";
+import EditOverview from "./components/EditOverview";
+import EditSuccess from "./components/EditSuccess";
 
 function App() {
 
@@ -65,6 +70,10 @@ function App() {
           <Route exact path="/approval-success" render={props=>(
             <ApprovalSuccess {...props} />)}
           />
+          <Route exact path="/edit-home"><EditHome /></Route>
+          <Route exact path="/edit-booking"><EditBooking /></Route>
+          <Route exact path="/edit-overview"><EditOverview /></Route>
+          <Route exact path="/edit-success"><EditSuccess /></Route>
           <Route exact path="*"><ErrorPage /></Route>
         </Switch>
       </div>

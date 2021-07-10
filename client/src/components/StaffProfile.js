@@ -205,7 +205,7 @@ function StaffProfile() {
                                                 return (<div key={key}>
                                                     <div className="display-selected-venue" style={{height: 'auto'}}>
                                                         <div style={{display: 'flex', flexDirection: 'row'}}>
-                                                            <div style={{width: 100, textAlign: 'center', alignSelf: 'center', wordWrap: 'break-word'}}>{val.ID} </div>
+                                                            <div style={{width: 100, textAlign: 'center', alignSelf: 'center'}}>{val.Bookingid.substring(0, 4)} </div>
                                                             <div style={{width: 220, textAlign: 'center', alignSelf: 'center'}}>{val.Venuename} </div>
                                                             <div style={{width: 100, textAlign: 'center', alignSelf: 'center'}}>{val.Buildingname} {val.Unit} </div>
                                                             <div style={{width: 150, textAlign: 'center', alignSelf: 'center'}}>{dateConverter(val.Eventstart)} </div>

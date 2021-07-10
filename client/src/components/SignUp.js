@@ -164,12 +164,8 @@ function SignUpForm() {
                                     input={<Input />}
                                     MenuProps={{ classes: { paper: classes.menuPaper } }}
                                     >
-                                    {Array.from({ length: (10) / 1}, (_, i) => currentYear + (i * 1)).map((val, key) => {
-                                        if (val === undefined) {
-                                            return <MenuItem value={val} key={key}>Blank</MenuItem>;
-                                        } else {
-                                            return <MenuItem value={val} key={key}>{val}</MenuItem>;
-                                        }
+                                    {Array.from({ length: (10) / 1}, (_, i) => currentYear + i).map((val, key) => {
+                                        return <MenuItem value={val} key={key}>{val}</MenuItem>;
                                     })}
                                     </Select>
                                 </FormControl></div>
@@ -186,12 +182,7 @@ function SignUpForm() {
                                 MenuProps={{ classes: { paper: classes.menuPaper } }}
                                 >                 
                                 {facultyList === undefined ? "" : Object.entries(facultyList).sort().map((val, key) => {
-                                    // console.log(val[1].Facultydescription)
-                                    if (val === undefined) {
-                                        return <MenuItem value={val[1].Facultydescription} key={key}>Blank</MenuItem>;
-                                    } else {
-                                        return <MenuItem value={val[1].Facultydescription} key={key}>{val[1].Facultydescription}</MenuItem>;
-                                    }
+                                    return <MenuItem value={val[1].Facultydescription} key={key}>{val[1].Facultydescription}</MenuItem>;
                                 })}
                                 </Select>
                             </FormControl>

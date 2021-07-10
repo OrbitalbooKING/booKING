@@ -104,7 +104,7 @@ function ApprovalOverview() {
     return (
         <>
             {Cookies.get("name") !== undefined && Cookies.get("id") !== undefined 
-                ? <Layout3 id={Cookies.get("id")} name={Cookies.get("name")} action="Viewing booking requests">
+                ? <Layout3 id={Cookies.get("id")} name={Cookies.get("name")} action="Approval confirmation">
                     <div className="parent">
                         <div className="home-page">
                             <div className="booking-view">
@@ -125,9 +125,9 @@ function ApprovalOverview() {
                                     {bookingInfo === undefined ? <div><h2 style={{textAlign: 'center', alignContent: 'center'}}>Loading... </h2></div> :
                                         <div className="display-booking" style={{height: 'auto'}}>
                                             <div style={{display: 'flex', flexDirection: 'row'}}>
-                                                <div style={{width: 100, textAlign: 'center', alignSelf: 'center'}}>{Cookies.get("requestor")} </div>
-                                                <div style={{width: 100, textAlign: 'center', alignSelf: 'center'}}>{Cookies.get("faculty")} </div>
-                                                <div style={{width: 100, textAlign: 'center', alignSelf: 'center', wordWrap: 'break-word'}}>{bookingInfo.ID}</div>
+                                                <div style={{width: 100, textAlign: 'center', alignSelf: 'center'}}>{bookingInfo.Nusnetid} </div>
+                                                <div style={{width: 100, textAlign: 'center', alignSelf: 'center'}}>{bookingInfo.Facultydescription} </div>
+                                                <div style={{width: 100, textAlign: 'center', alignSelf: 'center'}}>{bookingInfo.ID.substring(0, 4)}</div>
                                                 <div style={{width: 180, textAlign: 'center', alignSelf: 'center'}}>{bookingInfo.Venuename} </div>
                                                 <div style={{width: 100, textAlign: 'center', alignSelf: 'center'}}>{bookingInfo.Buildingname} {bookingInfo.Unit} </div>
                                                 <div style={{width: 150, textAlign: 'center', alignSelf: 'center'}}>{dateConverter(bookingInfo.Eventstart)} </div>

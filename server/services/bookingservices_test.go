@@ -38,7 +38,7 @@ func setupBookings(table string) (sqlmock.Sqlmock, *Repository, *sqlmock.Rows, e
 			Headers: []string{"venuename", "unit", "maxcapacity", "buildingname", "starthour", "endhour"},
 		},
 		"GetPendingBookings": {
-			Headers: []string{"venueid", "venuename", "pax", "eventstart", "eventend", "bookingid"},
+			Headers: []string{"venueid", "venuename", "unit", "pax", "eventstart", "eventend", "bookingid"},
 		},
 		"CheckIfOverLimitAndTime_False": {
 			Headers: []string{"eventStart", "sumpax"},
@@ -438,11 +438,11 @@ func TestGetPendingBookings(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Unexpectedly unable to generate uuid. " + err.Error())
 	}
-	rows = rows.AddRow(1, "test", 10, time.Time{}, time.Time{}, bookingOne).
-		AddRow(2, "test", 10, time.Time{}, time.Time{}, bookingTwo)
+	rows = rows.AddRow(1, "test", "test", 10, time.Time{}, time.Time{}, bookingOne).
+		AddRow(2, "test", "test", 10, time.Time{}, time.Time{}, bookingTwo)
 
 	query := regexp.
-		QuoteMeta(`SELECT v.id AS venueid, v.venuename, buildings.id AS buildingid, buildingname, 
+		QuoteMeta(`SELECT v.id AS venueid, v.venuename, v.unit, buildings.id AS buildingid, buildingname, 
 		currentbookings.id AS bookingid, pax, eventstart, eventend FROM venues AS v 
 		JOIN currentBookings ON v.id = currentBookings.venueid 
 		JOIN buildings ON v.buildingid = buildings.id
@@ -454,6 +454,7 @@ func TestGetPendingBookings(t *testing.T) {
 		{
 			Venueid:    1,
 			Venuename:  "test",
+			Unit:       "test",
 			Pax:        10,
 			Eventstart: time.Time{},
 			Eventend:   time.Time{},
@@ -462,6 +463,7 @@ func TestGetPendingBookings(t *testing.T) {
 		{
 			Venueid:    2,
 			Venuename:  "test",
+			Unit:       "test",
 			Pax:        10,
 			Eventstart: time.Time{},
 			Eventend:   time.Time{},
@@ -494,12 +496,12 @@ func TestInsertBooking_UnderLimit(t *testing.T) {
 	}
 
 	query := regexp.
-		QuoteMeta(`INSERT INTO "currentbookings" ("nusnetid","venueid","pax","createdat","eventstart","eventend","bookingstatusid","lastupdated") VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING "currentbookings".*`)
+		QuoteMeta(`INSERT INTO "currentbookings" ("nusnetid","venueid","pax","createdat","eventstart","eventend","bookingstatusid","lastupdated") VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING "currentbookings"."id"`)
 
 	mock.ExpectBegin()
-	mock.ExpectExec(query).
+	mock.ExpectQuery(query).
 		WithArgs("e001", 1, 10, AnyTime{}, AnyTime{}, AnyTime{}, 1, AnyTime{}).
-		WillReturnResult(sqlmock.NewResult(1, 1))
+		WillReturnRows(sqlmock.NewRows([]string{"id"}).AddRow(uuid.UUID{}))
 	mock.ExpectCommit()
 
 	overLimitAndTime := false
@@ -521,7 +523,7 @@ func TestInsertBooking_UnderLimit(t *testing.T) {
 	expectedSuccess := true
 	if _, success, err := InsertBooking(repo.db, overLimitAndTime, s, venue, statusCode); !success || err != nil {
 		if err != nil {
-			t.Fatalf("Unexpected error: %s", err.Error())
+			t.Errorf("Unexpected error: %s", err.Error())
 		}
 		if !success {
 			t.Errorf("Expected success to be %t, but got it to be %t", expectedSuccess, success)

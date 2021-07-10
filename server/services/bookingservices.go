@@ -353,11 +353,17 @@ func MakeTimeslotArr(operatingHours models.UnavailableTimings, timingWithPax []m
 		temp.Available = true
 
 		for _, s := range timingWithPax {
-			if s.Eventstart.Hour() == start.Hour() && (input.Pax > venue.Maxcapacity-s.Sumpax) { // edit here to use a proper equals method
-				temp.Available = false
+			if s.Eventstart.Hour() == start.Hour() { // edit here to use a proper equals method
+				if input.Pax > venue.Maxcapacity-s.Sumpax {
+					temp.Available = false
+				}
+
+				// not sharable means if venue already has booking it should not be available
+				if !input.Sharable && s.Sumpax > 0 {
+					temp.Available = false
+				}
 			}
 		}
-
 		timeslots = append(timeslots, temp)
 	}
 	return timeslots
@@ -486,15 +492,13 @@ func UpdateBookingsStatus(DB *gorm.DB, input models.MakeDeleteBookings, statusCo
 
 func GetPendingBookings(DB *gorm.DB, input models.User, statusCode models.Bookingstatuses) ([]models.PendingBookings, error) {
 	var pendingBookings []models.PendingBookings
-	pendingQuery := "SELECT v.id AS venueid, v.venuename, buildings.id AS buildingid, buildingname," +
+	pendingQuery := "SELECT v.id AS venueid, v.venuename, v.unit, buildings.id AS buildingid, buildingname," +
 		" currentbookings.id AS bookingid, pax, eventstart, eventend FROM venues AS v" +
 		" JOIN currentBookings ON v.id = currentBookings.venueid " +
 		" JOIN buildings ON v.buildingid = buildings.id" +
 		" WHERE nusnetid = ? AND bookingstatusid = ?"
 	if result := DB.Raw(pendingQuery, input.Nusnetid, statusCode.ID).Scan(&pendingBookings); result.Error != nil {
-		if result.RowsAffected == 0 {
-
-		} else {
+		if result.RowsAffected != 0 {
 			return nil, result.Error
 		}
 	}

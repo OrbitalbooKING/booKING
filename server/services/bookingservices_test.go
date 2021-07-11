@@ -443,7 +443,7 @@ func TestGetPendingBookings(t *testing.T) {
 
 	query := regexp.
 		QuoteMeta(`SELECT v.id AS venueid, v.venuename, v.unit, buildings.id AS buildingid, buildingname, 
-		currentbookings.id AS bookingid, pax, eventstart, eventend FROM venues AS v 
+		currentbookings.id AS bookingid, pax, eventstart, eventend, v.maxcapacity as venuemaxcapacity, cost FROM venues AS v 
 		JOIN currentBookings ON v.id = currentBookings.venueid 
 		JOIN buildings ON v.buildingid = buildings.id
 		WHERE nusnetid = $1 AND bookingstatusid = $2`)
@@ -496,11 +496,12 @@ func TestInsertBooking_UnderLimit(t *testing.T) {
 	}
 
 	query := regexp.
-		QuoteMeta(`INSERT INTO "currentbookings" ("nusnetid","venueid","pax","createdat","eventstart","eventend","bookingstatusid","lastupdated") VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING "currentbookings"."id"`)
+		QuoteMeta(`INSERT INTO "currentbookings" ("nusnetid","venueid","pax","createdat","eventstart","eventend","bookingstatusid","lastupdated","cost") 
+		VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING "currentbookings"."id"`)
 
 	mock.ExpectBegin()
 	mock.ExpectQuery(query).
-		WithArgs("e001", 1, 10, AnyTime{}, AnyTime{}, AnyTime{}, 1, AnyTime{}).
+		WithArgs("e001", 1, 0, AnyTime{}, AnyTime{}, AnyTime{}, 1, AnyTime{}, 0.0).
 		WillReturnRows(sqlmock.NewRows([]string{"id"}).AddRow(uuid.UUID{}))
 	mock.ExpectCommit()
 

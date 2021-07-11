@@ -225,7 +225,7 @@ func TestGetBookingsOfDay(t *testing.T) {
 	query := regexp.
 		QuoteMeta(`SELECT cb.eventstart, SUM(pax) AS sumpax FROM currentBookings AS cb 
 						JOIN venues ON venues.id = cb.venueid 
-						WHERE (cb.eventStart >= $1 OR cb.eventEnd <= $2) 
+						WHERE (cb.eventStart >= $1 AND cb.eventEnd <= $2) 
 						AND cb.venueid = $3 
 						AND cb.bookingstatusid IN ($4,$5,$6) 
 						GROUP BY cb.eventstart`)

@@ -33,6 +33,8 @@ function Layout3(props) {
         Cookies.remove("name", {sameSite: 'None', secure: true});
         Cookies.remove("id", {sameSite: 'None', secure: true});
 
+        sessionStorage.removeItem("sessionExpiry");
+
         history.push({
             pathname: "/logout",
             state: {

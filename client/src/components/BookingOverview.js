@@ -13,7 +13,44 @@ function BookingOverview() {
 
     let history = useHistory();
 
+    const [venueInfo, setVenueInfo] = useState();
     const [cart, setCart] = useState();
+
+    const venueSearch = () => {
+        
+        let search = new URLSearchParams();
+
+        search.append("buildingName", Cookies.get("buildingId"));
+        search.append("unitNo", Cookies.get("unit"));
+
+        Axios.get(configData.LOCAL_HOST + "/search", 
+        {
+            params: search,
+        }
+        ).then(response => {
+            // console.log(response.data.data[0]);
+            setVenueInfo(response.data.data);
+        }).catch((error) => {
+            if (error.response) {
+                console.log("response");
+                // The request was made and the server responded with a status code
+                // that falls out of the range of 2xx
+                if (error.response.status === 400) {
+                    console.log(error.response.data.message);
+                }
+            } else if (error.request) {
+                console.log("request");
+                // The request was made but no response was received
+                // `error.request` is an instance of XMLHttpRequest in the 
+                // browser and an instance of
+                // http.ClientRequest in node.js
+                console.log(error.request);
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                console.log("Query failed!");
+            }
+        });
+    };
 
     const getCartItems = () => { // whenever the user changes date or capacity
         
@@ -99,6 +136,12 @@ function BookingOverview() {
 
         return moment(tempDate, 'YYYY-MM-DDThh').format('Do MMMM YYYY hh:mm a') + " to " + moment(endHour, 'hh').format('h:mm a');
     };
+
+    useEffect(() => {
+        venueSearch();
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
     
     useEffect(() => {
         getCartItems();
@@ -122,21 +165,25 @@ function BookingOverview() {
                                         <div style={{width: 120, textAlign: 'center', alignSelf: 'center'}}>Equipment </div>
                                     </div>
                                 </div>
-                                <div className="display-selected-venue" style={{height: 'auto'}}>
-                                    <div style={{display: 'flex', flexDirection: 'row'}}>
-                                        <div style={{width: 240, textAlign: 'center', alignSelf: 'center'}}>{Cookies.get("venueType")} </div>
-                                        <div style={{width: 260, textAlign: 'center', alignSelf: 'center'}}>{Cookies.get("venueName")} </div>
-                                        <div style={{width: 150, textAlign: 'center', alignSelf: 'center'}}>{Cookies.get("buildingName")} {Cookies.get("unit")} </div>
-                                        <div style={{width: 80, textAlign: 'center', alignSelf: 'center'}}>{Cookies.get("capacity")} </div>
-                                        <div style={{display: 'flex', width: 120, textAlign: 'center', alignSelf: 'center'}}>
-                                            <br />{(Cookies.get("projector") === "undefined" || Cookies.get("projector") === undefined) ? "" : Cookies.get("projector") === 1 ? Cookies.get("projector") + " projector" : Cookies.get("projector") + " projectors"}
-                                            <br />{(Cookies.get("screen") === "undefined" || Cookies.get("screen") === undefined) ? "" : Cookies.get("screen") === 1 ? Cookies.get("screen") + " screen" : Cookies.get("screen") + " screens"}
-                                            <br />{(Cookies.get("desktop") === "undefined" || Cookies.get("desktop") === undefined) ? "" : Cookies.get("desktop") === 1 ? Cookies.get("desktop") + " desktop" : Cookies.get("desktop") + " desktops"}
-                                            <br />{(Cookies.get("whiteboard") === "undefined" || Cookies.get("whiteboard") === undefined) ? "" : Cookies.get("whiteboard") === 1 ? Cookies.get("whiteboard") + " whiteboard" : Cookies.get("whiteboard") + " whiteboards"}
+                                {venueInfo === undefined ? <div><h2 style={{textAlign: 'center', alignContent: 'center'}}>Loading... </h2></div> : venueInfo.map((val, key) => {
+                                    return (<div key={key}>
+                                        <div className="display-selected-venue" style={{height: 'auto'}}>
+                                            <div style={{display: 'flex', flexDirection: 'row'}}>
+                                                <div style={{width: 240, textAlign: 'center', alignSelf: 'center'}}>{val.Roomtypename} </div>
+                                                <div style={{width: 260, textAlign: 'center', alignSelf: 'center'}}>{val.Venuename} </div>
+                                                <div style={{width: 150, textAlign: 'center', alignSelf: 'center'}}>{val.Buildingname} {val.Unit} </div>
+                                                <div style={{width: 80, textAlign: 'center', alignSelf: 'center'}}>{val.Maxcapacity} </div>
+                                                <div style={{display: 'flex', width: 120, textAlign: 'center', alignSelf: 'center', justifyContent: 'center'}}>
+                                                    {val.Facilitiesdict.Projector === undefined ? "" : val.Facilitiesdict.Projector === 1 ? val.Facilitiesdict.Projector + " projector" : val.Facilitiesdict.Projector + " projectors"}
+                                                    <br />{val.Facilitiesdict.Screen === undefined ? "" : val.Facilitiesdict.Screen === 1 ? val.Facilitiesdict.Screen + " screen" : val.Facilitiesdict.Screen + " screens"}
+                                                    <br />{val.Facilitiesdict.Desktop === undefined ? "" : val.Facilitiesdict.Desktop === 1 ? val.Facilitiesdict.Desktop + " desktop" : val.Facilitiesdict.Desktop + " desktops"}
+                                                    <br />{val.Facilitiesdict.Whiteboard === undefined ? "" : val.Facilitiesdict.Whiteboard === 1 ? val.Facilitiesdict.Whiteboard + " whiteboard" : val.Facilitiesdict.Whiteboard + " whiteboards"}
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
-                                <div style={{margin: '0 auto', height: 300, width: 550, paddingLeft: 20}}><div style={{textAlign: 'center'}}>Selected Timeslots:</div>
+                                    </div>);
+                                })}
+                                {/* <div style={{margin: '0 auto', height: 300, width: 550, paddingLeft: 20}}><div style={{textAlign: 'center'}}>Selected Timeslots:</div>
                                     <div style = 
                                     {{overflowY: "auto", height: 250}}
                                     >
@@ -151,7 +198,22 @@ function BookingOverview() {
                                     </div>
                                     <br />
                                     <button style={{position: 'absolute', bottom: 0, right: 0, margin: 25}} type="submit" className="btn btn-primary btn-block" onClick={confirmBooking}>Confirm Bookings</button>
+                                </div> */}
+                                <div style={{margin: '0 auto', height: 300, width: 550, paddingLeft: 20}}><div style={{textAlign: 'center'}}>Selected Timeslots:</div>
+                                    <div style = {{overflowY: "auto", height: 250}}>
+                                        {cart === undefined ? "" : cart.map((val, key) => {
+                                            return (<div key={key}>
+                                                <hr />
+                                                <div style={{height: 32, position:'relative'}}>
+                                                    <div style = {{paddingLeft: 3, paddingTop: 4}}>Pax: {val.Pax} | Timing: {dateConverter(val.Eventstart)}</div>
+                                                </div>
+                                            </div>);
+                                        })}
+                                    </div>
+                                    <br />
+                                    {/* <button style={{float: 'right'}} type="submit" className="btn btn-primary btn-block" onClick={confirmBooking}>Confirm Bookings</button> */}
                                 </div>
+                                <div><button style={{float: 'right'}} type="submit" className="btn btn-primary btn-block" onClick={confirmBooking}>Confirm Bookings</button></div>
                             </div>
                         </div>
                     </div>

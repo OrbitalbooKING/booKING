@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-// import { useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import Axios from "axios";
 import configData from "../config.json";
 import Layout2 from "../layouts/Layout2";
@@ -12,16 +12,10 @@ import Cookies from "js-cookie";
 
 function Profile() {
 
-    // let history = useHistory();
+    let history = useHistory();
     
     const getProfile = () => {
-        // setProfileInfo({
-        //     Name: "John",
-        //     Nusnetid: "E123",
-        //     Gradyear: 2024,
-        //     Faculty: "Computing",
-        //     Password: "****",
-        // });
+
         let search = new URLSearchParams();
 
         search.append("NUSNET_ID", Cookies.get("id"));
@@ -117,15 +111,26 @@ function Profile() {
     const [bookings, setBookings] = useState();
 
     const editBooking = (val) => () => {
-        // history.push({
-        //     pathname: "/booking",
-        //     state: { 
-        //         id: props.location.state.id,
-        //         buildingName: val.Buildingname,
-        //         unit: val.Unit,
-        //         capacity: val.Maxcapacity
-        //     }
-        // });
+
+        let inThreeHours = 0.125;
+
+        console.log(val);
+
+        Cookies.set("oldBookingId", val.Bookingid, {
+            sameSite: 'None', secure: true,
+            expires: inThreeHours
+        });
+        Cookies.set("oldBuildingId", val.Buildingid, {
+            sameSite: 'None', secure: true,
+            expires: inThreeHours
+        });
+        Cookies.set("oldUnit", val.Unit, {
+            sameSite: 'None', secure: true,
+            expires: inThreeHours
+        });
+        
+        history.push("/edit-home");
+
     };
 
     useEffect(() => {
@@ -144,7 +149,7 @@ function Profile() {
                                 <div className="profile">
                                     <h3>Profile</h3>
                                     <div className="display-selected-venue" style={{height: 'auto'}}>
-                                        <div style={{height: 102, display: 'inline-block', paddingLeft: 10}}>
+                                        <div style={{height: 90, display: 'inline-block', paddingLeft: 10}}>
                                             <img className="profilePic" src = {profilePic} alt="profilePic" style={{display: 'block', margin: 'auto'}}/>
                                         </div>
                                         <div style={{display: 'inline-block', paddingLeft: 20}}>
@@ -152,41 +157,11 @@ function Profile() {
                                             <div>NUSNET ID: {profileInfo === undefined ? "" : profileInfo.NUSNET_ID}</div>
                                             <div>Graduation year: {profileInfo === undefined ? "" : profileInfo.Gradyear}</div>
                                             <div>Faculty: {profileInfo === undefined ? "" : profileInfo.Facultyname}</div>
-                                            <div>Password: {profileInfo === undefined ? "" : "****"}</div>
                                             <div>Points: {profileInfo === undefined ? "" : profileInfo.Points}</div>
                                         </div>
                                     </div>
                                     <br />
                                     <h3>Bookings</h3>
-                                    {/* <div>
-                                        <div style={{display: 'inline-block', width: 260, textAlign: 'center', position: 'relative'}}>Venue name </div>
-                                        <div style={{display: 'inline-block', width: 100, textAlign: 'center', position: 'relative'}}>Location </div>
-                                        <div style={{display: 'inline-block', width: 150, textAlign: 'center'}}>Date </div>
-                                        <div style={{display: 'inline-block', width: 70, textAlign: 'center'}}>Pax </div>
-                                        <div style={{display: 'inline-block', width: 100, textAlign: 'center'}}>Booking id </div>
-                                        <div style={{display: 'inline-block', width: 80, textAlign: 'center'}}>Status </div>
-                                        <div style={{display: 'inline-block', width: 80, textAlign: 'center'}}>Sharing? </div>
-                                    </div>
-                                    <br />
-                                    <div style={{overflowY: "auto", height: 100}}>
-                                        {bookings === undefined ? "Loading..." : bookings.map((val, key) => {
-                                            return (<div key={key}>
-                                                <div className="display-bookings" style={{height: 'auto'}}>
-                                                    <div style={{display: 'inline-block', paddingRight: 20}}>
-                                                        <div style={{float: 'left', width: 220, paddingRight: 20, whiteSpace: 'pre-wrap', overflowWrap: 'break-word'}}>{val.Venuename} </div>
-                                                        <div style={{float: 'left', width: 140, paddingRight: 20, whiteSpace: 'pre-wrap', overflowWrap: 'break-word'}}>{val.Buildingname} {val.Unit} </div>
-                                                        <div style={{float: 'left', width: 150, paddingRight: 20, whiteSpace: 'pre-wrap', overflowWrap: 'break-word'}}>{dateConverter(val.Eventstart)} </div>
-                                                        <div style={{float: 'left', width: 70, paddingRight: 20, whiteSpace: 'pre-wrap', overflowWrap: 'break-word'}}>{val.Pax} </div>
-                                                        <div style={{float: 'left', width: 70, paddingRight: 20, whiteSpace: 'pre-wrap', overflowWrap: 'break-word'}}>{val.ID} </div>
-                                                        <div style={{float: 'left', width: 100, paddingRight: 20, whiteSpace: 'pre-wrap', overflowWrap: 'break-word'}}>{val.Bookingstatusdescription} </div>
-                                                        <div style={{float: 'left', width: 70, paddingRight: 20, whiteSpace: 'pre-wrap', overflowWrap: 'break-word'}}>{val.Sharable ? "Yes" : "No"} </div>
-                                                    </div>
-                                                    <button style={{float: 'right'}} type="submit" className="btn btn-primary btn-block" onClick={editBooking(val)}>Edit</button> 
-                                                </div>
-                                                <br />
-                                            </div>);
-                                        })}
-                                    </div> */}
                                     {/* <div className="venue-list"> */}
                                         <div className="display-selected-venue-header">
                                             <div style={{display: 'flex', flexDirection: 'row', paddingRight: 20}}>
@@ -205,19 +180,13 @@ function Profile() {
                                                 return (<div key={key}>
                                                     <div className="display-selected-venue" style={{height: 'auto'}}>
                                                         <div style={{display: 'flex', flexDirection: 'row'}}>
-                                                            <div style={{width: 100, textAlign: 'center', alignSelf: 'center', wordWrap: 'break-word'}}>{val.ID} </div>
+                                                            <div style={{width: 100, textAlign: 'center', alignSelf: 'center'}}>{val.Bookingid.substring(0, 4)} </div>
                                                             <div style={{width: 220, textAlign: 'center', alignSelf: 'center'}}>{val.Venuename} </div>
                                                             <div style={{width: 100, textAlign: 'center', alignSelf: 'center'}}>{val.Buildingname} {val.Unit} </div>
                                                             <div style={{width: 150, textAlign: 'center', alignSelf: 'center'}}>{dateConverter(val.Eventstart)} </div>
                                                             <div style={{width: 70, textAlign: 'center', alignSelf: 'center'}}>{val.Pax} </div>
                                                             <div style={{width: 80, textAlign: 'center', alignSelf: 'center'}}>{val.Bookingstatusdescription} </div>
                                                             <div style={{width: 80, textAlign: 'center', alignSelf: 'center'}}>{val.Sharable ? "Yes" : "No"} </div>
-                                                            {/* <div style={{display: 'flex', width: 120, textAlign: 'center', alignSelf: 'center'}}>
-                                                                <br />{val.Facilitiesdict.Projector === undefined ? "" : val.Facilitiesdict.Projector === 1 ? val.Facilitiesdict.Projector + " projector" : val.Facilitiesdict.Projector + " projectors"}
-                                                                <br />{val.Facilitiesdict.Screen === undefined ? "" : val.Facilitiesdict.Screen === 1 ? val.Facilitiesdict.Screen + " screen" : val.Facilitiesdict.Screen + " screens"}
-                                                                <br />{val.Facilitiesdict.Desktop === undefined ? "" : val.Facilitiesdict.Desktop === 1 ? val.Facilitiesdict.Desktop + " desktop" : val.Facilitiesdict.Desktop + " desktops"}
-                                                                <br />{val.Facilitiesdict.Whiteboard === undefined ? "" : val.Facilitiesdict.Whiteboard === 1 ? val.Facilitiesdict.Whiteboard + " whiteboard" : val.Facilitiesdict.Whiteboard + " whiteboards"}
-                                                            </div> */}
                                                             <div style={{width: 60, textAlign: 'center', alignSelf: 'center'}}>
                                                                 <button type="submit" className="btn btn-primary btn-block" onClick={editBooking(val)}>Edit</button>
                                                             </div>

@@ -724,7 +724,7 @@ func TestGetVenueFromBuildingAndUnit(t *testing.T) {
 	}
 }
 
-func TestDeleteBookingFromTable_Success(t *testing.T) {
+func TestDeletePendingBookingFromTable_Success(t *testing.T) {
 	mock, repo, _, err := setupBookings("")
 	if err != nil {
 		t.Errorf("unexpected error: %s", err.Error())
@@ -751,7 +751,7 @@ func TestDeleteBookingFromTable_Success(t *testing.T) {
 	}
 	expected := len(input.BookingID)
 
-	if count, err := DeleteBookingFromTable(repo.db, input); count != expected || err != nil {
+	if count, err := DeletePendingBookingFromTable(repo.db, input); count != expected || err != nil {
 		if err != nil {
 			t.Errorf("Unexpected error: %s", err.Error())
 		}
@@ -761,7 +761,7 @@ func TestDeleteBookingFromTable_Success(t *testing.T) {
 	}
 }
 
-func TestDeleteBookingFromTable_Error(t *testing.T) {
+func TestDeletePendingBookingFromTable_Error(t *testing.T) {
 	mock, repo, _, err := setupBookings("")
 	if err != nil {
 		t.Errorf("unexpected error: %s", err.Error())
@@ -791,7 +791,7 @@ func TestDeleteBookingFromTable_Error(t *testing.T) {
 	}
 
 	expectedCount := 1
-	if count, err := DeleteBookingFromTable(repo.db, input); expectedCount != count || err == nil || err.Error() != expected.Error() {
+	if count, err := DeletePendingBookingFromTable(repo.db, input); expectedCount != count || err == nil || err.Error() != expected.Error() {
 		if err == nil {
 			t.Fatalf("Expected there to be an error but there is none")
 		}

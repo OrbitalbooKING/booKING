@@ -2,14 +2,14 @@ import { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import Axios from "axios";
 import configData from "../config.json";
-import Layout3 from "../layouts/Layout3";
+import Layout2 from "../layouts/Layout2";
 import Unauthorised from "./Unauthorised";
 
 import moment from "moment";
 
 import * as Cookies from "js-cookie";
 
-function ApprovalOverview() {
+function DeletionOverview() {
 
     let history = useHistory();
 
@@ -26,7 +26,6 @@ function ApprovalOverview() {
             params: search,
         }
         ).then(response => {
-            console.log(response.data.data);
             setBookingInfo(response.data.data);
         }).catch((error) => {
             if (error.response) {
@@ -50,18 +49,19 @@ function ApprovalOverview() {
         });
     };
 
-    const approveBooking = () => {
+    const deleteBooking = () => {
         if (bookingInfo !== undefined) {
-            let tempArr = [];
-        
-            tempArr.push(Cookies.get("bookingId"));
+            
+            let search = new URLSearchParams();
+            search.append("bookingID", Cookies.get("bookingId")); 
 
-            Axios.put(configData.LOCAL_HOST + "/approve_bookings", 
+            Axios.delete(configData.LOCAL_HOST + "/delete_confirmed_bookings", 
             {
-                bookingID: tempArr
-            }).then(response => { 
+                params: search,
+            }
+            ).then(response => { 
                 history.push({
-                    pathname: "/approval-success",
+                    pathname: "/deletion-success",
                     state: { message: response.data.message }
                 });
             }).catch((error) => {
@@ -104,51 +104,45 @@ function ApprovalOverview() {
     return (
         <>
             {Cookies.get("name") !== undefined && Cookies.get("id") !== undefined 
-                ? <Layout3 id={Cookies.get("id")} name={Cookies.get("name")} action="Approval confirmation">
+                ? <Layout2 id={Cookies.get("id")} name={Cookies.get("name")} action="Deletion confirmation">
                     <div className="parent">
                         <div className="home-page">
-                            <div className="booking-view">
-                                <div className="display-booking-header">
+                            <div className="venue-list">
+                                <div className="display-selected-venue-header">
                                     <div style={{display: 'flex', flexDirection: 'row'}}>
-                                        <div style={{width: 100, textAlign: 'center', alignSelf: 'center'}}>Requestor </div>
-                                        <div style={{width: 100, textAlign: 'center', alignSelf: 'center'}}>Requestor's faculty </div>
                                         <div style={{width: 100, textAlign: 'center', alignSelf: 'center'}}>Booking id </div>
-                                        <div style={{width: 180, textAlign: 'center', alignSelf: 'center'}}>Venue name </div>
-                                        <div style={{width: 100, textAlign: 'center', alignSelf: 'center'}}>Location </div>
-                                        <div style={{width: 150, textAlign: 'center', alignSelf: 'center'}}>Date </div>
+                                        <div style={{width: 200, textAlign: 'center', alignSelf: 'center'}}>Venue name </div>
+                                        <div style={{width: 120, textAlign: 'center', alignSelf: 'center'}}>Location </div>
+                                        <div style={{width: 200, textAlign: 'center', alignSelf: 'center'}}>Date </div>
                                         <div style={{width: 70, textAlign: 'center', alignSelf: 'center'}}>Pax </div>
                                         <div style={{width: 80, textAlign: 'center', alignSelf: 'center'}}>Status </div>
                                         <div style={{width: 80, textAlign: 'center', alignSelf: 'center'}}>Sharing? </div>
                                     </div>
                                 </div>
-                                <div style={{overflowY: "auto", height: 200}}>
+                                <div style={{overflowY: "auto", height: 180}}>
                                     {bookingInfo === undefined ? <div><h2 style={{textAlign: 'center', alignContent: 'center'}}>Loading... </h2></div> :
-                                        <div className="display-booking" style={{height: 'auto'}}>
+                                        <div className="display-selected-venue" style={{height: 'auto'}}>
                                             <div style={{display: 'flex', flexDirection: 'row'}}>
-                                                <div style={{width: 100, textAlign: 'center', alignSelf: 'center'}}>{bookingInfo.Nusnetid} </div>
-                                                <div style={{width: 100, textAlign: 'center', alignSelf: 'center'}}>{bookingInfo.Facultydescription} </div>
                                                 <div style={{width: 100, textAlign: 'center', alignSelf: 'center'}}>{bookingInfo.BookingID.substring(0, 4)}</div>
-                                                <div style={{width: 180, textAlign: 'center', alignSelf: 'center'}}>{bookingInfo.Venuename} </div>
-                                                <div style={{width: 100, textAlign: 'center', alignSelf: 'center'}}>{bookingInfo.Buildingname} {bookingInfo.Unit} </div>
-                                                <div style={{width: 150, textAlign: 'center', alignSelf: 'center'}}>{dateConverter(bookingInfo.Eventstart)} </div>
+                                                <div style={{width: 200, textAlign: 'center', alignSelf: 'center'}}>{bookingInfo.Venuename} </div>
+                                                <div style={{width: 120, textAlign: 'center', alignSelf: 'center'}}>{bookingInfo.Buildingname} {bookingInfo.Unit} </div>
+                                                <div style={{width: 200, textAlign: 'center', alignSelf: 'center'}}>{dateConverter(bookingInfo.Eventstart)} </div>
                                                 <div style={{width: 70, textAlign: 'center', alignSelf: 'center'}}>{bookingInfo.Pax} </div>
                                                 <div style={{width: 80, textAlign: 'center', alignSelf: 'center'}}>{bookingInfo.Bookingstatusdescription} </div>
                                                 <div style={{width: 80, textAlign: 'center', alignSelf: 'center'}}>{bookingInfo.Sharable ? "Yes" : "No"} </div>
-                                                
                                             </div>
-                                            
                                         </div>
                                     }
                                 </div>
-                                <button style={{position: 'absolute', bottom: 0, right: 0, margin: 25}} type="submit" className="btn btn-primary btn-block" onClick={approveBooking}>Approve Booking</button>
+                                <button style={{position: 'absolute', bottom: 0, right: 0, margin: 25}} type="submit" className="btn btn-primary btn-block" onClick={deleteBooking}>Delete Booking</button>
                             </div>
                         </div>
                     </div>
-                </Layout3>
+                </Layout2>
                 : <Unauthorised />
             }
         </>
     );
 }
 
-export default ApprovalOverview;
+export default DeletionOverview;

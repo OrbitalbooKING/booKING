@@ -44,6 +44,9 @@ function Booking() {
 
     const [errorMessage, setErrorMessage] = useState();
 
+    const [bookable, setBookable] = useState();
+    const [cost, setCost] = useState();
+    const [points, setPoints] = useState();
     const [venueInfo, setVenueInfo] = useState();
 
     const [date, setDate] = useState(new DateObject());
@@ -91,6 +94,73 @@ function Booking() {
         });
     };
 
+    const getPoints = () => {
+
+        // let search = new URLSearchParams();
+
+        // search.append("NUSNET_ID", Cookies.get("id"));
+        
+        // Axios.get(configData.LOCAL_HOST + "/get_profile", 
+        // {
+        //     params: search,
+        // }
+        // ).then(response => { 
+        //     setPoints(response.data.data.Points);
+        // }).catch((error) => {
+        //     if (error.response) {
+        //         console.log("response");
+        //         // The request was made and the server responded with a status code
+        //         // that falls out of the range of 2xx
+        //         if (error.response.status === 400) {
+        //             console.log(error.response.data.message);
+        //         }
+        //     } else if (error.request) {
+        //         console.log("request");
+        //         // The request was made but no response was received
+        //         // `error.request` is an instance of XMLHttpRequest in the 
+        //         // browser and an instance of
+        //         // http.ClientRequest in node.js
+        //         console.log(error.request);
+        //     } else {
+        //         // Something happened in setting up the request that triggered an Error
+        //         console.log("Query failed!");
+        //     }
+        // });
+        let search = new URLSearchParams();
+
+        search.append("NUSNET_ID", Cookies.get("id"));
+        
+        Axios.get(configData.LOCAL_HOST + "/get_pending_booking", 
+        {
+            params: search,
+        }
+        ).then(response => { 
+            setPoints(response.data.data.UserPoints);
+            setCost(response.data.data.TotalCost);
+            setBookable(response.data.data.ValidCheckout);
+            // console.log(response.data.data.UserPoints);
+        }).catch((error) => {
+            if (error.response) {
+                console.log("response");
+                // The request was made and the server responded with a status code
+                // that falls out of the range of 2xx
+                if (error.response.status === 400) {
+                    console.log(error.response.data.message);
+                }
+            } else if (error.request) {
+                console.log("request");
+                // The request was made but no response was received
+                // `error.request` is an instance of XMLHttpRequest in the 
+                // browser and an instance of
+                // http.ClientRequest in node.js
+                console.log(error.request);
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                console.log("Query failed!");
+            }
+        });
+    };
+
     const handleDateChange = (selected) => { // changes current date based on selected date on calendar
         setDate(selected);
     };
@@ -112,10 +182,10 @@ function Booking() {
 
         if (event.target.checked) { // user selected checkbox
             addToCart(selectedStart, selectedEnd);
-            setSelected({ ...selected, [event.target.name]: event.target.checked });
+            // setSelected({ ...selected, [event.target.name]: event.target.checked });
         } else { // user unselected checkbox
             removeFromCart(selectedStart, selectedEnd);
-            setSelected({ ...selected, [event.target.name]: event.target.checked });
+            // setSelected({ ...selected, [event.target.name]: event.target.checked });
         }
     };
 
@@ -205,7 +275,8 @@ function Booking() {
             params: search,
         }
         ).then(response => { 
-            setCart(response.data.data);
+            setCart(response.data.data.PendingBookings);
+            // console.log(response.data.data.PendingBookings);
         }).catch((error) => {
             if (error.response) {
                 console.log("response");
@@ -233,10 +304,12 @@ function Booking() {
         if (cart !== undefined) {
             let changeInCapacity = false;
             for (let i = 0; i < cart.length; i++) {
-                if (capacity !== cart[i].Pax) {
+                if (!sharing && cart[i].Pax === venueInfo[0].Maxcapacity) {
+                    changeInCapacity = false;
+                } else if (capacity !== cart[i].Pax) {
                     changeInCapacity = true;
                     continue;
-                }
+                } 
             }
             if (changeInCapacity) {
                 removeAllFromCart();
@@ -250,8 +323,10 @@ function Booking() {
         data["pax"] = capacity;
         data["eventStart"] = start;
         data["eventEnd"] = end;
+        data["sharable"] = sharing;
         
         Axios.post(configData.LOCAL_HOST + "/make_pending_booking", [data]).then(response => {
+            getTimings();
             getCartItems();
         }).catch((error) => {
             if (error.response) {
@@ -283,11 +358,12 @@ function Booking() {
 
                 search.append("bookingID", cart[i].Bookingid);
                 
-                Axios.delete(configData.LOCAL_HOST + "/delete_bookings", 
+                Axios.delete(configData.LOCAL_HOST + "/delete_pending_bookings", 
                 {
                     params: search,
                 }
-                ).then(response => { 
+                ).then(response => {
+                    getTimings();
                     getCartItems();
                 }).catch((error) => {
                     if (error.response) {
@@ -319,11 +395,12 @@ function Booking() {
         let search = new URLSearchParams();
         search.append("bookingID", value.Bookingid);               
 
-        Axios.delete(configData.LOCAL_HOST + "/delete_bookings", 
+        Axios.delete(configData.LOCAL_HOST + "/delete_pending_bookings", 
         {
             params: search,
         }
-        ).then(response => { 
+        ).then(response => {
+            getTimings();
             getCartItems();
         }).catch((error) => {
             if (error.response) {
@@ -355,11 +432,12 @@ function Booking() {
                 search.append("bookingID", cart[i].Bookingid);               
                 
             }
-            Axios.delete(configData.LOCAL_HOST + "/delete_bookings", 
+            Axios.delete(configData.LOCAL_HOST + "/delete_pending_bookings", 
             {
                 params: search,
             }
-            ).then(response => { 
+            ).then(response => {
+                getTimings();
                 getCartItems();
             }).catch((error) => {
                 if (error.response) {
@@ -398,12 +476,30 @@ function Booking() {
                     <FormGroup>
                         {availability === undefined || timings.length === 0
                             ? "Loading..." 
+                            // : Object.entries(availability).map((val, key) => {
+                            //     console.log(availability);
+                            //     if (date.format("MM/DD/YYYY") === moment().format('MM/DD/YYYY') || sharing === undefined || (capacity === 0 && sharing)) {
+                            //         return <FormControlLabel disabled control={<Checkbox checked={selected[val[0]]} onChange={handleCheckboxChange} name={val[0]} />} label={formatter(val[0])} key={key} />;
+                            //     } else if (val[1]) {
+                            //         return <FormControlLabel control={<Checkbox checked={selected[val[0]]} onChange={handleCheckboxChange} name={val[0]} />} label={formatter(val[0])} key={key} />;
+                            //     } else {
+                            //         return <FormControlLabel disabled control={<Checkbox checked={selected[val[0]]} onChange={handleCheckboxChange} name={val[0]} />} label={formatter(val[0])} key={key} />;
+                            //     }
+                            // })
                             : Object.entries(availability).map((val, key) => {
-                                if (capacity === 0 || date.format("MM/DD/YYYY") === moment().format('MM/DD/YYYY') || sharing === undefined) {
+                                if (date.format("MM/DD/YYYY") === moment().format('MM/DD/YYYY') || sharing === undefined || (capacity === 0 && sharing)) {
                                     return <FormControlLabel disabled control={<Checkbox checked={selected[val[0]]} onChange={handleCheckboxChange} name={val[0]} />} label={formatter(val[0])} key={key} />;
                                 } else if (val[1]) {
                                     return <FormControlLabel control={<Checkbox checked={selected[val[0]]} onChange={handleCheckboxChange} name={val[0]} />} label={formatter(val[0])} key={key} />;
                                 } else {
+                                    for (let i = 0; i < cart.length; i++) {
+                                        if (cart[i].Eventstart === toIsoString(new Date(date.year, date.month.number - 1, date.day, val[0].substring(4, 6), 0, 0, 0)).substring(0, 19) + "Z") {
+                                            return <FormControlLabel control={<Checkbox checked={selected[val[0]]} onChange={handleCheckboxChange} name={val[0]} />} label={formatter(val[0])} key={key} />;
+                                        }
+                                        // else {
+                                        //     return <FormControlLabel disabled control={<Checkbox checked={selected[val[0]]} onChange={handleCheckboxChange} name={val[0]} />} label={formatter(val[0])} key={key} />;
+                                        // }
+                                    }
                                     return <FormControlLabel disabled control={<Checkbox checked={selected[val[0]]} onChange={handleCheckboxChange} name={val[0]} />} label={formatter(val[0])} key={key} />;
                                 }
                             })
@@ -460,6 +556,28 @@ function Booking() {
         return moment(tempDate, 'YYYY-MM-DDThh').format('Do MMMM YYYY hh:mm a') + " to " + moment(endHour, 'hh').format('h:mm a');
     };
 
+    const findMaxCapacity = (max, points, sharing) => {
+        if (sharing) {
+            if (max < Math.floor(points * 1.2)) {
+                return max;
+            } else {
+                return Math.floor(points * 1.2);
+            }
+        } else {
+            if (max < Math.floor(points)) {
+                return max;
+            } else {
+                return Math.floor(points);
+            }
+        }
+    };
+
+    useEffect(() => {
+        getPoints();
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     useEffect(() => {
         venueSearch();
 
@@ -491,18 +609,30 @@ function Booking() {
     }, [sharing]);
     
     useEffect(() => {
+        // if (date.format("MM/DD/YYYY") === moment().format('MM/DD/YYYY')) {
+        //     setErrorMessage("Please select a date!");
+        // } else if (capacity > 1 && sharing !== undefined) {
+        //     setErrorMessage("");
+        // } else if (availability !== undefined && timings.length !== 0) {
+        //     if (capacity === 0 && sharing === undefined) {
+        //         setErrorMessage("Please select a capacity and indicate if sharing!");
+        //     } else if (capacity === 0) {
+        //         setErrorMessage("Please select a capacity!");
+        //     } else if (sharing === undefined) {
+        //         setErrorMessage("Please indicate if sharing!");
+        //     }     
+        // }
+
         if (date.format("MM/DD/YYYY") === moment().format('MM/DD/YYYY')) {
             setErrorMessage("Please select a date!");
-        } else if (capacity > 1 && sharing !== undefined) {
+        } else if (((capacity > 1 && sharing) || !sharing) && sharing !== undefined) {
             setErrorMessage("");
         } else if (availability !== undefined && timings.length !== 0) {
-            if (capacity === 0 && sharing === undefined) {
-                setErrorMessage("Please select a capacity and indicate if sharing!");
+            if (sharing === undefined) {
+                setErrorMessage("Please indicate if sharing!");
             } else if (capacity === 0) {
                 setErrorMessage("Please select a capacity!");
-            } else if (sharing === undefined) {
-                setErrorMessage("Please indicate if sharing!");
-            }     
+            }   
         }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -515,20 +645,25 @@ function Booking() {
     }, [timings]);
 
     useEffect(() => {
-        // if (cart !== undefined) {
-        //     let changeInVenue = false;
-        //     for (let i = 0; i < cart.length; i++) {
-        //         if (Cookies.get("unit") !== cart[i].Unitno && Cookies.get("buildingName") !== cart[i].Buildingname) {
-        //             changeInVenue = true;
-        //             continue;
-        //         }
-        //     }
-        //     if (changeInVenue) {
-        //         removeAllFromCart();
-        //     }
-        // }
-        console.log(cart);
+        if (cart !== undefined) {
+            let changeInVenue = false;
+            for (let i = 0; i < cart.length; i++) {
+                if (Cookies.get("unit") !== cart[i].Unitno && Cookies.get("buildingName") !== cart[i].Buildingname) {
+                    changeInVenue = true;
+                    continue;
+                }
+            }
+            if (changeInVenue) {
+                removeAllFromCart();
+            }
+        }
         populateCheckbox();
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [cart]);
+
+    useEffect(() => {
+        getPoints();
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [cart]);
@@ -569,21 +704,6 @@ function Booking() {
                                     })}
                                     <div style={{float: 'left'}}>
                                         <FormControl style={{width: 85}} className={classes.formControl}>
-                                            <InputLabel id="demo-simple-select-label">Capacity</InputLabel>
-                                            <Select
-                                                labelId="demo-simple-select-label"
-                                                id="demo-simple-select"
-                                                value={capacity === 0 ? "" : capacity}
-                                                onChange={handleCapacityChange}
-                                                input={<Input />}
-                                                MenuProps={{ classes: { paper: classes.menuPaper } }}
-                                            >
-                                            {venueInfo === undefined ? null : Array.from({length: venueInfo[0].Maxcapacity}, (v, i) => 1 + i).map((val, key) => {
-                                                return <MenuItem value={val} key={key}>{val}</MenuItem>;
-                                            })}
-                                            </Select>
-                                        </FormControl>
-                                        <FormControl style={{width: 85}} className={classes.formControl}>
                                             <InputLabel id="demo-simple-select-label">Sharing?</InputLabel>
                                             <Select
                                                 labelId="demo-simple-select-label"
@@ -597,6 +717,22 @@ function Booking() {
                                             <MenuItem value={false} key={"No"}>No</MenuItem>
                                             </Select>
                                         </FormControl>
+
+                                        {sharing ? <FormControl style={{width: 85}} className={classes.formControl}>
+                                            <InputLabel id="demo-simple-select-label">Capacity</InputLabel>
+                                            <Select
+                                                labelId="demo-simple-select-label"
+                                                id="demo-simple-select"
+                                                value={capacity === 0 ? "" : capacity}
+                                                onChange={handleCapacityChange}
+                                                input={<Input />}
+                                                MenuProps={{ classes: { paper: classes.menuPaper } }}
+                                            >
+                                            {venueInfo === undefined || points === undefined ? null : Array.from({length: findMaxCapacity(venueInfo[0].Maxcapacity, points, sharing)}, (v, i) => 1 + i).map((val, key) => {
+                                                return <MenuItem value={val} key={key}>{val}</MenuItem>;
+                                            })}
+                                            </Select>
+                                        </FormControl> : ""}
 
                                         <Calendar 
                                             mapDays={({ date }) => {
@@ -617,8 +753,8 @@ function Booking() {
                                         >
                                         </Calendar>
                                     </div>
-                                    <div style={{float: 'left', height: 300, width: 550, paddingLeft: 20}}><div style={{textAlign: 'center'}}>Currently selected Timeslots:</div>
-                                        <div style = {{overflowY: "auto", height: 250}}>
+                                    <div style={{float: 'left', height: 250, width: 550, paddingLeft: 20}}><div style={{textAlign: 'center'}}>Currently selected Timeslots:</div>
+                                        <div style = {{overflowY: "auto", height: 200}}>
                                             {cart === undefined ? "" : cart.map((val, key) => {
                                                 return (<div key={key}>
                                                     <hr />
@@ -630,10 +766,19 @@ function Booking() {
                                             })}
                                         </div>
                                         <br />
+                                        <div>
+                                            <div style={{float: 'left'}}>Points left: {points}</div>
+                                            <div style={{float: 'right'}}>Points needed: {cost}</div>
+                                        </div>
+                                        <br />
                                         <button style={{float: 'left'}} type="submit" className="btn btn-primary btn-block" onClick={removeAllFromCart}>Clear timeslots</button>
-                                        <button style={{float: 'right'}} type="submit" className="btn btn-primary btn-block" onClick={checkoutCart}>Checkout</button>
+                                        {/* <button style={{float: 'right'}} type="submit" className="btn btn-primary btn-block" onClick={checkoutCart}>Checkout</button> */}
+                                        {bookable 
+                                            ? <button style={{float: 'right'}} type="submit" className="btn btn-primary btn-block" onClick={checkoutCart}>Checkout</button> 
+                                            : <button style={{float: 'right'}} type="submit" className="btn btn-primary btn-block" disabled>Checkout</button>
+                                        }
                                     </div>
-                                </div>    
+                                </div>
                             </div>     
                         </div>                       
                     </Layout2>

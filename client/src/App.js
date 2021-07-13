@@ -31,6 +31,9 @@ import EditBooking from "./components/EditBooking";
 import EditOverview from "./components/EditOverview";
 import EditSuccess from "./components/EditSuccess";
 
+import DeletionOverview from "./components/DeletionOverview";
+import DeletionSuccess from "./components/DeletionSuccess";
+
 function App() {
 
   return (
@@ -74,6 +77,10 @@ function App() {
           <Route exact path="/edit-booking"><EditBooking /></Route>
           <Route exact path="/edit-overview"><EditOverview /></Route>
           <Route exact path="/edit-success"><EditSuccess /></Route>
+          <Route exact path="/deletion-overview"><DeletionOverview /></Route>
+          <Route exact path="/deletion-success" render={props=>(
+            <DeletionSuccess {...props} />)}
+          />
           <Route exact path="*"><ErrorPage /></Route>
         </Switch>
       </div>

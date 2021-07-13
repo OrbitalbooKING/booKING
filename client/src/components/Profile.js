@@ -8,11 +8,17 @@ import Unauthorised from "./Unauthorised";
 import moment from "moment";
 
 import profilePic from "../assets/profile.png";
-import Cookies from "js-cookie";
+import * as Cookies from "js-cookie";
+
+import Dropdown from "react-bootstrap/esm/Dropdown";
+import DropdownButton from "react-bootstrap/esm/DropdownButton";
 
 function Profile() {
 
     let history = useHistory();
+
+    const [profileInfo, setProfileInfo] = useState();
+    const [bookings, setBookings] = useState();
     
     const getProfile = () => {
 
@@ -48,20 +54,8 @@ function Profile() {
         });
     };
 
-    
-
     const getBookings = () => {
-        // setBookings([{
-        //     Venuename: "ARTIFICIAL INTELLIGENCE Lab 1: Adaptive Computing",
-        //     Buildingname: "COM1",
-        //     Unit: "01-22",
-        //     Eventstart: "2021-06-18T10:00:00.000Z",
-        //     Eventend: "2021-06-18T11:00:00.000Z",
-        //     Pax: 3,
-        //     Bookingid: "0001",
-        //     Status: "Approved",
-        //     Sharing: true
-        // }]);
+        
         let search = new URLSearchParams();
 
         search.append("NUSNET_ID", Cookies.get("id"));
@@ -70,7 +64,7 @@ function Profile() {
         {
             params: search,
         }
-        ).then(response => { 
+        ).then(response => {
             setBookings(response.data.data);
         }).catch((error) => {
             if (error.response) {
@@ -97,24 +91,27 @@ function Profile() {
     const dateConverter = (date) => {
     
         let endHour = Number(date.substring(11,13)) + 1;
-
         let tempDate = date.substring(0, 13);
-
-        // console.log(moment(tempDate, 'YYYY-MM-DDThh').format('Do MMMM YYYY hh:mm a'));
-        // console.log(moment(endHour, 'hh').format('hh:mm a'));
 
         return moment(tempDate, 'YYYY-MM-DDThh').format('Do MMMM YYYY hh:mm a') + " to " + moment(endHour, 'hh').format('h:mm a');
     };
 
-    const [profileInfo, setProfileInfo] = useState();
-
-    const [bookings, setBookings] = useState();
-
-    const editBooking = (val) => () => {
+    const deleteBooking = (val) => () => {
 
         let inThreeHours = 0.125;
 
-        console.log(val);
+        Cookies.set("bookingId", val.Bookingid, {
+            sameSite: 'None', secure: true,
+            expires: inThreeHours
+        });
+
+        history.push("/deletion-overview");
+
+    };
+    
+    const editBooking = (val) => () => {
+
+        let inThreeHours = 0.125;
 
         Cookies.set("oldBookingId", val.Bookingid, {
             sameSite: 'None', secure: true,
@@ -162,42 +159,53 @@ function Profile() {
                                     </div>
                                     <br />
                                     <h3>Bookings</h3>
-                                    {/* <div className="venue-list"> */}
-                                        <div className="display-selected-venue-header">
-                                            <div style={{display: 'flex', flexDirection: 'row', paddingRight: 20}}>
-                                                <div style={{width: 100, textAlign: 'center', alignSelf: 'center'}}>Booking id </div>
-                                                <div style={{width: 220, textAlign: 'center', alignSelf: 'center'}}>Venue name </div>
-                                                <div style={{width: 100, textAlign: 'center', alignSelf: 'center'}}>Location </div>
-                                                <div style={{width: 150, textAlign: 'center', alignSelf: 'center'}}>Date </div>
-                                                <div style={{width: 70, textAlign: 'center', alignSelf: 'center'}}>Pax </div>
-                                                <div style={{width: 80, textAlign: 'center', alignSelf: 'center'}}>Status </div>
-                                                <div style={{width: 80, textAlign: 'center', alignSelf: 'center'}}>Sharing? </div>
-                                            </div>
+                                    <div className="display-selected-venue-header">
+                                        <div style={{display: 'flex', flexDirection: 'row', paddingRight: 20}}>
+                                            <div style={{width: 80, textAlign: 'center', alignSelf: 'center'}}>Booking id </div>
+                                            <div style={{width: 220, textAlign: 'center', alignSelf: 'center'}}>Venue name </div>
+                                            <div style={{width: 100, textAlign: 'center', alignSelf: 'center'}}>Location </div>
+                                            <div style={{width: 150, textAlign: 'center', alignSelf: 'center'}}>Date </div>
+                                            <div style={{width: 70, textAlign: 'center', alignSelf: 'center'}}>Pax </div>
+                                            <div style={{width: 80, textAlign: 'center', alignSelf: 'center'}}>Status </div>
+                                            <div style={{width: 80, textAlign: 'center', alignSelf: 'center'}}>Sharing? </div>
                                         </div>
-                                        <div style={{overflowY: "auto", height: 200}}>
+                                    </div>
+                                    <div style={{overflowY: "auto", height: 200}}>
 
-                                            {bookings === undefined ? <div><h2 style={{textAlign: 'center', alignContent: 'center'}}>Loading... </h2></div> : bookings.map((val, key) => {
-                                                return (<div key={key}>
-                                                    <div className="display-selected-venue" style={{height: 'auto'}}>
-                                                        <div style={{display: 'flex', flexDirection: 'row'}}>
-                                                            <div style={{width: 100, textAlign: 'center', alignSelf: 'center'}}>{val.Bookingid.substring(0, 4)} </div>
-                                                            <div style={{width: 220, textAlign: 'center', alignSelf: 'center'}}>{val.Venuename} </div>
-                                                            <div style={{width: 100, textAlign: 'center', alignSelf: 'center'}}>{val.Buildingname} {val.Unit} </div>
-                                                            <div style={{width: 150, textAlign: 'center', alignSelf: 'center'}}>{dateConverter(val.Eventstart)} </div>
-                                                            <div style={{width: 70, textAlign: 'center', alignSelf: 'center'}}>{val.Pax} </div>
-                                                            <div style={{width: 80, textAlign: 'center', alignSelf: 'center'}}>{val.Bookingstatusdescription} </div>
-                                                            <div style={{width: 80, textAlign: 'center', alignSelf: 'center'}}>{val.Sharable ? "Yes" : "No"} </div>
-                                                            <div style={{width: 60, textAlign: 'center', alignSelf: 'center'}}>
-                                                                <button type="submit" className="btn btn-primary btn-block" onClick={editBooking(val)}>Edit</button>
-                                                            </div>
-                                                        </div>
-                                                        
+                                        {bookings === undefined 
+                                            ? <div><h2 style={{textAlign: 'center', alignContent: 'center'}}>Loading... </h2></div> 
+                                            : bookings.length === 0 
+                                                ? <div className="display-selected-venue">
+                                                    <div style={{textAlign: 'center', alignSelf: 'center'}}>
+                                                        <h3>No bookings to display</h3>
                                                     </div>
-                                                    <br />
-                                                </div>);
-                                            })}
-                                        </div>
-                                    {/* </div> */}
+                                                </div>
+                                                : bookings.map((val, key) => {
+                                                    return (<div key={key}>
+                                                        <div className="display-selected-venue" style={{height: 'auto'}}>
+                                                            <div style={{display: 'flex', flexDirection: 'row'}}>
+                                                                <div style={{width: 80, textAlign: 'center', alignSelf: 'center'}}>{val.Bookingid.substring(0, 4)} </div>
+                                                                <div style={{width: 220, textAlign: 'center', alignSelf: 'center'}}>{val.Venuename} </div>
+                                                                <div style={{width: 100, textAlign: 'center', alignSelf: 'center'}}>{val.Buildingname} {val.Unit} </div>
+                                                                <div style={{width: 150, textAlign: 'center', alignSelf: 'center'}}>{dateConverter(val.Eventstart)} </div>
+                                                                <div style={{width: 70, textAlign: 'center', alignSelf: 'center'}}>{val.Pax} </div>
+                                                                <div style={{width: 80, textAlign: 'center', alignSelf: 'center'}}>{val.Bookingstatusdescription} </div>
+                                                                <div style={{width: 80, textAlign: 'center', alignSelf: 'center'}}>{val.Sharable ? "Yes" : "No"} </div>
+                                                                <div style={{width: 60, textAlign: 'center', alignSelf: 'center'}}>
+                                                                    {/* <button type="submit" className="btn btn-primary btn-block" onClick={editBooking(val)}>Edit</button> */}
+                                                                    <DropdownButton id="dropdown-basic-button" title="Edit">
+                                                                        <Dropdown.Item onClick={deleteBooking(val)}>Delete</Dropdown.Item>
+                                                                        <Dropdown.Item onClick={editBooking(val)}>Edit</Dropdown.Item>
+                                                                    </DropdownButton>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                        </div>
+                                                        <br />
+                                                    </div>);
+                                                })
+                                        }
+                                    </div>
                                 </div>
                             </div>
                         </div>

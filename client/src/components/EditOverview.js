@@ -13,10 +13,45 @@ function EditOverview() {
 
     let history = useHistory();
 
+    const [bookingInfo, setBookingInfo] = useState();
     const [oldVenueInfo, setOldVenueInfo] = useState();
+
     const [venueInfo, setVenueInfo] = useState();
     const [cart, setCart] = useState();
 
+    const getOldBooking = () => {
+        let search = new URLSearchParams();
+
+        search.append("bookingID", Cookies.get("oldBookingId"));
+        
+        Axios.get(configData.LOCAL_HOST + "/check_booking", 
+        {
+            params: search,
+        }
+        ).then(response => {
+            setBookingInfo(response.data.data);
+        }).catch((error) => {
+            if (error.response) {
+                console.log("response");
+                // The request was made and the server responded with a status code
+                // that falls out of the range of 2xx
+                if (error.response.status === 400) {
+                    console.log(error.response.data.message);
+                }
+            } else if (error.request) {
+                console.log("request");
+                // The request was made but no response was received
+                // `error.request` is an instance of XMLHttpRequest in the 
+                // browser and an instance of
+                // http.ClientRequest in node.js
+                console.log(error.request);
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                console.log("Query failed!");
+            }
+        });
+    }
+    
     const getOldVenue = () => {
         
         let search = new URLSearchParams();
@@ -205,6 +240,12 @@ function EditOverview() {
     };
 
     useEffect(() => {
+        getOldBooking();
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    useEffect(() => {
         getOldVenue();
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -250,6 +291,14 @@ function EditOverview() {
                                                         <br />{val.Facilitiesdict.Desktop === undefined ? "" : val.Facilitiesdict.Desktop === 1 ? val.Facilitiesdict.Desktop + " desktop" : val.Facilitiesdict.Desktop + " desktops"}
                                                         <br />{val.Facilitiesdict.Whiteboard === undefined ? "" : val.Facilitiesdict.Whiteboard === 1 ? val.Facilitiesdict.Whiteboard + " whiteboard" : val.Facilitiesdict.Whiteboard + " whiteboards"}
                                                     </div></div>
+                                                    <div className="display-old-header"><div style={{width: 220, textAlign: 'center', alignSelf: 'center'}}>Booking time </div></div>
+                                                    <div className="display-old"><div style={{width: 220, textAlign: 'center', alignSelf: 'center'}}>{dateConverter(bookingInfo.Eventstart)} </div></div>
+                                                    <div className="display-old-header"><div style={{width: 220, textAlign: 'center', alignSelf: 'center'}}>Pax booked </div></div>
+                                                    <div className="display-old"><div style={{width: 220, textAlign: 'center', alignSelf: 'center'}}>{bookingInfo.Pax} </div></div>
+                                                    <div className="display-old-header"><div style={{width: 220, textAlign: 'center', alignSelf: 'center'}}>Booking status </div></div>
+                                                    <div className="display-old"><div style={{width: 220, textAlign: 'center', alignSelf: 'center'}}>{bookingInfo.Bookingstatusdescription} </div></div>
+                                                    <div className="display-old-header"><div style={{width: 220, textAlign: 'center', alignSelf: 'center'}}>Sharing? </div></div>
+                                                    <div className="display-old"><div style={{width: 220, textAlign: 'center', alignSelf: 'center'}}>{bookingInfo.Sharable ? "Yes" : "No"} </div></div>
                                                 </div>
                                             </div>
                                         </div>);

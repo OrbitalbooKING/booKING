@@ -777,9 +777,8 @@ function Booking() {
                                             ? <button style={{float: 'right'}} type="submit" className="btn btn-primary btn-block" onClick={checkoutCart}>Checkout</button> 
                                             : <button style={{float: 'right'}} type="submit" className="btn btn-primary btn-block" disabled>Checkout</button>
                                         }
-
                                     </div>
-                                </div>    
+                                </div>
                             </div>     
                         </div>                       
                     </Layout2>

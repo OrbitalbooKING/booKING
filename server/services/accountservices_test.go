@@ -259,7 +259,7 @@ func TestCreateAccount_ValidInput(t *testing.T) {
 	mock.ExpectBegin()
 	mock.ExpectQuery(query).
 		WithArgs(1, "e001", "pass", "test", 1, 2022, "testURL", 1,
-			50.0, AnyTime{}, AnyTime{}, 1).
+			50, AnyTime{}, AnyTime{}, 1).
 		WillReturnRows(sqlmock.NewRows([]string{"id"}).AddRow("1"))
 	mock.ExpectCommit()
 
@@ -272,7 +272,7 @@ func TestCreateAccount_ValidInput(t *testing.T) {
 		Gradyear:        2022,
 		Profilepic:      "testURL",
 		Accounttypeid:   1,
-		Points:          50.0,
+		Points:          50,
 		Createdat:       time.Time{},
 		Lastupdated:     time.Time{},
 		Accountstatusid: 1,

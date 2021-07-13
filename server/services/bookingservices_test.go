@@ -225,7 +225,7 @@ func TestGetBookingsOfDay(t *testing.T) {
 	query := regexp.
 		QuoteMeta(`SELECT cb.eventstart, SUM(pax) AS sumpax FROM currentBookings AS cb 
 						JOIN venues ON venues.id = cb.venueid 
-						WHERE (cb.eventStart >= $1 AND cb.eventEnd <= $2) 
+						WHERE (cb.eventStart >= $1 OR cb.eventEnd <= $2) 
 						AND cb.venueid = $3 
 						AND cb.bookingstatusid IN ($4,$5,$6) 
 						GROUP BY cb.eventstart`)
@@ -443,7 +443,7 @@ func TestGetPendingBookings(t *testing.T) {
 
 	query := regexp.
 		QuoteMeta(`SELECT v.id AS venueid, v.venuename, v.unit, buildings.id AS buildingid, buildingname, 
-		currentbookings.id AS bookingid, pax, eventstart, eventend, v.maxcapacity as venuemaxcapacity, cost FROM venues AS v 
+		currentbookings.id AS bookingid, pax, eventstart, eventend FROM venues AS v 
 		JOIN currentBookings ON v.id = currentBookings.venueid 
 		JOIN buildings ON v.buildingid = buildings.id
 		WHERE nusnetid = $1 AND bookingstatusid = $2`)
@@ -496,12 +496,11 @@ func TestInsertBooking_UnderLimit(t *testing.T) {
 	}
 
 	query := regexp.
-		QuoteMeta(`INSERT INTO "currentbookings" ("nusnetid","venueid","pax","createdat","eventstart","eventend","bookingstatusid","lastupdated","cost") 
-		VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING "currentbookings"."id"`)
+		QuoteMeta(`INSERT INTO "currentbookings" ("nusnetid","venueid","pax","createdat","eventstart","eventend","bookingstatusid","lastupdated") VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING "currentbookings"."id"`)
 
 	mock.ExpectBegin()
 	mock.ExpectQuery(query).
-		WithArgs("e001", 1, 0, AnyTime{}, AnyTime{}, AnyTime{}, 1, AnyTime{}, 0.0).
+		WithArgs("e001", 1, 10, AnyTime{}, AnyTime{}, AnyTime{}, 1, AnyTime{}).
 		WillReturnRows(sqlmock.NewRows([]string{"id"}).AddRow(uuid.UUID{}))
 	mock.ExpectCommit()
 
@@ -724,7 +723,7 @@ func TestGetVenueFromBuildingAndUnit(t *testing.T) {
 	}
 }
 
-func TestDeletePendingBookingFromTable_Success(t *testing.T) {
+func TestDeleteBookingFromTable_Success(t *testing.T) {
 	mock, repo, _, err := setupBookings("")
 	if err != nil {
 		t.Errorf("unexpected error: %s", err.Error())
@@ -751,7 +750,7 @@ func TestDeletePendingBookingFromTable_Success(t *testing.T) {
 	}
 	expected := len(input.BookingID)
 
-	if count, err := DeletePendingBookingFromTable(repo.db, input); count != expected || err != nil {
+	if count, err := DeleteBookingFromTable(repo.db, input); count != expected || err != nil {
 		if err != nil {
 			t.Errorf("Unexpected error: %s", err.Error())
 		}
@@ -761,7 +760,7 @@ func TestDeletePendingBookingFromTable_Success(t *testing.T) {
 	}
 }
 
-func TestDeletePendingBookingFromTable_Error(t *testing.T) {
+func TestDeleteBookingFromTable_Error(t *testing.T) {
 	mock, repo, _, err := setupBookings("")
 	if err != nil {
 		t.Errorf("unexpected error: %s", err.Error())
@@ -791,7 +790,7 @@ func TestDeletePendingBookingFromTable_Error(t *testing.T) {
 	}
 
 	expectedCount := 1
-	if count, err := DeletePendingBookingFromTable(repo.db, input); expectedCount != count || err == nil || err.Error() != expected.Error() {
+	if count, err := DeleteBookingFromTable(repo.db, input); expectedCount != count || err == nil || err.Error() != expected.Error() {
 		if err == nil {
 			t.Fatalf("Expected there to be an error but there is none")
 		}

@@ -291,119 +291,127 @@ function Home() {
                     <div className="parent">
                         <div className="home-page">
                             <div className="searchbar">
-                                <div style={{display: 'inline-block'}}>
-                                    <div style={{display: 'flex', flexDirection: 'row',}}>
-                                        <Autocomplete
-                                            id="free-solo-demo"
-                                            freeSolo
-                                            options={venuesList === undefined ? [] : venuesList.filter((dataName) => dataName.Venuename.toLowerCase().includes(venueName.toLowerCase())).filter((dataBuilding) => dataBuilding.Buildingname.toLowerCase().includes(buildingName.toLowerCase())).filter((dataUnit) => dataUnit.Unit.toLowerCase().includes(unit.toLowerCase())).map((dataType) => dataType.Roomtypename).filter((item, i, s) => s.lastIndexOf(item) === i).sort()}
-                                            onBlur={e => setVenueType(e.target.value)}
-                                            renderInput={(params) => (
-                                            <TextField {...params} label="Venue type" style={{width: 240, paddingBottom: 10, paddingRight: 10}} />
-                                            )}
-                                        />
-                                        <Autocomplete
-                                            id="free-solo-demo"
-                                            freeSolo
-                                            options={venuesList === undefined ? [] : venuesList.filter((dataType) => dataType.Roomtypename.toLowerCase().includes(venueType.toLowerCase())).filter((dataBuilding) => dataBuilding.Buildingname.toLowerCase().includes(buildingName.toLowerCase())).filter((dataUnit) => dataUnit.Unit.toLowerCase().includes(unit.toLowerCase())).map((dataName) => dataName.Venuename).filter((item, i, s) => s.lastIndexOf(item) === i).sort()}
-                                            onBlur={e => setVenueName(e.target.value)}
-                                            renderInput={(params) => (
-                                            <TextField {...params} label="Venue name " style={{width: 240, paddingBottom: 10, paddingRight: 10}} />
-                                            )}
-                                        />
-                                        <Autocomplete
-                                            id="free-solo-demo"
-                                            freeSolo
-                                            options={venuesList === undefined ? [] : venuesList.filter((dataName) => dataName.Venuename.toLowerCase().includes(venueName.toLowerCase())).filter((dataType) => dataType.Roomtypename.toLowerCase().includes(venueType.toLowerCase())).filter((dataUnit) => dataUnit.Unit.toLowerCase().includes(unit.toLowerCase())).map((dataBuilding) => dataBuilding.Buildingname).filter((item, i, s) => s.lastIndexOf(item) === i).sort()}
+                                <div style={{display: 'flex', flexDirection: 'row'}}>
+                                    <div>
+                                        <div className="stack-searchbar">
+                                            <div style={{display: 'flex', flexDirection: 'row'}}>
+                                                <Autocomplete
+                                                    id="free-solo-demo"
+                                                    freeSolo
+                                                    options={venuesList === undefined ? [] : venuesList.filter((dataName) => dataName.Venuename.toLowerCase().includes(venueName.toLowerCase())).filter((dataBuilding) => dataBuilding.Buildingname.toLowerCase().includes(buildingName.toLowerCase())).filter((dataUnit) => dataUnit.Unit.toLowerCase().includes(unit.toLowerCase())).map((dataType) => dataType.Roomtypename).filter((item, i, s) => s.lastIndexOf(item) === i).sort()}
+                                                    onBlur={e => setVenueType(e.target.value)}
+                                                    renderInput={(params) => (
+                                                    <TextField {...params} label="Venue type" style={{width: 240, paddingBottom: 10, paddingRight: 10}} />
+                                                    )}
+                                                />
+                                                <Autocomplete
+                                                    id="free-solo-demo"
+                                                    freeSolo
+                                                    options={venuesList === undefined ? [] : venuesList.filter((dataType) => dataType.Roomtypename.toLowerCase().includes(venueType.toLowerCase())).filter((dataBuilding) => dataBuilding.Buildingname.toLowerCase().includes(buildingName.toLowerCase())).filter((dataUnit) => dataUnit.Unit.toLowerCase().includes(unit.toLowerCase())).map((dataName) => dataName.Venuename).filter((item, i, s) => s.lastIndexOf(item) === i).sort()}
+                                                    onBlur={e => setVenueName(e.target.value)}
+                                                    renderInput={(params) => (
+                                                    <TextField {...params} label="Venue name " style={{width: 240, paddingBottom: 10, paddingRight: 10}} />
+                                                    )}
+                                                />
+                                            </div>
+                                            <div style={{display: 'flex', flexDirection: 'row'}}>
+                                                <Autocomplete
+                                                    id="free-solo-demo"
+                                                    freeSolo
+                                                    options={venuesList === undefined ? [] : venuesList.filter((dataName) => dataName.Venuename.toLowerCase().includes(venueName.toLowerCase())).filter((dataType) => dataType.Roomtypename.toLowerCase().includes(venueType.toLowerCase())).filter((dataUnit) => dataUnit.Unit.toLowerCase().includes(unit.toLowerCase())).map((dataBuilding) => dataBuilding.Buildingname).filter((item, i, s) => s.lastIndexOf(item) === i).sort()}
 
-                                            onBlur={e => setBuildingName(e.target.value)}
-                                            renderInput={(params) => (
-                                            <TextField {...params} label="Building" style={{width: 100, paddingBottom: 10, paddingRight: 10}} />
-                                            )}
-                                        />
-                                        <Autocomplete
-                                            id="free-solo-demo"
-                                            freeSolo
-                                            options={venuesList === undefined ? [] : venuesList.filter((dataName) => dataName.Venuename.toLowerCase().includes(venueName.toLowerCase())).filter((dataType) => dataType.Roomtypename.toLowerCase().includes(venueType.toLowerCase())).filter((dataBuilding) => dataBuilding.Buildingname.toLowerCase().includes(buildingName.toLowerCase())).map((dataUnit) => dataUnit.Unit).filter((item, i, s) => s.lastIndexOf(item) === i).sort()}
-                                            onBlur={e => setUnit(e.target.value)}
-                                            renderInput={(params) => (
-                                            <TextField {...params} label="Unit" style={{width: 140, paddingBottom: 10, paddingRight: 10}} />
-                                            )}
-                                        />
-                                        <FormControl style={{width: 85}}>
-                                            <InputLabel id="demo-simple-select-label">Capacity</InputLabel>
-                                            <Select
-                                            labelId="demo-simple-select-label"
-                                            id="demo-simple-select"
-                                            value={capacity === 0 ? "" : capacity}
-                                            onChange={handleCapacityChange}
-                                            input={<Input />}
-                                            MenuProps={{ classes: { paper: classes.menuPaper } }}
-                                            >
-                                            {Array.from({length: 101}, (v, i) => i).map((val, key) => {
-                                                if (val === 0) {
-                                                    return <MenuItem value={val} key={key}>Default</MenuItem>;
-                                                } else {
-                                                    return <MenuItem value={val} key={key}>{val}</MenuItem>;
-                                                }
-                                            })}
-                                            </Select>
-                                        </FormControl>
+                                                    onBlur={e => setBuildingName(e.target.value)}
+                                                    renderInput={(params) => (
+                                                    <TextField {...params} label="Building" style={{width: 100, paddingBottom: 10, paddingRight: 10}} />
+                                                    )}
+                                                />
+                                                <Autocomplete
+                                                    id="free-solo-demo"
+                                                    freeSolo
+                                                    options={venuesList === undefined ? [] : venuesList.filter((dataName) => dataName.Venuename.toLowerCase().includes(venueName.toLowerCase())).filter((dataType) => dataType.Roomtypename.toLowerCase().includes(venueType.toLowerCase())).filter((dataBuilding) => dataBuilding.Buildingname.toLowerCase().includes(buildingName.toLowerCase())).map((dataUnit) => dataUnit.Unit).filter((item, i, s) => s.lastIndexOf(item) === i).sort()}
+                                                    onBlur={e => setUnit(e.target.value)}
+                                                    renderInput={(params) => (
+                                                    <TextField {...params} label="Unit" style={{width: 140, paddingBottom: 10, paddingRight: 10}} />
+                                                    )}
+                                                />
+                                                <FormControl style={{width: 85}}>
+                                                    <InputLabel id="demo-simple-select-label">Capacity</InputLabel>
+                                                    <Select
+                                                    labelId="demo-simple-select-label"
+                                                    id="demo-simple-select"
+                                                    value={capacity === 0 ? "" : capacity}
+                                                    onChange={handleCapacityChange}
+                                                    input={<Input />}
+                                                    MenuProps={{ classes: { paper: classes.menuPaper } }}
+                                                    >
+                                                    {Array.from({length: 101}, (v, i) => i).map((val, key) => {
+                                                        if (val === 0) {
+                                                            return <MenuItem value={val} key={key}>Default</MenuItem>;
+                                                        } else {
+                                                            return <MenuItem value={val} key={key}>{val}</MenuItem>;
+                                                        }
+                                                    })}
+                                                    </Select>
+                                                </FormControl>
+                                            </div>
+                                        </div>
+                                        <div className="stack-searchbar">
+                                            <div style={{display: 'flex', flexDirection: 'row', gap: 10}}>
+                                                <DatePicker
+                                                    selected={startDate}
+                                                    onChange={(date) => setStartDate(date)}
+                                                    showTimeSelect
+                                                    minDate={subDays(new Date(), 0)}
+                                                    filterTime={filterStartTime}
+                                                    timeFormat="HH:mm"
+                                                    timeIntervals={60}
+                                                    timeCaption="time"
+                                                    dateFormat="MMMM d, yyyy h:mm aa"
+                                                    placeholderText="Select start time"
+                                                    isClearable
+                                                />
+                                                <DatePicker
+                                                    selected={endDate}
+                                                    onChange={(date) => setEndDate(date)}
+                                                    showTimeSelect
+                                                    minDate={subDays(tempDate, 0)}
+                                                    filterTime={filterEndTime}
+                                                    timeFormat="HH:mm"
+                                                    timeIntervals={60}
+                                                    timeCaption="time"
+                                                    dateFormat="MMMM d, yyyy h:mm aa"
+                                                    placeholderText="Select end time"
+                                                    isClearable
+                                                />
+                                            </div>
+                                            <div style={{display: 'flex', flexDirection: 'row', paddingLeft: 10}}>
+                                                <FormControl style={{width: 330}}>
+                                                    <InputLabel id="demo-mutiple-checkbox-label">Select your equipment</InputLabel>
+                                                    <Select
+                                                    labelId="demo-mutiple-checkbox-label"
+                                                    id="demo-mutiple-checkbox"
+                                                    multiple
+                                                    value={equipment}
+                                                    onChange={handleEquipmentChange}
+                                                    input={<Input />}
+                                                    renderValue={(selected) => selected.join(', ')}
+                                                    >
+                                                    {equipmentList.map((name) => (
+                                                        <MenuItem key={name} value={name}>
+                                                        <Checkbox checked={equipment.indexOf(name) > -1} />
+                                                        <ListItemText primary={name} />
+                                                        </MenuItem>
+                                                    ))}
+                                                    </Select>
+                                                </FormControl>
+                                            </div>
+                                        </div>                              
                                     </div>
-                                    
-                                    <div style={{display: 'flex', flexDirection: 'row', gap: 10}}>
-                                        <DatePicker
-                                            selected={startDate}
-                                            onChange={(date) => setStartDate(date)}
-                                            showTimeSelect
-                                            minDate={subDays(new Date(), 0)}
-                                            filterTime={filterStartTime}
-                                            timeFormat="HH:mm"
-                                            timeIntervals={60}
-                                            timeCaption="time"
-                                            dateFormat="MMMM d, yyyy h:mm aa"
-                                            placeholderText="Select start time"
-                                            isClearable
-                                        />
-                                        
-                                        <DatePicker
-                                            selected={endDate}
-                                            onChange={(date) => setEndDate(date)}
-                                            showTimeSelect
-                                            minDate={subDays(tempDate, 0)}
-                                            filterTime={filterEndTime}
-                                            timeFormat="HH:mm"
-                                            timeIntervals={60}
-                                            timeCaption="time"
-                                            dateFormat="MMMM d, yyyy h:mm aa"
-                                            placeholderText="Select end time"
-                                            isClearable
-                                        />
-                                        <FormControl style={{width: 350, paddingRight: 10}}>
-                                            <InputLabel id="demo-mutiple-checkbox-label">Select your equipment</InputLabel>
-                                            <Select
-                                            labelId="demo-mutiple-checkbox-label"
-                                            id="demo-mutiple-checkbox"
-                                            multiple
-                                            value={equipment}
-                                            onChange={handleEquipmentChange}
-                                            input={<Input />}
-                                            renderValue={(selected) => selected.join(', ')}
-                                            >
-                                            {equipmentList.map((name) => (
-                                                <MenuItem key={name} value={name}>
-                                                <Checkbox checked={equipment.indexOf(name) > -1} />
-                                                <ListItemText primary={name} />
-                                                </MenuItem>
-                                            ))}
-                                            </Select>
-                                        </FormControl>
-                                        <div style={{width: 80, textAlign: 'center', alignSelf: 'center'}}><button type="submit" className="btn btn-primary btn-block" onClick={venueSearch}>Search</button></div>
-                                    </div>
-                                </div>   
+                                    <div style={{width: 110, textAlign: 'center', alignSelf: 'center'}}><button type="submit" className="btn btn-primary btn-block" onClick={venueSearch}>Search</button></div>
+                                </div>
                             </div>
                             <br /> 
-                            <div className="venue-list">
+                            {/* <div className="venue-list">
                                 <div className="display-selected-venue-header">
                                     <div style={{display: 'flex', flexDirection: 'row', paddingRight: 20}}>
                                         <div style={{width: 205, textAlign: 'center', alignSelf: 'center'}}>Venue type </div>
@@ -439,7 +447,7 @@ function Home() {
                                         </div>);
                                     })}
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </Layout2>

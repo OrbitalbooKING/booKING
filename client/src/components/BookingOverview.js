@@ -63,7 +63,7 @@ function BookingOverview() {
             params: search,
         }
         ).then(response => { 
-            setCart(response.data.data);
+            setCart(response.data.data.PendingBookings);
         }).catch((error) => {
             if (error.response) {
                 console.log("response");

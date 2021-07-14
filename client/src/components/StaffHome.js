@@ -160,9 +160,9 @@ function StaffHome() {
                                                     <div style={{width: 60, textAlign: 'center', alignSelf: 'center'}}>
                                                         {/* <button type="submit" className="btn btn-primary btn-block" onClick={Book(val)}>Book</button> */}
                                                         <DropdownButton id="dropdown-basic-button" title="Handle">
-                                                        <Dropdown.Item onClick={approveBooking(val)}>Approve</Dropdown.Item>
-                                                        <Dropdown.Item onClick={rejectBooking(val)}>Reject</Dropdown.Item>
-                                                        <Dropdown.Item onClick={editBooking(val)}>Edit</Dropdown.Item>
+                                                            <Dropdown.Item onClick={approveBooking(val)}>Approve</Dropdown.Item>
+                                                            <Dropdown.Item onClick={rejectBooking(val)}>Reject</Dropdown.Item>
+                                                            <Dropdown.Item onClick={editBooking(val)}>Edit</Dropdown.Item>
                                                         </DropdownButton>
                                                     </div>
                                                 </div>

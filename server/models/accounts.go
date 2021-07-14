@@ -11,7 +11,7 @@ type Accounts struct {
 	Gradyear        int
 	Profilepic      string
 	Accounttypeid   int
-	Points          int
+	Points          float32
 	Createdat       time.Time
 	Lastupdated     time.Time
 	Accountstatusid int
@@ -27,7 +27,7 @@ type AccountDetailed struct {
 	Gradyear        int
 	Profilepic      string
 	Accounttypeid   int
-	Points          int
+	Points          float32
 	Createdat       time.Time
 	Lastupdated     time.Time
 	Accountstatusid int

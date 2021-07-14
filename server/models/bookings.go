@@ -51,6 +51,7 @@ type BookingInput struct {
 	Pax          int       `json:"pax"`
 	Eventstart   time.Time `json:"eventStart"`
 	Eventend     time.Time `json:"eventEnd"`
+	Sharable     bool      `json:"sharable"`
 	Venueid      int
 }
 
@@ -63,15 +64,24 @@ type URLBooking struct {
 }
 
 type PendingBookings struct {
-	Venueid      int
-	Venuename    string
-	Unit         string
-	Buildingid   int
-	Buildingname string
-	Pax          int
-	Eventstart   time.Time
-	Eventend     time.Time
-	Bookingid    uuid.UUID
+	Venueid          int
+	Venuename        string
+	Unit             string
+	Buildingid       int
+	Buildingname     string
+	Pax              int
+	Eventstart       time.Time
+	Eventend         time.Time
+	Bookingid        uuid.UUID
+	Cost             float32
+	Venuemaxcapacity int
+}
+
+type BookingCart struct {
+	PendingBookings []PendingBookings
+	TotalCost       float32
+	UserPoints      float32
+	ValidCheckout   bool
 }
 
 type MakeDeleteBookings struct {
@@ -88,6 +98,7 @@ type Currentbookings struct {
 	Eventend        time.Time
 	Bookingstatusid int
 	Lastupdated     time.Time
+	Cost            float32
 }
 
 type BookingDetails struct {
@@ -100,6 +111,7 @@ type BookingDetails struct {
 	Bookingid                uuid.UUID
 	Bookingstatusdescription string
 	Sharable                 bool
+	Cost                     float32
 }
 
 type BookingRequests struct {
@@ -113,4 +125,6 @@ type BookingRequests struct {
 	ID                       uuid.UUID `json:"BookingID"`
 	Bookingstatusdescription string
 	Sharable                 bool
+	Cost                     float32
+	Maxcapacity              int
 }

@@ -86,7 +86,7 @@ CREATE TABLE IF NOT EXISTS accounts (
     gradYear INT,
     profilePic VARCHAR(250),
     accountTypeID INT REFERENCES accountTypes,
-    points INT,
+    points REAL,
     createdAt TIMESTAMP,
     lastUpdated TIMESTAMP,
     accountStatusID INT REFERENCES accountStatuses
@@ -101,7 +101,8 @@ CREATE TABLE IF NOT EXISTS currentBookings (
     eventStart TIMESTAMP,
     eventEnd TIMESTAMP,
     bookingstatusID INT REFERENCES bookingStatuses,
-    lastUpdated TIMESTAMP
+    lastUpdated TIMESTAMP,
+    cost REAL
 );
 
 CREATE TABLE IF NOT EXISTS notifications (

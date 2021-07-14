@@ -76,13 +76,13 @@ func MakeBooking(c *gin.Context) {
 		fmt.Println("Check statusQuery. " + err.Error() + "\n")
 	}
 
-	counter, err := UpdateBookingsStatus(DB, input, statusCode)
+	counter, deducted, err := ConfirmBooking(DB, input, statusCode)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": err.Error()})
 		fmt.Println("Check execQuery." + err.Error())
 	}
 
-	returnMessage := fmt.Sprintf("Successfully confirmed %d booking(s)!", counter)
+	returnMessage := fmt.Sprintf("Successfully confirmed %d booking(s) and deducted %.1f point(s)!", counter, deducted)
 	c.JSON(http.StatusOK, gin.H{"success": true, "message": returnMessage})
 	fmt.Println(returnMessage)
 }
@@ -109,7 +109,13 @@ func GetPendingBooking(c *gin.Context) {
 		fmt.Println("Unable to retrieve pending bookings. " + err.Error() + "\n")
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": pendingBookings})
+	bookingCart, err := BookingCartDetails(pendingBookings, input)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": err.Error()})
+		fmt.Println(err.Error() + "\n")
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": bookingCart})
 	fmt.Println("Return successful!")
 }
 
@@ -172,7 +178,7 @@ func MakePendingBooking(c *gin.Context) {
 			} else if exists && checkBooking.Bookingstatusdescription == "In the midst of booking" {
 				var temp models.MakeDeleteBookings
 				temp.BookingID = []string{ID.String()}
-				if _, err := DeleteBookingFromTable(DB, temp); err != nil {
+				if _, err := DeletePendingBookingFromTable(DB, temp); err != nil {
 					errorMessage := fmt.Sprintf("Unable to remove pending booking %s after 15 minutes.", ID.String())
 					c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": errorMessage})
 				} else {
@@ -188,9 +194,9 @@ func MakePendingBooking(c *gin.Context) {
 	fmt.Println(successMsg)
 }
 
-// DELETE /delete_booking
+// DELETE /delete_pending_bookings
 // deletes a pending booking and updated the db
-func DeleteBookings(c *gin.Context) {
+func DeletePendingBookings(c *gin.Context) {
 	var input models.MakeDeleteBookings
 	if err := c.ShouldBindQuery(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": "Check input booking IDs in URL parameter."})
@@ -198,13 +204,34 @@ func DeleteBookings(c *gin.Context) {
 		return
 	}
 
-	counter, err := DeleteBookingFromTable(DB, input)
+	counter, err := DeletePendingBookingFromTable(DB, input)
 	if err != nil {
 		c.JSON(http.StatusExpectationFailed, gin.H{"error": err.Error(), "message": err.Error()})
 		fmt.Println(err.Error())
 	}
 
 	returnMessage := fmt.Sprintf("Successfully deleted %d pending booking(s).", counter)
+	c.JSON(http.StatusOK, gin.H{"success": true, "message": returnMessage})
+	fmt.Println(returnMessage)
+}
+
+// DELETE /delete_confirmed_bookings
+// deletes a confirmed booking and updated the db
+func DeleteConfirmedBookings(c *gin.Context) {
+	var input models.MakeDeleteBookings
+	if err := c.ShouldBindQuery(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": "Check input booking IDs in URL parameter."})
+		fmt.Println("Error in getting booking IDs. " + err.Error() + "\n")
+		return
+	}
+
+	refundedTotal, counter, err := DeleteConfirmedBookingFromTable(c, DB, input)
+	if err != nil {
+		c.JSON(http.StatusExpectationFailed, gin.H{"error": err.Error(), "message": err.Error()})
+		fmt.Println(err.Error())
+	}
+
+	returnMessage := fmt.Sprintf("Successfully deleted %d pending booking(s), and refunded total of %.1f points", counter, refundedTotal)
 	c.JSON(http.StatusOK, gin.H{"success": true, "message": returnMessage})
 	fmt.Println(returnMessage)
 }
@@ -375,7 +402,7 @@ func GetBookingsOfDay(DB *gorm.DB, input models.TimingSearchInput,
 	timingsQuery := "SELECT cb.eventstart, SUM(pax) AS sumpax FROM currentBookings AS cb" +
 		" JOIN venues ON venues.id = cb.venueid" +
 		" WHERE (cb.eventStart >= ?" +
-		" OR cb.eventEnd <= ?)" +
+		" AND cb.eventEnd <= ?)" +
 		" AND cb.venueid = ?" +
 		" AND cb.bookingstatusid IN (?)" +
 		" GROUP BY cb.eventstart"
@@ -421,7 +448,6 @@ func RetrieveBooking(DB *gorm.DB, input models.URLBooking) (models.BookingReques
 	if result.Error != nil {
 		return models.BookingRequests{}, false, result.Error
 	}
-
 	if bookings.Pax < bookings.Maxcapacity {
 		bookings.Sharable = true
 	}
@@ -494,10 +520,70 @@ func UpdateBookingsStatus(DB *gorm.DB, input models.MakeDeleteBookings, statusCo
 	}
 }
 
+func ConfirmBooking(DB *gorm.DB, input models.MakeDeleteBookings, statusCode models.Bookingstatuses) (int, float32, error) {
+	execQuery := "UPDATE currentbookings SET bookingstatusid = ? WHERE id = ?"
+	counter := 0
+	var pointsDeducted float32
+	var errorMessage string
+	for _, bookingID := range input.BookingID {
+		booking, exists, err := RetrieveBooking(DB, models.URLBooking{BookingID: bookingID})
+		if !exists {
+			errorMessage += fmt.Sprintf("No pending booking with bookingid %d. with error\n"+err.Error(), bookingID)
+			continue
+		}
+		if err != nil {
+			errorMessage += fmt.Sprintf("Error in retrieving pending booking with bookingid %d. with error\n"+err.Error(), bookingID)
+			continue
+		}
+
+		if deduction, err := DeductPoints(booking.Nusnetid, booking.Cost); err != nil {
+			errorMessage += fmt.Sprintf("Error in deducting point(s) for bookingid %d. with error\n Point(s) not deducted and booking not made."+err.Error(), bookingID)
+			continue
+		} else {
+			pointsDeducted += deduction
+		}
+
+		if err := DB.Exec(execQuery, statusCode.ID, bookingID).Error; err != nil {
+			errorMessage += fmt.Sprintf("Error in confirming booking with bookingid %d. with error\n"+err.Error(), bookingID)
+			if refund, err := RefundPoints(booking.Nusnetid, booking.Cost); err != nil {
+				errorMessage += fmt.Sprintf("Error in refunding point(s) for booking with bookingid %d. with error\n"+err.Error(), bookingID)
+			} else {
+				errorMessage += fmt.Sprintf("%.1f point(s) refunded for booking with bookingid %d. with error\n"+err.Error(), refund, bookingID)
+				pointsDeducted -= refund
+			}
+		} else {
+			counter++
+		}
+	}
+	if errorMessage != "" {
+		return counter, pointsDeducted, errors.New(errorMessage)
+	} else {
+		return counter, pointsDeducted, nil
+	}
+}
+
+func DeductPoints(nusnetID string, points float32) (float32, error) {
+	query := "UPDATE accounts SET points = points - ? WHERE nusnetid = ?"
+	if result := DB.Exec(query, points, nusnetID); result.Error != nil {
+		return 0, result.Error
+	} else {
+		return points, nil
+	}
+}
+
+func RefundPoints(nusnetID string, points float32) (float32, error) {
+	query := "UPDATE accounts SET points = points + ? WHERE nusnetid = ?"
+	if result := DB.Exec(query, points, nusnetID); result.Error != nil {
+		return 0, result.Error
+	} else {
+		return points, nil
+	}
+}
+
 func GetPendingBookings(DB *gorm.DB, input models.User, statusCode models.Bookingstatuses) ([]models.PendingBookings, error) {
 	var pendingBookings []models.PendingBookings
 	pendingQuery := "SELECT v.id AS venueid, v.venuename, v.unit, buildings.id AS buildingid, buildingname," +
-		" currentbookings.id AS bookingid, pax, eventstart, eventend FROM venues AS v" +
+		" currentbookings.id AS bookingid, pax, eventstart, eventend, v.maxcapacity as venuemaxcapacity, cost FROM venues AS v" +
 		" JOIN currentBookings ON v.id = currentBookings.venueid " +
 		" JOIN buildings ON v.buildingid = buildings.id" +
 		" WHERE nusnetid = ? AND bookingstatusid = ?"
@@ -516,6 +602,10 @@ func InsertBooking(DB *gorm.DB, overLimitAndTime bool, s models.BookingInput, ve
 			s.Eventstart, s.Eventend, venue.Venuename)
 		return uuid.UUID{}, false, errors.New(errorMessage)
 	} else {
+		if !s.Sharable {
+			s.Pax = venue.Maxcapacity
+		}
+		eventDuration := s.Eventend.Hour() - s.Eventstart.Hour()
 		currentBooking := models.Currentbookings{
 			Nusnetid:        s.Nusnetid,
 			Venueid:         s.Venueid,
@@ -525,6 +615,7 @@ func InsertBooking(DB *gorm.DB, overLimitAndTime bool, s models.BookingInput, ve
 			Eventend:        s.Eventend,
 			Bookingstatusid: statusCode.ID,
 			Lastupdated:     time.Now(),
+			Cost:            CostComputation(s.Pax, eventDuration, s.Sharable),
 		}
 		if result := DB.Create(&currentBooking); result.Error != nil {
 			errorMessage := "Error in creating pending booking. " + result.Error.Error()
@@ -566,7 +657,7 @@ func GetVenueFromBuildingAndUnit(DB *gorm.DB, s models.BookingInput) (models.Ven
 	return venue, nil
 }
 
-func DeleteBookingFromTable(DB *gorm.DB, input models.MakeDeleteBookings) (int, error) {
+func DeletePendingBookingFromTable(DB *gorm.DB, input models.MakeDeleteBookings) (int, error) {
 	deleteQuery := "DELETE FROM currentBookings WHERE id = ?"
 	counter := 0
 	var errorMessage string
@@ -581,4 +672,83 @@ func DeleteBookingFromTable(DB *gorm.DB, input models.MakeDeleteBookings) (int, 
 		return counter, errors.New(errorMessage)
 	}
 	return counter, nil
+}
+
+func DeleteConfirmedBookingFromTable(c *gin.Context, DB *gorm.DB, input models.MakeDeleteBookings) (float32, int, error) {
+	deleteQuery := "DELETE FROM currentBookings WHERE id = ?"
+	counter := 0
+	var refundedTotal float32
+	var errorMessage string
+	for _, s := range input.BookingID {
+		booking, exists, err := RetrieveBooking(DB, models.URLBooking{BookingID: s})
+		if !exists {
+			errorMessage := fmt.Sprintf("Booking %s does not exist.", s)
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": errorMessage})
+			fmt.Println(errorMessage + err.Error() + "\n")
+			continue
+		}
+		if err != nil {
+			errorMessage := fmt.Sprintf("Error in retreieving booking %s.", s)
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": errorMessage})
+			fmt.Println(errorMessage + err.Error() + "\n")
+		}
+
+		if err := DB.Exec(deleteQuery, s).Error; err != nil {
+			errorMessage += err.Error()
+		} else {
+			counter++
+		}
+
+		refunded, err := RefundPoints(booking.Nusnetid, booking.Cost)
+		if err != nil {
+			errorMessage := fmt.Sprintf("Error refunding points for booking %s.", s)
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": errorMessage})
+			fmt.Println(errorMessage + err.Error() + "\n")
+			continue
+		} else {
+			refundedTotal += refunded
+		}
+
+	}
+	if counter != len(input.BookingID) {
+		return refundedTotal, counter, errors.New(errorMessage)
+	}
+	return refundedTotal, counter, nil
+}
+
+func BookingCartDetails(pendingBookings []models.PendingBookings, user models.User) (models.BookingCart, error) {
+	var totalCost float32
+	for _, s := range pendingBookings {
+		totalCost += s.Cost
+	}
+
+	account, exists, err := GetAccount(DB, user)
+	if !exists {
+		return models.BookingCart{}, errors.New("account does not exist")
+	}
+	if err != nil {
+		return models.BookingCart{}, err
+	}
+	if account.Points < totalCost {
+		return models.BookingCart{PendingBookings: pendingBookings,
+			TotalCost:     totalCost,
+			UserPoints:    account.Points,
+			ValidCheckout: false,
+		}, nil
+	}
+
+	return models.BookingCart{
+		PendingBookings: pendingBookings,
+		TotalCost:       totalCost,
+		UserPoints:      account.Points,
+		ValidCheckout:   true,
+	}, nil
+}
+
+func CostComputation(pax int, hours int, sharable bool) float32 {
+	if sharable {
+		return (float32)(pax*hours) * 0.8
+	} else {
+		return (float32)(pax * hours)
+	}
 }

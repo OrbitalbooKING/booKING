@@ -320,7 +320,11 @@ function Booking() {
         data["NUSNET_ID"] = Cookies.get("id");
         data["unitNo"] = Cookies.get("unit");
         data["buildingName"] = Cookies.get("buildingName");
-        data["pax"] = capacity;
+        if (sharing) {
+            data["pax"] = capacity;
+        } else {
+            data["pax"] = venueInfo[0].Maxcapacity;
+        }
         data["eventStart"] = start;
         data["eventEnd"] = end;
         data["sharable"] = sharing;

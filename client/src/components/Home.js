@@ -304,6 +304,8 @@ function Home() {
                                                     <TextField {...params} label="Venue type" style={{width: 240, paddingBottom: 10, paddingRight: 10}} />
                                                     )}
                                                 />
+                                            </div>
+                                            <div style={{display: 'flex', flexDirection: 'row'}}>
                                                 <Autocomplete
                                                     id="free-solo-demo"
                                                     freeSolo
@@ -319,10 +321,9 @@ function Home() {
                                                     id="free-solo-demo"
                                                     freeSolo
                                                     options={venuesList === undefined ? [] : venuesList.filter((dataName) => dataName.Venuename.toLowerCase().includes(venueName.toLowerCase())).filter((dataType) => dataType.Roomtypename.toLowerCase().includes(venueType.toLowerCase())).filter((dataUnit) => dataUnit.Unit.toLowerCase().includes(unit.toLowerCase())).map((dataBuilding) => dataBuilding.Buildingname).filter((item, i, s) => s.lastIndexOf(item) === i).sort()}
-
                                                     onBlur={e => setBuildingName(e.target.value)}
                                                     renderInput={(params) => (
-                                                    <TextField {...params} label="Building" style={{width: 100, paddingBottom: 10, paddingRight: 10}} />
+                                                    <TextField {...params} label="Building" style={{width: 90, paddingBottom: 10, paddingRight: 10}} />
                                                     )}
                                                 />
                                                 <Autocomplete
@@ -331,7 +332,7 @@ function Home() {
                                                     options={venuesList === undefined ? [] : venuesList.filter((dataName) => dataName.Venuename.toLowerCase().includes(venueName.toLowerCase())).filter((dataType) => dataType.Roomtypename.toLowerCase().includes(venueType.toLowerCase())).filter((dataBuilding) => dataBuilding.Buildingname.toLowerCase().includes(buildingName.toLowerCase())).map((dataUnit) => dataUnit.Unit).filter((item, i, s) => s.lastIndexOf(item) === i).sort()}
                                                     onBlur={e => setUnit(e.target.value)}
                                                     renderInput={(params) => (
-                                                    <TextField {...params} label="Unit" style={{width: 140, paddingBottom: 10, paddingRight: 10}} />
+                                                    <TextField {...params} label="Unit" style={{width: 100, paddingBottom: 10, paddingRight: 10}} />
                                                     )}
                                                 />
                                                 <FormControl style={{width: 85}}>
@@ -356,7 +357,7 @@ function Home() {
                                             </div>
                                         </div>
                                         <div className="stack-searchbar">
-                                            <div style={{display: 'flex', flexDirection: 'row', gap: 10}}>
+                                            <div style={{display: 'flex', flexDirection: 'row', paddingRight: 10}}>
                                                 <DatePicker
                                                     selected={startDate}
                                                     onChange={(date) => setStartDate(date)}
@@ -370,6 +371,8 @@ function Home() {
                                                     placeholderText="Select start time"
                                                     isClearable
                                                 />
+                                            </div>
+                                            <div style={{display: 'flex', flexDirection: 'row', paddingRight: 10}}>
                                                 <DatePicker
                                                     selected={endDate}
                                                     onChange={(date) => setEndDate(date)}
@@ -384,8 +387,8 @@ function Home() {
                                                     isClearable
                                                 />
                                             </div>
-                                            <div style={{display: 'flex', flexDirection: 'row', paddingLeft: 10}}>
-                                                <FormControl style={{width: 330}}>
+                                            <div style={{display: 'flex', flexDirection: 'row'}}>
+                                                <FormControl style={{width: 280}}>
                                                     <InputLabel id="demo-mutiple-checkbox-label">Select your equipment</InputLabel>
                                                     <Select
                                                     labelId="demo-mutiple-checkbox-label"

@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/OrbitalbooKING/booKING/server/config"
 	"github.com/OrbitalbooKING/booKING/server/models"
 	"github.com/google/uuid"
 
@@ -520,10 +521,10 @@ func UpdateBookingsStatus(DB *gorm.DB, input models.MakeDeleteBookings, statusCo
 	}
 }
 
-func ConfirmBooking(DB *gorm.DB, input models.MakeDeleteBookings, statusCode models.Bookingstatuses) (int, float32, error) {
+func ConfirmBooking(DB *gorm.DB, input models.MakeDeleteBookings, statusCode models.Bookingstatuses) (int, float64, error) {
 	execQuery := "UPDATE currentbookings SET bookingstatusid = ? WHERE id = ?"
 	counter := 0
-	var pointsDeducted float32
+	var pointsDeducted float64
 	var errorMessage string
 	for _, bookingID := range input.BookingID {
 		booking, exists, err := RetrieveBooking(DB, models.URLBooking{BookingID: bookingID})
@@ -536,7 +537,7 @@ func ConfirmBooking(DB *gorm.DB, input models.MakeDeleteBookings, statusCode mod
 			continue
 		}
 
-		if deduction, err := DeductPoints(booking.Nusnetid, booking.Cost); err != nil {
+		if deduction, err := DeductPoints(DB, booking.Nusnetid, booking.Cost); err != nil {
 			errorMessage += fmt.Sprintf("Error in deducting point(s) for bookingid %d. with error\n Point(s) not deducted and booking not made."+err.Error(), bookingID)
 			continue
 		} else {
@@ -545,7 +546,7 @@ func ConfirmBooking(DB *gorm.DB, input models.MakeDeleteBookings, statusCode mod
 
 		if err := DB.Exec(execQuery, statusCode.ID, bookingID).Error; err != nil {
 			errorMessage += fmt.Sprintf("Error in confirming booking with bookingid %d. with error\n"+err.Error(), bookingID)
-			if refund, err := RefundPoints(booking.Nusnetid, booking.Cost); err != nil {
+			if refund, err := AddPoints(DB, booking.Nusnetid, booking.Cost); err != nil {
 				errorMessage += fmt.Sprintf("Error in refunding point(s) for booking with bookingid %d. with error\n"+err.Error(), bookingID)
 			} else {
 				errorMessage += fmt.Sprintf("%.1f point(s) refunded for booking with bookingid %d. with error\n"+err.Error(), refund, bookingID)
@@ -562,7 +563,7 @@ func ConfirmBooking(DB *gorm.DB, input models.MakeDeleteBookings, statusCode mod
 	}
 }
 
-func DeductPoints(nusnetID string, points float32) (float32, error) {
+func DeductPoints(DB *gorm.DB, nusnetID string, points float64) (float64, error) {
 	query := "UPDATE accounts SET points = points - ? WHERE nusnetid = ?"
 	if result := DB.Exec(query, points, nusnetID); result.Error != nil {
 		return 0, result.Error
@@ -571,7 +572,7 @@ func DeductPoints(nusnetID string, points float32) (float32, error) {
 	}
 }
 
-func RefundPoints(nusnetID string, points float32) (float32, error) {
+func AddPoints(DB *gorm.DB, nusnetID string, points float64) (float64, error) {
 	query := "UPDATE accounts SET points = points + ? WHERE nusnetid = ?"
 	if result := DB.Exec(query, points, nusnetID); result.Error != nil {
 		return 0, result.Error
@@ -674,10 +675,10 @@ func DeletePendingBookingFromTable(DB *gorm.DB, input models.MakeDeleteBookings)
 	return counter, nil
 }
 
-func DeleteConfirmedBookingFromTable(c *gin.Context, DB *gorm.DB, input models.MakeDeleteBookings) (float32, int, error) {
+func DeleteConfirmedBookingFromTable(c *gin.Context, DB *gorm.DB, input models.MakeDeleteBookings) (float64, int, error) {
 	deleteQuery := "DELETE FROM currentBookings WHERE id = ?"
 	counter := 0
-	var refundedTotal float32
+	var refundedTotal float64
 	var errorMessage string
 	for _, s := range input.BookingID {
 		booking, exists, err := RetrieveBooking(DB, models.URLBooking{BookingID: s})
@@ -699,7 +700,7 @@ func DeleteConfirmedBookingFromTable(c *gin.Context, DB *gorm.DB, input models.M
 			counter++
 		}
 
-		refunded, err := RefundPoints(booking.Nusnetid, booking.Cost)
+		refunded, err := AddPoints(DB, booking.Nusnetid, booking.Cost)
 		if err != nil {
 			errorMessage := fmt.Sprintf("Error refunding points for booking %s.", s)
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": errorMessage})
@@ -717,7 +718,7 @@ func DeleteConfirmedBookingFromTable(c *gin.Context, DB *gorm.DB, input models.M
 }
 
 func BookingCartDetails(pendingBookings []models.PendingBookings, user models.User) (models.BookingCart, error) {
-	var totalCost float32
+	var totalCost float64
 	for _, s := range pendingBookings {
 		totalCost += s.Cost
 	}
@@ -745,10 +746,10 @@ func BookingCartDetails(pendingBookings []models.PendingBookings, user models.Us
 	}, nil
 }
 
-func CostComputation(pax int, hours int, sharable bool) float32 {
+func CostComputation(pax int, hours int, sharable bool) float64 {
 	if sharable {
-		return (float32)(pax*hours) * 0.8
+		return (float64)(pax*hours) * (1 - config.POINTS_DISCOUNT)
 	} else {
-		return (float32)(pax * hours)
+		return (float64)(pax * hours)
 	}
 }

@@ -24,6 +24,7 @@ func StartAll(r *gin.Engine) {
 	api.PATCH("/reset", services.ResetPassword)
 	api.GET("/home", services.GetVenues)
 	api.GET("/search", services.SearchVenues)
+	api.POST("/transfer_points", services.TransferPoints)
 
 	api.GET("/get_profile", services.GetProfile)
 	api.GET("/get_bookings", services.GetBookings)

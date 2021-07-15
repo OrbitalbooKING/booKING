@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/OrbitalbooKING/booKING/server/config"
 	"github.com/OrbitalbooKING/booKING/server/models"
 	"github.com/OrbitalbooKING/booKING/server/utils"
 
@@ -272,6 +273,69 @@ func GetProfile(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"data": account})
 	fmt.Println("Successfully retrieved profile details.")
+}
+
+// POST /transfer_points
+// Transfers points to a target account
+func TransferPoints(c *gin.Context) {
+	const (
+		ERROR_STRING = "TransferPoints"
+	)
+	var input models.PointsTarget
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": "Check input fields"})
+		fmt.Sprintln("Error in getting all inputs for function %s. "+err.Error()+"\n", ERROR_STRING)
+		return
+	}
+
+	receiver, exists, err := GetAccount(DB, models.User{Nusnetid: input.Target})
+	if !exists {
+		errorMessage := fmt.Sprintf("Account %s does not exist!", input.Target)
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": errorMessage})
+		fmt.Sprintln(errorMessage)
+		return
+	}
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": "Error retrieving target account."})
+		fmt.Sprintln("Error retrieving target account for function %s. "+err.Error()+"\n", ERROR_STRING)
+		return
+	}
+
+	if receiver.Points+input.Points > config.MAX_POINTS {
+		errorMessage := fmt.Sprintf("Transfer amount of %.1f will result in Account %s to exceed points limit of %.1f!"+
+			"Please input lesser points to transfer.", input.Points, input.Target, config.MAX_POINTS)
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": errorMessage})
+		fmt.Sprintln(errorMessage)
+		return
+	}
+
+	deducted, err := DeductPoints(DB, input.User, input.Points)
+	if err != nil {
+		errorMessage := fmt.Sprintf("Error in deducting points from user account %s"+err.Error(), input.User)
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": errorMessage})
+		fmt.Sprintln(errorMessage)
+		return
+	}
+
+	transferred, err := AddPoints(DB, input.Target, input.Points)
+	if err != nil {
+		errorMessage := fmt.Sprintf("Error in transferring points to target account %s"+err.Error(), input.Target)
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": errorMessage})
+		fmt.Sprintln(errorMessage)
+		return
+	}
+
+	if deducted != transferred {
+		errorMessage := fmt.Sprintf("Points (%.1f points) deducted from account %s not the same as points (%.1f points( transferred to account %s",
+			deducted, input.User, transferred, input.Target)
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": errorMessage})
+		fmt.Sprintln(errorMessage)
+		return
+	}
+
+	successMessage := fmt.Sprintf("Successfully transferred %.1f points to account with NUSNET ID %s!",
+		transferred, input.Target)
+	c.JSON(http.StatusOK, gin.H{"success": true, "message": successMessage})
 }
 
 func GetAccountTypeDetails(DB *gorm.DB, theType string) (models.Accounttypes, bool, error) {

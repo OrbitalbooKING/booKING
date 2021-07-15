@@ -11,7 +11,7 @@ type Accounts struct {
 	Gradyear        int
 	Profilepic      string
 	Accounttypeid   int
-	Points          float32
+	Points          float64
 	Createdat       time.Time
 	Lastupdated     time.Time
 	Accountstatusid int
@@ -27,7 +27,7 @@ type AccountDetailed struct {
 	Gradyear        int
 	Profilepic      string
 	Accounttypeid   int
-	Points          float32
+	Points          float64
 	Createdat       time.Time
 	Lastupdated     time.Time
 	Accountstatusid int
@@ -63,4 +63,10 @@ type Accountstatuses struct {
 	ID                       int    `csv:"accountStatusid"`
 	Accountstatusname        string `csv:"statusName"`
 	Accountstatusdescription string `csv:"statusDescription"`
+}
+
+type PointsTarget struct {
+	User   string  `json:"user"`
+	Target string  `json:"target"`
+	Points float64 `json:"points"`
 }

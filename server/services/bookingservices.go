@@ -168,6 +168,11 @@ func MakePendingBooking(c *gin.Context) {
 		}
 		if added {
 			counter++
+			if err := SendPendingApprovalEmail(s.Nusnetid); err != nil {
+				errorMessage := fmt.Sprintf("Unable to send pending approval email. " + err.Error())
+				c.JSON(http.StatusExpectationFailed, gin.H{"success": false, "message": errorMessage})
+				fmt.Println(errorMessage)
+			}
 		}
 		// after 15 min, pending booking should be deleted
 		time.AfterFunc(time.Minute*15, func() {

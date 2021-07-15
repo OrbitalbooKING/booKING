@@ -83,6 +83,26 @@ func MakeBooking(c *gin.Context) {
 		fmt.Println("Check execQuery." + err.Error())
 	}
 
+	for _, s := range input.BookingID {
+		booking, exists, err := RetrieveBooking(DB, models.URLBooking{BookingID: s})
+		if !exists {
+			errorMessage := fmt.Sprintf("Booking %s does not exist!", s)
+			c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": errorMessage})
+			fmt.Println(errorMessage)
+		}
+		if err != nil {
+			errorMessage := fmt.Sprintf("Error retrieving booking %s "+err.Error(), s)
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": errorMessage})
+			fmt.Println(errorMessage)
+		}
+
+		if err := SendPendingApprovalEmail(booking.Nusnetid); err != nil {
+			errorMessage := fmt.Sprintf("Unable to send pending approval email. " + err.Error())
+			c.JSON(http.StatusExpectationFailed, gin.H{"success": false, "message": errorMessage})
+			fmt.Println(errorMessage)
+		}
+	}
+
 	returnMessage := fmt.Sprintf("Successfully confirmed %d booking(s) and deducted %.1f point(s)!", counter, deducted)
 	c.JSON(http.StatusOK, gin.H{"success": true, "message": returnMessage})
 	fmt.Println(returnMessage)
@@ -168,11 +188,6 @@ func MakePendingBooking(c *gin.Context) {
 		}
 		if added {
 			counter++
-			if err := SendPendingApprovalEmail(s.Nusnetid); err != nil {
-				errorMessage := fmt.Sprintf("Unable to send pending approval email. " + err.Error())
-				c.JSON(http.StatusExpectationFailed, gin.H{"success": false, "message": errorMessage})
-				fmt.Println(errorMessage)
-			}
 		}
 		// after 15 min, pending booking should be deleted
 		time.AfterFunc(time.Minute*15, func() {

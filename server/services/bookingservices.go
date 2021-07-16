@@ -83,6 +83,7 @@ func MakeBooking(c *gin.Context) {
 		fmt.Println("Check execQuery." + err.Error())
 	}
 
+	var bookings []models.BookingRequests
 	for _, s := range input.BookingID {
 		booking, exists, err := RetrieveBooking(DB, models.URLBooking{BookingID: s})
 		if !exists {
@@ -96,11 +97,20 @@ func MakeBooking(c *gin.Context) {
 			fmt.Println(errorMessage)
 		}
 
-		if err := SendPendingApprovalEmail(booking.Nusnetid); err != nil {
-			errorMessage := fmt.Sprintf("Unable to send pending approval email. " + err.Error())
-			c.JSON(http.StatusExpectationFailed, gin.H{"success": false, "message": errorMessage})
-			fmt.Println(errorMessage)
-		}
+		bookings = append(bookings, booking)
+	}
+
+	emailInfo, err := PopulateEmailInfo(bookings)
+	if err != nil {
+		errorMessage := "Encountered error when retrieving info to send email. " + err.Error()
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": errorMessage})
+		fmt.Println(errorMessage)
+	}
+
+	if err := SendPendingApprovalEmail(emailInfo); err != nil {
+		errorMessage := fmt.Sprintf("Unable to send pending approval email. " + err.Error())
+		c.JSON(http.StatusExpectationFailed, gin.H{"success": false, "message": errorMessage})
+		fmt.Println(errorMessage)
 	}
 
 	returnMessage := fmt.Sprintf("Successfully confirmed %d booking(s) and deducted %.1f point(s)!", counter, deducted)

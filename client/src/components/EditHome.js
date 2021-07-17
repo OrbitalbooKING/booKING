@@ -364,6 +364,8 @@ function EditHome() {
                                                     <div className="display-old"><div style={{width: 220, textAlign: 'center', alignSelf: 'center'}}>{val.Maxcapacity} </div></div>
                                                     <div className="display-old-header"><div style={{width: 220, textAlign: 'center', alignSelf: 'center'}}>Equipment </div></div>
                                                     <div className="display-old"><div style={{display: 'flex', width: 220, textAlign: 'center', alignSelf: 'center', justifyContent: 'center'}}>
+                                                        {val.Facilitiesdict.Projector === undefined && val.Facilitiesdict.Screen === undefined && val.Facilitiesdict.Desktop === undefined && val.Facilitiesdict.Whiteboard === undefined ? "Nil" : ""}
+                                                        
                                                         {val.Facilitiesdict.Projector === undefined ? "" : val.Facilitiesdict.Projector === 1 ? val.Facilitiesdict.Projector + " projector" : val.Facilitiesdict.Projector + " projectors"}
                                                         <br />{val.Facilitiesdict.Screen === undefined ? "" : val.Facilitiesdict.Screen === 1 ? val.Facilitiesdict.Screen + " screen" : val.Facilitiesdict.Screen + " screens"}
                                                         <br />{val.Facilitiesdict.Desktop === undefined ? "" : val.Facilitiesdict.Desktop === 1 ? val.Facilitiesdict.Desktop + " desktop" : val.Facilitiesdict.Desktop + " desktops"}
@@ -499,12 +501,13 @@ function EditHome() {
                                     <div className="venue-list">
                                         <div className="display-selected-venue-header">
                                             <div style={{textAlign: 'center', alignSelf: 'center'}}><h3>Select a new venue:</h3></div>
-                                            <div style={{display: 'flex', flexDirection: 'row', paddingRight: 20}}>
+                                            <div style={{display: 'flex', flexDirection: 'row'}}>
                                                 <div style={{width: 205, textAlign: 'center', alignSelf: 'center'}}>Venue type </div>
                                                 <div style={{width: 220, textAlign: 'center', alignSelf: 'center'}}>Venue name </div>
                                                 <div style={{width: 150, textAlign: 'center', alignSelf: 'center'}}>Location </div>
                                                 <div style={{width: 80, textAlign: 'center', alignSelf: 'center'}}>Max capacity </div>
                                                 <div style={{width: 120, textAlign: 'center', alignSelf: 'center'}}>Equipment </div>
+                                                <div style={{width: 80, textAlign: 'center', alignSelf: 'center'}}> </div>
                                             </div>
                                         </div>
                                         <div style={{overflowY: "auto", height: 200}}>
@@ -518,7 +521,8 @@ function EditHome() {
                                                             <div style={{width: 150, textAlign: 'center', alignSelf: 'center'}}>{val.Buildingname} {val.Unit} </div>
                                                             <div style={{width: 80, textAlign: 'center', alignSelf: 'center'}}>{val.Maxcapacity} </div>
                                                             <div style={{display: 'flex', width: 120, textAlign: 'center', alignSelf: 'center'}}>
-                                                                <br />{val.Facilitiesdict.Projector === undefined ? "" : val.Facilitiesdict.Projector === 1 ? val.Facilitiesdict.Projector + " projector" : val.Facilitiesdict.Projector + " projectors"}
+                                                                {val.Facilitiesdict.Projector === undefined && val.Facilitiesdict.Screen === undefined && val.Facilitiesdict.Desktop === undefined && val.Facilitiesdict.Whiteboard === undefined ? "Nil" : ""}
+                                                                {val.Facilitiesdict.Projector === undefined ? "" : val.Facilitiesdict.Projector === 1 ? val.Facilitiesdict.Projector + " projector" : val.Facilitiesdict.Projector + " projectors"}
                                                                 <br />{val.Facilitiesdict.Screen === undefined ? "" : val.Facilitiesdict.Screen === 1 ? val.Facilitiesdict.Screen + " screen" : val.Facilitiesdict.Screen + " screens"}
                                                                 <br />{val.Facilitiesdict.Desktop === undefined ? "" : val.Facilitiesdict.Desktop === 1 ? val.Facilitiesdict.Desktop + " desktop" : val.Facilitiesdict.Desktop + " desktops"}
                                                                 <br />{val.Facilitiesdict.Whiteboard === undefined ? "" : val.Facilitiesdict.Whiteboard === 1 ? val.Facilitiesdict.Whiteboard + " whiteboard" : val.Facilitiesdict.Whiteboard + " whiteboards"}

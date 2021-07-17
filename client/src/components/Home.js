@@ -288,7 +288,7 @@ function Home() {
         <>   
             {Cookies.get("name") !== undefined && Cookies.get("id") !== undefined
                 ? <Layout2 id={Cookies.get("id")} name={Cookies.get("name")} action="Viewing venues">
-                    <div className="parent">
+                    <div className="parent-home">
                         <div className="home-page">
                             <div className="searchbar">
                                 <div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}><h3>Search for a venue:</h3></div>

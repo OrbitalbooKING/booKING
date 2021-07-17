@@ -291,6 +291,7 @@ function Home() {
                     <div className="parent">
                         <div className="home-page">
                             <div className="searchbar">
+                                <div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}><h3>Search for a venue:</h3></div>
                                 <div className="stack-searchbar">
                                     <div>
                                         <div className="stack-searchbar">
@@ -430,18 +431,18 @@ function Home() {
 
                                     {searchResults === undefined ? <div><h2 style={{textAlign: 'center', alignContent: 'center'}}>Loading... </h2></div> : searchResults.map((val, key) => {
                                         return (<div key={key}>
-                                            <div className="display-selected-venue" style={{height: 'auto'}}>
+                                            <div className="display-selected-venue">
                                                 <div style={{display: 'flex', flexDirection: 'row'}}>
                                                     <div style={{width: 205, textAlign: 'center', alignSelf: 'center'}}>{val.Roomtypename} </div>
                                                     <div style={{width: 220, textAlign: 'center', alignSelf: 'center'}}>{val.Venuename} </div>
                                                     <div style={{width: 150, textAlign: 'center', alignSelf: 'center'}}>{val.Buildingname} {val.Unit} </div>
                                                     <div style={{width: 80, textAlign: 'center', alignSelf: 'center'}}>{val.Maxcapacity} </div>
-                                                    <div style={{display: 'flex', width: 120, textAlign: 'center', alignSelf: 'center', justifyContent: 'center'}}>
-                                                        {val.Facilitiesdict.Projector === undefined && val.Facilitiesdict.Screen === undefined && val.Facilitiesdict.Desktop === undefined && val.Facilitiesdict.Whiteboard === undefined ? "Nil" : ""}
-                                                        {val.Facilitiesdict.Projector === undefined ? "" : val.Facilitiesdict.Projector === 1 ? val.Facilitiesdict.Projector + " projector" : val.Facilitiesdict.Projector + " projectors"}
-                                                        <br />{val.Facilitiesdict.Screen === undefined ? "" : val.Facilitiesdict.Screen === 1 ? val.Facilitiesdict.Screen + " screen" : val.Facilitiesdict.Screen + " screens"}
-                                                        <br />{val.Facilitiesdict.Desktop === undefined ? "" : val.Facilitiesdict.Desktop === 1 ? val.Facilitiesdict.Desktop + " desktop" : val.Facilitiesdict.Desktop + " desktops"}
-                                                        <br />{val.Facilitiesdict.Whiteboard === undefined ? "" : val.Facilitiesdict.Whiteboard === 1 ? val.Facilitiesdict.Whiteboard + " whiteboard" : val.Facilitiesdict.Whiteboard + " whiteboards"}
+                                                    <div style={{display: 'flex', flexDirection: 'column', width: 120, textAlign: 'center', alignSelf: 'center', justifyContent: 'center'}}>
+                                                        <div>{val.Facilitiesdict.Projector === undefined && val.Facilitiesdict.Screen === undefined && val.Facilitiesdict.Desktop === undefined && val.Facilitiesdict.Whiteboard === undefined ? "Nil" : ""}</div>
+                                                        <div>{val.Facilitiesdict.Projector === undefined ? "" : val.Facilitiesdict.Projector === 1 ? val.Facilitiesdict.Projector + " projector" : val.Facilitiesdict.Projector + " projectors"}</div>
+                                                        <div>{val.Facilitiesdict.Screen === undefined ? "" : val.Facilitiesdict.Screen === 1 ? val.Facilitiesdict.Screen + " screen" : val.Facilitiesdict.Screen + " screens"}</div>
+                                                        <div>{val.Facilitiesdict.Desktop === undefined ? "" : val.Facilitiesdict.Desktop === 1 ? val.Facilitiesdict.Desktop + " desktop" : val.Facilitiesdict.Desktop + " desktops"}</div>
+                                                        <div>{val.Facilitiesdict.Whiteboard === undefined ? "" : val.Facilitiesdict.Whiteboard === 1 ? val.Facilitiesdict.Whiteboard + " whiteboard" : val.Facilitiesdict.Whiteboard + " whiteboards"}</div>
                                                     </div>
                                                     <div style={{width: 80, textAlign: 'center', alignSelf: 'center'}}>
                                                         <button type="submit" className="btn btn-primary btn-block" onClick={book(val)}>Book</button>

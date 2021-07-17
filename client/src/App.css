@@ -38,12 +38,11 @@ body, html, #root {
 
 .parent{
   margin-top: 56px;
-  position: absolute; 
+  position: absolute;
   top: 0px; 
   left: 0px;
   right: 0px; 
   bottom: 0px;
-
 }
 
 .content{
@@ -411,6 +410,24 @@ body, html, #root {
     text-align: center;
   }
 
+  .parent{
+    margin-top: 56px;
+    height: 130%;
+    position: absolute;
+    top: 0px; 
+    left: 0px;
+    right: 0px; 
+    bottom: 0px;
+  }
+
+  .home-page {
+    width: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
   .stack-searchbar {
     display: flex;
     flex-direction: column;
@@ -426,36 +443,11 @@ body, html, #root {
 
   .venue-list {
     display: none;
-    width: auto;
-    background: #ffffff;
-    box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
-    padding: 1% 1%;
-    border-radius: 15px;
-    transition: all .3s;
   }
-
-  /* .venue-list-mobile {
-    display: initial;
-    width: auto;
-    height: 300px;
-    background: #ffffff;
-    box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
-    padding: 1% 1%;
-    border-radius: 15px;
-    transition: all .3s;
-  } */
-  
 }
 
 @media (min-width: 450px) {
   .venue-list-mobile {
     display: none;
-    width: auto;
-    height: 300px;
-    background: #ffffff;
-    box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
-    padding: 1% 1%;
-    border-radius: 15px;
-    transition: all .3s;
   }
 }

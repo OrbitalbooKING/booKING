@@ -36,6 +36,15 @@ body, html, #root {
   top: 0;
 }
 
+.parent-home{
+  margin-top: 56px;
+  position: absolute;
+  top: 0px; 
+  left: 0px;
+  right: 0px; 
+  bottom: 0px;
+}
+
 .parent{
   margin-top: 56px;
   position: absolute;
@@ -344,15 +353,6 @@ body, html, #root {
   transition: all .3s;
 }
 
-.home-page {
-  width: auto;
-  height: auto;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
 @media (max-width: 450px) {
   .content{
     width: 80%;
@@ -410,9 +410,9 @@ body, html, #root {
     text-align: center;
   }
 
-  .parent{
+  .parent-home{
     margin-top: 56px;
-    height: 130%;
+    height: 110%;
     position: absolute;
     top: 0px; 
     left: 0px;

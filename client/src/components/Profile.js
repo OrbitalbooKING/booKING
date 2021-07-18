@@ -171,7 +171,6 @@ function Profile() {
                                         </div>
                                     </div>
                                     <div style={{overflowY: "auto", height: 200}}>
-
                                         {bookings === undefined 
                                             ? <div><h2 style={{textAlign: 'center', alignContent: 'center'}}>Loading... </h2></div> 
                                             : bookings.length === 0 

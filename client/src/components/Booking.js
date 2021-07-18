@@ -26,10 +26,7 @@ import * as Cookies from "js-cookie";
 const useStyles = makeStyles(theme => ({
     formControl: {
       margin: theme.spacing(1),
-      minWidth: 120
-    },
-    selectEmpty: {
-      marginTop: theme.spacing(2)
+      minWidth: 90
     },
     menuPaper: {
       maxHeight: 200
@@ -304,12 +301,14 @@ function Booking() {
         if (cart !== undefined) {
             let changeInCapacity = false;
             for (let i = 0; i < cart.length; i++) {
-                if (!sharing && cart[i].Pax === venueInfo[0].Maxcapacity) {
+                if (!sharing && (cart[i].Pax === venueInfo[0].Maxcapacity)) {
                     changeInCapacity = false;
-                } else if (capacity !== cart[i].Pax) {
+                } else if (sharing && (capacity === cart[i].Pax)) {
+                    changeInCapacity = false;
+                } else {
                     changeInCapacity = true;
                     continue;
-                } 
+                }
             }
             if (changeInCapacity) {
                 removeAllFromCart();
@@ -562,10 +561,10 @@ function Booking() {
 
     const findMaxCapacity = (max, points, sharing) => {
         if (sharing) {
-            if (max < Math.floor(points * 1.2)) {
+            if (max < Math.floor(points / 0.8)) {
                 return max;
             } else {
-                return Math.floor(points * 1.2);
+                return Math.floor(points / 0.8);
             }
         } else {
             if (max < Math.floor(points)) {
@@ -676,7 +675,7 @@ function Booking() {
         <>
             {Cookies.get("name") !== undefined && Cookies.get("id") !== undefined
                 ? <Layout2 id={Cookies.get("id")} name={Cookies.get("name")} action="Make a booking">
-                        <div className="parent">
+                        <div className="parent-booking">
                             <div className="home-page">
                                 <div className="booking-selector">
                                     <div className="display-selected-venue-header">
@@ -688,26 +687,173 @@ function Booking() {
                                             <div style={{width: 120, textAlign: 'center', alignSelf: 'center'}}>Equipment </div>
                                         </div>
                                     </div>
-                                    {venueInfo === undefined ? <div><h2 style={{textAlign: 'center', alignContent: 'center'}}>Loading... </h2></div> : venueInfo.map((val, key) => {
-                                        return (<div key={key}>
-                                            <div className="display-selected-venue" style={{height: 'auto'}}>
-                                                <div style={{display: 'flex', flexDirection: 'row'}}>
-                                                    <div style={{width: 240, textAlign: 'center', alignSelf: 'center'}}>{val.Roomtypename} </div>
-                                                    <div style={{width: 260, textAlign: 'center', alignSelf: 'center'}}>{val.Venuename} </div>
-                                                    <div style={{width: 150, textAlign: 'center', alignSelf: 'center'}}>{val.Buildingname} {val.Unit} </div>
-                                                    <div style={{width: 80, textAlign: 'center', alignSelf: 'center'}}>{val.Maxcapacity} </div>
-                                                    <div style={{display: 'flex', width: 120, textAlign: 'center', alignSelf: 'center', justifyContent: 'center'}}>
-                                                        {val.Facilitiesdict.Projector === undefined ? "" : val.Facilitiesdict.Projector === 1 ? val.Facilitiesdict.Projector + " projector" : val.Facilitiesdict.Projector + " projectors"}
-                                                        <br />{val.Facilitiesdict.Screen === undefined ? "" : val.Facilitiesdict.Screen === 1 ? val.Facilitiesdict.Screen + " screen" : val.Facilitiesdict.Screen + " screens"}
-                                                        <br />{val.Facilitiesdict.Desktop === undefined ? "" : val.Facilitiesdict.Desktop === 1 ? val.Facilitiesdict.Desktop + " desktop" : val.Facilitiesdict.Desktop + " desktops"}
-                                                        <br />{val.Facilitiesdict.Whiteboard === undefined ? "" : val.Facilitiesdict.Whiteboard === 1 ? val.Facilitiesdict.Whiteboard + " whiteboard" : val.Facilitiesdict.Whiteboard + " whiteboards"}
-                                                    </div>
+                                    {venueInfo === undefined 
+                                        ? <div><h2 style={{textAlign: 'center', alignContent: 'center'}}>Loading... </h2></div> 
+                                        : venueInfo.length === 0 
+                                            ? <div className="display-selected-venue">
+                                                <div style={{textAlign: 'center', alignSelf: 'center'}}>
+                                                    <h3>No details to display</h3>
                                                 </div>
                                             </div>
-                                        </div>);
-                                    })}
-                                    <div style={{float: 'left'}}>
-                                        <FormControl style={{width: 85}} className={classes.formControl}>
+                                            : venueInfo.map((val, key) => {
+                                                return (<div key={key}>
+                                                    <div className="display-selected-venue" style={{height: 'auto'}}>
+                                                        <div style={{display: 'flex', flexDirection: 'row'}}>
+                                                            <div style={{width: 240, textAlign: 'center', alignSelf: 'center'}}>{val.Roomtypename} </div>
+                                                            <div style={{width: 260, textAlign: 'center', alignSelf: 'center'}}>{val.Venuename} </div>
+                                                            <div style={{width: 150, textAlign: 'center', alignSelf: 'center'}}>{val.Buildingname} {val.Unit} </div>
+                                                            <div style={{width: 80, textAlign: 'center', alignSelf: 'center'}}>{val.Maxcapacity} </div>
+                                                            <div style={{display: 'flex', flexDirection: 'column', width: 120, textAlign: 'center', alignSelf: 'center', justifyContent: 'center'}}>
+                                                                <div>{val.Facilitiesdict.Projector === undefined && val.Facilitiesdict.Screen === undefined && val.Facilitiesdict.Desktop === undefined && val.Facilitiesdict.Whiteboard === undefined ? "Nil" : ""}</div>
+                                                                <div>{val.Facilitiesdict.Projector === undefined ? "" : val.Facilitiesdict.Projector === 1 ? val.Facilitiesdict.Projector + " projector" : val.Facilitiesdict.Projector + " projectors"}</div>
+                                                                <div>{val.Facilitiesdict.Screen === undefined ? "" : val.Facilitiesdict.Screen === 1 ? val.Facilitiesdict.Screen + " screen" : val.Facilitiesdict.Screen + " screens"}</div>
+                                                                <div>{val.Facilitiesdict.Desktop === undefined ? "" : val.Facilitiesdict.Desktop === 1 ? val.Facilitiesdict.Desktop + " desktop" : val.Facilitiesdict.Desktop + " desktops"}</div>
+                                                                <div>{val.Facilitiesdict.Whiteboard === undefined ? "" : val.Facilitiesdict.Whiteboard === 1 ? val.Facilitiesdict.Whiteboard + " whiteboard" : val.Facilitiesdict.Whiteboard + " whiteboards"}</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>);
+                                            })
+                                    }
+                                    <div style={{display: 'flex', flexDirection: 'row'}}>
+                                        <div style={{display: 'flex', flexDirection: 'column', paddingRight: 10}}>
+                                            <div style={{display: 'flex', flexDirection: 'row'}}>
+                                                <FormControl className={classes.formControl}>
+                                                    <InputLabel id="demo-simple-select-label">Sharing?</InputLabel>
+                                                    <Select
+                                                        labelId="demo-simple-select-label"
+                                                        id="demo-simple-select"
+                                                        value={sharing === undefined ? "" : sharing}
+                                                        onChange={handleSharingChange}
+                                                        input={<Input />}
+                                                        MenuProps={{ classes: { paper: classes.menuPaper } }}
+                                                    >
+                                                    <MenuItem value={true} key={"Yes"}>Yes</MenuItem>
+                                                    <MenuItem value={false} key={"No"}>No</MenuItem>
+                                                    </Select>
+                                                </FormControl>
+
+                                                {sharing ? <FormControl className={classes.formControl}>
+                                                    <InputLabel id="demo-simple-select-label">Capacity</InputLabel>
+                                                    <Select
+                                                        labelId="demo-simple-select-label"
+                                                        id="demo-simple-select"
+                                                        value={capacity === 0 ? "" : capacity}
+                                                        onChange={handleCapacityChange}
+                                                        input={<Input />}
+                                                        MenuProps={{ classes: { paper: classes.menuPaper } }}
+                                                    >
+                                                    {venueInfo === undefined || points === undefined ? null : Array.from({length: findMaxCapacity(venueInfo[0].Maxcapacity, points, sharing)}, (v, i) => 1 + i).map((val, key) => {
+                                                        return <MenuItem value={val} key={key}>{val}</MenuItem>;
+                                                    })}
+                                                    </Select>
+                                                </FormControl> : ""}
+                                            </div>
+                                            <div>
+                                                <Calendar 
+                                                    mapDays={({ date }) => {
+                                                        let currentTime = new DateObject();
+                                                        
+                                                        if (date < currentTime) return {
+                                                        disabled: true,
+                                                        style: { color: "#ccc" },
+                                                        onClick: () => alert("Date has already passed!")
+                                                        }
+                                                    }}
+                                                    value={date}
+                                                    onChange={handleDateChange}
+                                                    format="DD/MM/YYYY HH:mm"
+                                                    plugins={[
+                                                        <DisplayTimings />, 
+                                                    ]}                                   
+                                                >
+                                                </Calendar>
+                                            </div>
+                                        </div>
+                                        <div style={{display: 'flex', flexDirection: 'column', flex: 1}}>
+                                            <div style={{textAlign: 'center'}}>Currently selected Timeslots:</div>
+                                            <div style = {{overflowY: "auto", height: 240, marginBottom: 10}}>
+                                                {cart === undefined 
+                                                    ? <div><h2 style={{textAlign: 'center', alignContent: 'center'}}>Loading... </h2></div> 
+                                                    : cart.length === 0 
+                                                        ? <div>
+                                                            <div style={{textAlign: 'center', alignSelf: 'center'}}>
+                                                                <h3>Add a timeslot</h3>
+                                                            </div>
+                                                        </div>
+                                                        : cart.map((val, key) => {
+                                                            return (<div key={key}>
+                                                                <hr />
+                                                                <div style={{display: 'flex', flexDirection: 'row'}}>
+                                                                    <div style={{width: "auto", textAlign: 'center', alignSelf: 'center', paddingRight: 10}}>Pax: {val.Pax} | Timing: {dateConverter(val.Eventstart)}</div>
+                                                                    <div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}><button type="submit" className="btn btn-primary btn-sm" onClick={removeTimeslot(val)}>Remove</button></div>
+                                                                </div>
+                                                            </div>);
+                                                        })
+                                                }
+                                            </div>
+                                            <br />
+                                            <div style={{display: 'flex', flexDirection: 'row'}}>
+                                                <div style={{width: "50%", textAlign: 'left', alignSelf: 'center'}}>Points left: {points}</div>
+                                                <div style={{width: "50%", textAlign: 'right', alignSelf: 'center'}}>Points needed: {cost}</div>
+                                            </div>
+                                            <br />
+                                            <div style={{display: 'flex', flexDirection: 'row'}}>
+                                                <div style={{width: "50%", textAlign: 'left', alignSelf: 'center'}}><button type="submit" className="btn btn-primary btn-block" onClick={removeAllFromCart}>Clear cart</button></div>
+                                                <div style={{width: "50%", textAlign: 'right', alignSelf: 'center'}}>
+                                                {cart === undefined 
+                                                    ? <button type="submit" className="btn btn-primary btn-block" disabled>Checkout</button>
+                                                    : bookable && cart.length > 0
+                                                        ? <button type="submit" className="btn btn-primary btn-block" onClick={checkoutCart}>Checkout</button> 
+                                                        : <button type="submit" className="btn btn-primary btn-block" disabled>Checkout</button>
+                                                }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>           
+                                </div>
+                                <div className="booking-selector-mobile">
+                                    <div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}><h3>Currently selected venue:</h3></div>
+                                    <div style={{overflowY: "auto", height: 250}}>
+                                        {venueInfo === undefined 
+                                            ? <div><h2 style={{textAlign: 'center', alignContent: 'center'}}>Loading... </h2></div> 
+                                            : venueInfo.length === 0 
+                                                ? <div className="display-selected-venue">
+                                                    <div style={{textAlign: 'center', alignSelf: 'center'}}>
+                                                        <h3>No details to display</h3>
+                                                    </div>
+                                                </div>
+                                                : venueInfo.map((val, key) => {
+                                                    return (<div key={key}>
+                                                        <div style={{display: 'flex', flexDirection: 'column'}}>
+                                                            <div>
+                                                                <div className="display-old-header"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>Venue type </div></div>
+                                                                <div className="display-old"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>{val.Roomtypename} </div></div>
+                                                                <div className="display-old-header"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>Venue name </div></div>
+                                                                <div className="display-old"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>{val.Venuename} </div></div>
+                                                                <div className="display-old-header"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>Location </div></div>
+                                                                <div className="display-old"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>{val.Buildingname} {val.Unit} </div></div>
+                                                                <div className="display-old-header"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>Max capacity </div></div>
+                                                                <div className="display-old"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>{val.Maxcapacity} </div></div>
+                                                                <div className="display-old-header"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>Equipment </div></div>
+                                                                <div className="display-old"><div style={{display: 'flex', flexDirection: 'column', width: 120, textAlign: 'center', alignSelf: 'center', justifyContent: 'center'}}>
+                                                                    <div>{val.Facilitiesdict.Projector === undefined && val.Facilitiesdict.Screen === undefined && val.Facilitiesdict.Desktop === undefined && val.Facilitiesdict.Whiteboard === undefined ? "Nil" : ""}</div>
+                                                                    <div>{val.Facilitiesdict.Projector === undefined ? "" : val.Facilitiesdict.Projector === 1 ? val.Facilitiesdict.Projector + " projector" : val.Facilitiesdict.Projector + " projectors"}</div>
+                                                                    <div>{val.Facilitiesdict.Screen === undefined ? "" : val.Facilitiesdict.Screen === 1 ? val.Facilitiesdict.Screen + " screen" : val.Facilitiesdict.Screen + " screens"}</div>
+                                                                    <div>{val.Facilitiesdict.Desktop === undefined ? "" : val.Facilitiesdict.Desktop === 1 ? val.Facilitiesdict.Desktop + " desktop" : val.Facilitiesdict.Desktop + " desktops"}</div>
+                                                                    <div>{val.Facilitiesdict.Whiteboard === undefined ? "" : val.Facilitiesdict.Whiteboard === 1 ? val.Facilitiesdict.Whiteboard + " whiteboard" : val.Facilitiesdict.Whiteboard + " whiteboards"}</div>
+                                                                </div></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>);
+                                                })
+                                        }
+                                    </div>
+                                </div>
+                                <br />
+                                <div className="booking-selector-mobile">
+                                    <div style={{display: 'flex', flexDirection: 'row'}}>
+                                        <FormControl className={classes.formControl}>
                                             <InputLabel id="demo-simple-select-label">Sharing?</InputLabel>
                                             <Select
                                                 labelId="demo-simple-select-label"
@@ -722,7 +868,7 @@ function Booking() {
                                             </Select>
                                         </FormControl>
 
-                                        {sharing ? <FormControl style={{width: 85}} className={classes.formControl}>
+                                        {sharing ? <FormControl className={classes.formControl}>
                                             <InputLabel id="demo-simple-select-label">Capacity</InputLabel>
                                             <Select
                                                 labelId="demo-simple-select-label"
@@ -737,54 +883,69 @@ function Booking() {
                                             })}
                                             </Select>
                                         </FormControl> : ""}
-
-                                        <Calendar 
-                                            mapDays={({ date }) => {
-                                                let currentTime = new DateObject();
-                                                
-                                                if (date < currentTime) return {
-                                                disabled: true,
-                                                style: { color: "#ccc" },
-                                                onClick: () => alert("Date has already passed!")
-                                                }
-                                            }}
-                                            value={date}
-                                            onChange={handleDateChange}
-                                            format="DD/MM/YYYY HH:mm"
-                                            plugins={[
-                                                <DisplayTimings />, 
-                                            ]}                                   
-                                        >
-                                        </Calendar>
                                     </div>
-                                    <div style={{float: 'left', height: 250, width: 550, paddingLeft: 20}}><div style={{textAlign: 'center'}}>Currently selected Timeslots:</div>
+                                    <Calendar 
+                                        mapDays={({ date }) => {
+                                            let currentTime = new DateObject();
+                                            
+                                            if (date < currentTime) return {
+                                            disabled: true,
+                                            style: { color: "#ccc" },
+                                            onClick: () => alert("Date has already passed!")
+                                            }
+                                        }}
+                                        value={date}
+                                        onChange={handleDateChange}
+                                        format="DD/MM/YYYY HH:mm"                                  
+                                    >
+                                    </Calendar>
+                                    <DisplayTimings />
+                                </div>
+                                <br />
+                                <div className="booking-selector-mobile">
+                                    <div>
+                                        <div style={{textAlign: 'center'}}>Currently selected Timeslots:</div>
                                         <div style = {{overflowY: "auto", height: 200}}>
-                                            {cart === undefined ? "" : cart.map((val, key) => {
-                                                return (<div key={key}>
-                                                    <hr />
-                                                    <div style={{height: 32, position:'relative'}}>
-                                                        <div style = {{paddingLeft: 3, paddingTop: 4}}>Pax: {val.Pax} | Timing: {dateConverter(val.Eventstart)}</div>
-                                                        <button style={{position: 'absolute', top: 0, right: 0}} type="submit" className="btn btn-primary btn-sm" onClick={removeTimeslot(val)}>Remove</button>
+                                            {cart === undefined 
+                                                ? <div><h2 style={{textAlign: 'center', alignContent: 'center'}}>Loading... </h2></div> 
+                                                : cart.length === 0 
+                                                    ? <div>
+                                                        <div style={{textAlign: 'center', alignSelf: 'center'}}>
+                                                            <h3>Add a timeslot</h3>
+                                                        </div>
                                                     </div>
-                                                </div>);
-                                            })}
+                                                    : cart.map((val, key) => {
+                                                        return (<div key={key}>
+                                                            <hr />
+                                                            <div style={{display: 'flex', flexDirection: 'row'}}>
+                                                                <div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>Pax: {val.Pax} | Timing: {dateConverter(val.Eventstart)}</div>
+                                                                <div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}><button type="submit" className="btn btn-primary btn-sm" onClick={removeTimeslot(val)}>Remove</button></div>
+                                                            </div>
+                                                        </div>);
+                                                    })
+                                            }
                                         </div>
                                         <br />
-                                        <div>
-                                            <div style={{float: 'left'}}>Points left: {points}</div>
-                                            <div style={{float: 'right'}}>Points needed: {cost}</div>
+                                        <div style={{display: 'flex', flexDirection: 'row'}}>
+                                            <div style={{width: "45%", textAlign: 'left', alignSelf: 'center'}}>Points left: {points}</div>
+                                            <div style={{width: "55%", textAlign: 'right', alignSelf: 'center'}}>Points needed: {cost}</div>
                                         </div>
                                         <br />
-                                        <button style={{float: 'left'}} type="submit" className="btn btn-primary btn-block" onClick={removeAllFromCart}>Clear timeslots</button>
-                                        {/* <button style={{float: 'right'}} type="submit" className="btn btn-primary btn-block" onClick={checkoutCart}>Checkout</button> */}
-                                        {bookable 
-                                            ? <button style={{float: 'right'}} type="submit" className="btn btn-primary btn-block" onClick={checkoutCart}>Checkout</button> 
-                                            : <button style={{float: 'right'}} type="submit" className="btn btn-primary btn-block" disabled>Checkout</button>
-                                        }
+                                        <div style={{display: 'flex', flexDirection: 'row'}}>
+                                            <div style={{width: "50%", textAlign: 'left', alignSelf: 'center'}}><button type="submit" className="btn btn-primary btn-block" onClick={removeAllFromCart}>Clear cart</button></div>
+                                            <div style={{width: "50%", textAlign: 'right', alignSelf: 'center'}}>
+                                            {cart === undefined 
+                                                ? <button type="submit" className="btn btn-primary btn-block" disabled>Checkout</button>
+                                                : bookable && cart.length > 0
+                                                    ? <button type="submit" className="btn btn-primary btn-block" onClick={checkoutCart}>Checkout</button> 
+                                                    : <button type="submit" className="btn btn-primary btn-block" disabled>Checkout</button>
+                                            }
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>     
-                        </div>                       
+                            </div>
+                        </div>     
                     </Layout2>
                 : <Unauthorised />
             }

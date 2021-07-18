@@ -7,6 +7,7 @@ function LogoutSuccess(props) {
     let history = useHistory();
 
     const Login = () => {
+        console.log(window.sessionStorage.getItem("sessionExpiry") !== null)
         history.push("/sign-in");
     };
 

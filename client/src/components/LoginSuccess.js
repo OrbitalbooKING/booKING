@@ -17,6 +17,7 @@ function LoginSuccess(props) {
         //         name: props.location.state.name
         //     }
         // });
+
         history.push("/home");
     };
 

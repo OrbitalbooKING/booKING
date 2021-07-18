@@ -36,6 +36,15 @@ body, html, #root {
   top: 0;
 }
 
+.parent-booking{
+  margin-top: 56px;
+  position: absolute;
+  top: 0px; 
+  left: 0px;
+  right: 0px; 
+  bottom: 0px;
+}
+
 .parent-home{
   margin-top: 56px;
   position: absolute;
@@ -52,6 +61,14 @@ body, html, #root {
   left: 0px;
   right: 0px; 
   bottom: 0px;
+}
+
+.home-page {
+  width: auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .content{
@@ -285,7 +302,7 @@ body, html, #root {
   margin: auto;
   background: #e5e5e5;
   padding: 10px 20px 10px 20px;
-  border-radius: 15px;
+  border-radius: 8px;
   transition: all .3s;
 }
 
@@ -314,8 +331,20 @@ body, html, #root {
 }
 
 .booking-selector {
-  width: 1060px;
-  height: 540px;
+  width: auto;
+  height: auto;
+  margin: auto;
+  background: #ffffff;
+  box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
+  padding: 20px 20px 20px 20px;
+  border-radius: 15px;
+  transition: all .3s;
+}
+
+.booking-selector-mobile {
+  width: auto;
+  height: auto;
+  resize: both;
   margin: auto;
   background: #ffffff;
   box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
@@ -410,9 +439,10 @@ body, html, #root {
     text-align: center;
   }
 
-  .parent-home{
+  .parent-booking{
     margin-top: 56px;
-    height: 110%;
+    width: auto;
+    height: 170%;
     position: absolute;
     top: 0px; 
     left: 0px;
@@ -420,12 +450,15 @@ body, html, #root {
     bottom: 0px;
   }
 
-  .home-page {
+  .parent-home{
+    margin-top: 56px;
     width: auto;
+    height: 110%;
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    top: 0px; 
+    left: 0px;
+    right: 0px; 
+    bottom: 0px;
   }
 
   .stack-searchbar {
@@ -444,10 +477,18 @@ body, html, #root {
   .venue-list {
     display: none;
   }
+
+  .booking-selector {
+    display: none;
+  }
 }
 
 @media (min-width: 450px) {
   .venue-list-mobile {
+    display: none;
+  }
+
+  .booking-selector-mobile {
     display: none;
   }
 }

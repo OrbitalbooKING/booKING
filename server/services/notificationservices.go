@@ -7,7 +7,7 @@ import (
 
 	"github.com/OrbitalbooKING/booKING/server/config"
 	"github.com/OrbitalbooKING/booKING/server/models"
-	"github.com/matcornic/hermes"
+	"github.com/matcornic/hermes/v2"
 )
 
 func SendPendingApprovalEmail(emailInfo models.EmailInfo) error {

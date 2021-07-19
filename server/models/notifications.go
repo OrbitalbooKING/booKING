@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/matcornic/hermes"
+	"github.com/matcornic/hermes/v2"
 )
 
 type EmailInfo struct {

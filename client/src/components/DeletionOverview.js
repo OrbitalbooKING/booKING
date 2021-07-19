@@ -119,7 +119,7 @@ function DeletionOverview() {
                                         <div style={{width: 80, textAlign: 'center', alignSelf: 'center'}}>Sharing? </div>
                                     </div>
                                 </div>
-                                <div style={{overflowY: "auto", height: 180}}>
+                                <div>
                                     {bookingInfo === undefined ? <div><h2 style={{textAlign: 'center', alignContent: 'center'}}>Loading... </h2></div> :
                                         <div className="display-selected-venue" style={{height: 'auto'}}>
                                             <div style={{display: 'flex', flexDirection: 'row'}}>
@@ -134,7 +134,42 @@ function DeletionOverview() {
                                         </div>
                                     }
                                 </div>
-                                <button style={{position: 'absolute', bottom: 0, right: 0, margin: 25}} type="submit" className="btn btn-primary btn-block" onClick={deleteBooking}>Delete Booking</button>
+                                <br />
+                                {/* <button style={{position: 'absolute', bottom: 0, right: 0, margin: 25}} type="submit" className="btn btn-primary btn-block" onClick={deleteBooking}>Delete Booking</button> */}
+                                <div style={{textAlign: 'right'}}>
+                                    <button type="submit" className="btn btn-primary btn-block" onClick={deleteBooking}>Delete Booking</button>
+                                </div>
+                            </div>
+
+                            <div className="delete-list-mobile">
+                                <div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}><h3>Bookings</h3></div>
+                                <div style={{display: 'flex', flexDirection: 'column'}}>
+                                    <div style={{overflowY: "auto", height: 250}}>
+                                    {bookingInfo === undefined ? <div><h2 style={{textAlign: 'center', alignContent: 'center'}}>Loading... </h2></div> : 
+                                        <div style={{display: 'flex', flexDirection: 'column'}}>
+                                            <div>
+                                                <div className="display-old-header"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>Booking id </div></div>
+                                                <div className="display-old"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>{bookingInfo.BookingID.substring(0, 4)} </div></div>
+                                                <div className="display-old-header"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>Venue name </div></div>
+                                                <div className="display-old"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>{bookingInfo.Venuename} </div></div>
+                                                <div className="display-old-header"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>Location </div></div>
+                                                <div className="display-old"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>{bookingInfo.Buildingname} {bookingInfo.Unit} </div></div>
+                                                <div className="display-old-header"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>Date </div></div>
+                                                <div className="display-old"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>{dateConverter(bookingInfo.Eventstart)} </div></div>
+                                                <div className="display-old-header"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>Pax </div></div>
+                                                <div className="display-old"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>{bookingInfo.Pax} </div></div>
+                                                <div className="display-old-header"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>Status </div></div>
+                                                <div className="display-old"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>{bookingInfo.Bookingstatusdescription} </div></div>
+                                                <div className="display-old-header"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>Sharing </div></div>
+                                                <div className="display-old"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>{bookingInfo.Sharable ? "Yes" : "No"} </div></div>
+                                            </div>
+                                        </div>
+                                    }
+                                    </div>
+                                    <div style={{textAlign: 'right', paddingTop: 10, paddingBottom: 10}}>
+                                        <button type="submit" className="btn btn-primary btn-block" onClick={deleteBooking}>Proceed</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

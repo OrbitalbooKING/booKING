@@ -39,6 +39,7 @@ func StartAll(r *gin.Engine) {
 	api.POST("/make_pending_booking", services.MakePendingBooking)
 	api.DELETE("/delete_pending_bookings", services.DeletePendingBookings)
 	api.DELETE("/delete_confirmed_bookings", services.DeleteConfirmedBookings)
+	api.GET("/get_user_with_temp_points", services.GetUserWithTempPoints)
 
 	// PUT for updating account
 

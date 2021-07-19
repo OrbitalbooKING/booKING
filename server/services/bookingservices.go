@@ -378,6 +378,55 @@ func CheckBooking(c *gin.Context) {
 	}
 }
 
+// GET /get_user_with_temp_points
+func GetUserWithTempPoints(c *gin.Context) {
+	var input models.EditBookingInput
+	if err := c.ShouldBindQuery(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": "Check input Booking ID on URL parameter"})
+		fmt.Println("Error in getting Booking ID. " + err.Error() + "\n")
+		return
+	}
+
+	oldBooking, exists, err := RetrieveBooking(DB, models.URLBooking{BookingID: input.OldBookingID})
+	if !exists {
+		errorMessage := fmt.Sprintf("Booking with ID %s does not exist.", input.OldBookingID)
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": errorMessage})
+		fmt.Println(errorMessage)
+		return
+	}
+	if err != nil {
+		errorMessage := fmt.Sprintf("Error in retrieving Booking with ID %s."+err.Error(), input.OldBookingID)
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": errorMessage})
+		fmt.Println(errorMessage)
+		return
+	}
+
+	statusCode, err := GetBookingStatusCode(DB, "In the midst of booking")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": "Error in querying for status code."})
+		fmt.Println("Check statusQuery. " + err.Error() + "\n")
+	}
+
+	pendingBookings, err := GetPendingBookings(DB, models.User{Nusnetid: input.NUSNET_ID}, statusCode)
+	if err != nil {
+		errorMessage := fmt.Sprintf("Error in retrieving pending bookings with for user with NUSNET ID %s."+err.Error(), input.NUSNET_ID)
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": errorMessage})
+		fmt.Println(errorMessage)
+		return
+	}
+
+	editCart, err := EditCartDetails(oldBooking, pendingBookings, models.User{Nusnetid: input.NUSNET_ID})
+	if err != nil {
+		errorMessage := fmt.Sprint("Error in making bookng cart." + err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": errorMessage})
+		fmt.Println(errorMessage)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": editCart})
+	fmt.Println("Return successful!")
+}
+
 func RetrieveBookingRequests(DB *gorm.DB, statusIDs []int) ([]models.BookingRequests, bool, error) {
 	// get list of bookings that fit into the statusIDs
 	query := "SELECT * FROM currentbookings" +
@@ -760,20 +809,49 @@ func BookingCartDetails(pendingBookings []models.PendingBookings, user models.Us
 	if err != nil {
 		return models.BookingCart{}, err
 	}
-	if account.Points < totalCost {
-		return models.BookingCart{PendingBookings: pendingBookings,
-			TotalCost:     totalCost,
-			UserPoints:    account.Points,
-			ValidCheckout: false,
-		}, nil
-	}
 
-	return models.BookingCart{
+	toReturn := models.BookingCart{
 		PendingBookings: pendingBookings,
 		TotalCost:       totalCost,
 		UserPoints:      account.Points,
-		ValidCheckout:   true,
-	}, nil
+	}
+
+	if account.Points < totalCost {
+		toReturn.ValidCheckout = false
+		return toReturn, nil
+	}
+
+	toReturn.ValidCheckout = true
+	return toReturn, nil
+}
+
+func EditCartDetails(oldBooking models.BookingRequests, pendingBookings []models.PendingBookings, user models.User) (models.EditBookingCart, error) {
+	var totalCost float64
+	for _, s := range pendingBookings {
+		totalCost += s.Cost
+	}
+
+	account, exists, err := GetAccount(DB, user)
+	if !exists {
+		return models.EditBookingCart{}, errors.New("account does not exist")
+	}
+	if err != nil {
+		return models.EditBookingCart{}, err
+	}
+
+	toReturn := models.EditBookingCart{
+		OldBooking:      oldBooking,
+		PendingBookings: pendingBookings,
+		TotalCost:       totalCost,
+		UserPoints:      account.Points + oldBooking.Cost,
+	}
+	if account.Points+oldBooking.Cost < totalCost {
+		toReturn.ValidCheckout = false
+		return toReturn, nil
+	}
+
+	toReturn.ValidCheckout = true
+	return toReturn, nil
 }
 
 func CostComputation(pax int, hours int, sharable bool) float64 {

@@ -84,6 +84,19 @@ type BookingCart struct {
 	ValidCheckout   bool
 }
 
+type EditBookingInput struct {
+	NUSNET_ID    string `json:"NUSNET_ID"`
+	OldBookingID string `json:"OldBookingID"`
+}
+
+type EditBookingCart struct {
+	OldBooking      BookingRequests
+	PendingBookings []PendingBookings
+	TotalCost       float64
+	UserPoints      float64
+	ValidCheckout   bool
+}
+
 type MakeDeleteBookings struct {
 	BookingID []string `json:"bookingID" form:"bookingID"`
 }

@@ -297,7 +297,7 @@ function Profile() {
                                                             </div></div> */}
                                                             <div style={{width: "auto", textAlign: 'center', alignSelf: 'center', paddingTop: 10}}>
                                                                 {/* <button type="submit" className="btn btn-primary btn-block" onClick={book(val)}>Book</button> */}
-                                                                <DropdownButton id="dropdown-basic-button" title="Edit" bsSize="small">
+                                                                <DropdownButton id="dropdown-basic-button" title="Edit">
                                                                     <Dropdown.Item onClick={deleteBooking(val)}>Delete</Dropdown.Item>
                                                                     <Dropdown.Item onClick={editBooking(val)}>Edit</Dropdown.Item>
                                                                 </DropdownButton>

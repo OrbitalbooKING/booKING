@@ -43,5 +43,5 @@ require (
 )
 
 replace (
-	gopkg.in/russross/blackfriday.v2 => github.com/russross/blackfriday/v2 v2.0.1
+	github.com/russross/blackfriday/v2 => gopkg.in/russross/blackfriday.v2 v2.0.1
 )

@@ -44,7 +44,7 @@ function Layout2(props) {
         <div>
             <Navbar collapseOnSelect expand="sm" fixed="top">
                 <Link className="navbar-brand" to="/home"><img className="logo" src = {logo} alt="logo" style={{float: 'right', paddingLeft: 10}}/></Link>
-                <div style={{position: 'absolute', left: '50%', transform: 'translate(-50%, 0%)'}}>
+                <div style={{position: 'absolute', left: '50%', top: 15, transform: 'translateX(-50%)'}}>
                     {props.action === undefined ? "" : props.action}
                 </div>
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />

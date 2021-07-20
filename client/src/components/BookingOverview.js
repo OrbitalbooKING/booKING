@@ -277,7 +277,7 @@ function BookingOverview() {
                                                 return (<div key={key}>
                                                     <div style={{display: 'flex', flexDirection: 'column'}}>
                                                         <div>
-                                                            <div className="display-old-header"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>Venue type </div></div>
+                                                            <div className="display-old-header"><div style={{width: 220, textAlign: 'center', alignSelf: 'center'}}>Venue type </div></div>
                                                             <div className="display-old"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>{val.Roomtypename} </div></div>
                                                             <div className="display-old-header"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>Venue name </div></div>
                                                             <div className="display-old"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>{val.Venuename} </div></div>
@@ -344,7 +344,7 @@ function BookingOverview() {
                                 </div> */}
                                 <div style={{display: 'flex', flexDirection: 'column', flex: 1}}>
                                     <div style={{textAlign: 'center'}}>Currently selected Timeslots:</div>
-                                    <div style = {{margin: '0 auto', overflowY: "auto", height: 240, marginBottom: 10}}>
+                                    <div style = {{margin: '0 auto', overflowY: "auto", height: 250, marginBottom: 10}}>
                                         {cart === undefined 
                                             ? <div><h2 style={{textAlign: 'center', alignContent: 'center'}}>Loading... </h2></div> 
                                             : cart.length === 0 
@@ -363,7 +363,6 @@ function BookingOverview() {
                                                 })
                                         }
                                     </div>
-                                    <br />
                                     <div style={{textAlign: 'right'}}>
                                         <button type="submit" className="btn btn-primary btn-block" onClick={confirmBooking}>Proceed</button>
                                     </div>

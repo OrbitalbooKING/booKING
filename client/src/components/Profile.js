@@ -208,7 +208,7 @@ function Profile() {
 
                                 <div className="profile-mobile">
                                     <div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}><h3>Profile</h3></div>
-                                    <div style={{overflowY: "auto", height: 250}}>
+                                    <div style={{overflowY: "auto", height: 230}}>
                                         <img className="profilePic" src = {profilePic} alt="profilePic" style={{display: 'block', margin: 'auto'}}/>
                                         {/* <div style={{display: 'inline-block', paddingLeft: 20}}>
                                             <div>Username: {profileInfo === undefined ? "" : profileInfo.Name}</div>
@@ -260,7 +260,7 @@ function Profile() {
                                 <br />
                                 <div className="venue-list-mobile">
                                     <div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}><h3>Bookings</h3></div>
-                                    <div style={{overflowY: "auto", height: 250}}>
+                                    <div style={{overflowY: "auto", height: 230}}>
                                     {bookings === undefined 
                                         ? <div><h2 style={{textAlign: 'center', alignContent: 'center'}}>Loading... </h2></div> 
                                         : bookings.length === 0 
@@ -273,7 +273,7 @@ function Profile() {
                                                 return (<div key={key}>
                                                     <div style={{display: 'flex', flexDirection: 'column'}}>
                                                         <div>
-                                                            <div className="display-old-header"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>Booking id </div></div>
+                                                            <div className="display-old-header"><div style={{width: 220, textAlign: 'center', alignSelf: 'center'}}>Booking id </div></div>
                                                             <div className="display-old"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>{val.Bookingid.substring(0, 4)} </div></div>
                                                             <div className="display-old-header"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>Venue name </div></div>
                                                             <div className="display-old"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>{val.Venuename} </div></div>

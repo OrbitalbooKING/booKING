@@ -429,7 +429,7 @@ function Home() {
 
                             <div className="venue-list-mobile">
                                 <div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}><h3>Select a venue:</h3></div>
-                                <div style={{overflowY: "auto", height: 250}}>
+                                <div style={{overflowY: "auto", height: 230}}>
                                 {searchResults === undefined 
                                     ? <div><h2 style={{textAlign: 'center', alignContent: 'center'}}>Loading... </h2></div> 
                                     : searchResults.length === 0 
@@ -442,7 +442,7 @@ function Home() {
                                             return (<div key={key}>
                                                 <div style={{display: 'flex', flexDirection: 'column'}}>
                                                     <div>
-                                                        <div className="display-old-header"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>Venue type </div></div>
+                                                        <div className="display-old-header"><div style={{width: 220, textAlign: 'center', alignSelf: 'center'}}>Venue type </div></div>
                                                         <div className="display-old"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>{val.Roomtypename} </div></div>
                                                         <div className="display-old-header"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>Venue name </div></div>
                                                         <div className="display-old"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>{val.Venuename} </div></div>

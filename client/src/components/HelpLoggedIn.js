@@ -18,8 +18,8 @@ function HelpLoggedIn() {
         }, 1000);
     };
 
-    const Login = () => {
-        history.push("/sign-in");
+    const goHome = () => {
+        history.push("/home");
     };
 
     useEffect(() => {
@@ -43,7 +43,7 @@ function HelpLoggedIn() {
                         <CopyToClipboard text="https://docs.google.com/document/d/1zvFvemhVmstVMCiOg0dLkmLf1wWBZFmuWxLuLHR_zJg/edit?usp=sharing" onCopy={onCopyText}> 
                             <button style={{float: 'right'}} className="btn btn-primary btn-block">Copy URL</button>
                         </CopyToClipboard>
-                        <button style={{float: 'left'}} type="submit" className="btn btn-primary btn-block" onClick={Login}>Login</button> 
+                        <button style={{float: 'left'}} type="submit" className="btn btn-primary btn-block" onClick={goHome}>Home</button> 
                     </div>
                 </div>
             </div>

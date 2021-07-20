@@ -1037,7 +1037,7 @@ function EditBooking() {
                                                 <br />
                                                 <div style={{display: 'flex', flexDirection: 'row'}}>
                                                     <div style={{width: "50%", textAlign: 'left', alignSelf: 'center'}}>Points left: {Math.round(points * 10) / 10}</div>
-                                                    <div style={{width: "50%", textAlign: 'right', alignSelf: 'center'}}>Points needed: {cost}</div>
+                                                    <div style={{width: "50%", textAlign: 'right', alignSelf: 'center'}}>Points needed: {Math.round(cost * 10) / 10}</div>
                                                 </div>
                                                 <br />
                                                 <div style={{display: 'flex', flexDirection: 'row'}}>

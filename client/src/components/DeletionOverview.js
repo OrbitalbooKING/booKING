@@ -141,14 +141,14 @@ function DeletionOverview() {
                                 </div>
                             </div>
 
-                            <div className="delete-list-mobile">
+                            <div className="booking-selector-mobile">
                                 <div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}><h3>Bookings</h3></div>
                                 <div style={{display: 'flex', flexDirection: 'column'}}>
-                                    <div style={{overflowY: "auto", height: 250}}>
+                                    <div style={{overflowY: "auto", height: 250, marginBottom: 10}}>
                                     {bookingInfo === undefined ? <div><h2 style={{textAlign: 'center', alignContent: 'center'}}>Loading... </h2></div> : 
                                         <div style={{display: 'flex', flexDirection: 'column'}}>
                                             <div>
-                                                <div className="display-old-header"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>Booking id </div></div>
+                                                <div className="display-old-header"><div style={{width: 220, textAlign: 'center', alignSelf: 'center'}}>Booking id </div></div>
                                                 <div className="display-old"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>{bookingInfo.BookingID.substring(0, 4)} </div></div>
                                                 <div className="display-old-header"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>Venue name </div></div>
                                                 <div className="display-old"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>{bookingInfo.Venuename} </div></div>
@@ -166,10 +166,39 @@ function DeletionOverview() {
                                         </div>
                                     }
                                     </div>
-                                    <div style={{textAlign: 'right', paddingTop: 10, paddingBottom: 10}}>
-                                        <button type="submit" className="btn btn-primary btn-block" onClick={deleteBooking}>Proceed</button>
+                                    {/* <div style={{textAlign: 'right', paddingTop: 10, paddingBottom: 10}}>
+                                        <button type="submit" className="btn btn-primary btn-block" onClick={deleteBooking}>Delete</button>
+                                    </div> */}
+                                    <div style={{textAlign: 'right'}}>
+                                        <button type="submit" className="btn btn-primary btn-block" onClick={deleteBooking}>Delete</button>
                                     </div>
                                 </div>
+                                {/* <div style={{display: 'flex', flexDirection: 'column', flex: 1}}>
+                                    <div style={{textAlign: 'center'}}>Currently selected Timeslots:</div>
+                                    <div style = {{margin: '0 auto', overflowY: "auto", height: 240, marginBottom: 10}}>
+                                        {bookingInfo === undefined 
+                                            ? <div><h2 style={{textAlign: 'center', alignContent: 'center'}}>Loading... </h2></div> 
+                                            : bookingInfo.length === 0 
+                                                ? <div>
+                                                    <div style={{textAlign: 'center', alignSelf: 'center'}}>
+                                                        <h3>Add a timeslot</h3>
+                                                    </div>
+                                                </div>
+                                                : bookingInfo.map((val, key) => {
+                                                    return (<div key={key}>
+                                                        <hr />
+                                                        <div style={{display: 'flex', flexDirection: 'row'}}>
+                                                            <div style={{width: "auto", textAlign: 'center', alignSelf: 'center', paddingRight: 10}}>Pax: {val.Pax} | Timing: {dateConverter(val.Eventstart)}</div>
+                                                        </div>
+                                                    </div>);
+                                                })
+                                        }
+                                    </div>
+                                    <br />
+                                    <div style={{textAlign: 'right'}}>
+                                        <button type="submit" className="btn btn-primary btn-block" onClick={deleteBooking}>Proceed</button>
+                                    </div>
+                                </div> */}
                             </div>
                         </div>
                     </div>

@@ -8,7 +8,6 @@ import (
 	"mime/multipart"
 	"net/http"
 	"os"
-	"path/filepath"
 	"regexp"
 	"strings"
 	"time"
@@ -297,7 +296,7 @@ func GetProfile(c *gin.Context) {
 	}
 	if !exists {
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Account does not exist"})
-		fmt.Println("account does not exist. " + err.Error() + "\n")
+		fmt.Println("Account does not exist.")
 		return
 	}
 
@@ -537,6 +536,12 @@ func GetAccountDetailed(DB *gorm.DB, input models.User) (models.AccountDetailed,
 	if result.Error != nil {
 		return models.AccountDetailed{}, false, result.Error
 	}
+	URL, err := MakeProfilePicURL(retrieved.Profilepic)
+	if err != nil {
+		return models.AccountDetailed{}, false, err
+	} else {
+		retrieved.ProfilepicURL = URL
+	}
 	return retrieved, true, nil
 }
 
@@ -598,7 +603,7 @@ func UploadFileToS3(s *session.Session, file multipart.File, fileHeader *multipa
 		fmt.Println("Unable to generate UUID for profile pic. " + err.Error() + "\n")
 		return uuid.UUID{}, err
 	}
-	tempFileName := "profile_pictures/" + ID.String() + filepath.Ext(fileHeader.Filename)
+	tempFileName := "profile_pictures/" + ID.String()
 
 	bucketName := os.Getenv("ORBITAL_BOOKING_BUCKET_NAME")
 	if bucketName == "" {
@@ -628,4 +633,19 @@ func UploadFileToS3(s *session.Session, file multipart.File, fileHeader *multipa
 	}
 
 	return ID, err
+}
+
+func MakeProfilePicURL(ID uuid.UUID) (string, error) {
+	bucketName := os.Getenv("ORBITAL_BOOKING_BUCKET_NAME")
+	if bucketName == "" {
+		if config.ORBITAL_BOOKING_BUCKET_NAME == "" {
+			return "", errors.New("AWS bucket name not setup, go to config.go to input")
+		} else {
+			bucketName = config.ORBITAL_BOOKING_BUCKET_NAME
+		}
+	}
+
+	URL := "https://" + bucketName + ".s3." + config.ORBITAL_BOOKING_BUCKET_REGION + ".amazonaws.com/" +
+		config.PROFILE_PIC_FOLDER + ID.String()
+	return URL, nil
 }

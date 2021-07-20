@@ -30,7 +30,8 @@ type AccountDetailed struct {
 	Facultyid       int
 	Facultyname     string
 	Gradyear        int
-	Profilepic      string
+	Profilepic      uuid.UUID
+	ProfilepicURL   string
 	Accounttypeid   int
 	Points          float64
 	Createdat       time.Time

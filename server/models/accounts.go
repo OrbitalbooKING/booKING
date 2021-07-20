@@ -1,6 +1,11 @@
 package models
 
-import "time"
+import (
+	"mime/multipart"
+	"time"
+
+	"github.com/google/uuid"
+)
 
 type Accounts struct {
 	ID              int    `json:"id"`
@@ -9,7 +14,7 @@ type Accounts struct {
 	Name            string
 	Facultyid       int
 	Gradyear        int
-	Profilepic      string
+	Profilepic      uuid.UUID
 	Accounttypeid   int
 	Points          float64
 	Createdat       time.Time
@@ -45,12 +50,12 @@ type LoginOutput struct {
 }
 
 type CreateAccountInput struct {
-	Nusnetid   string `json:"NUSNET_ID" binding:"required"`
-	Password   string `json:"password" binding:"required"`
-	Name       string `json:"name"`
-	Facultyid  int    `json:"faculty"`
-	Gradyear   int    `json:"gradYear"`
-	Profilepic string `json:"profilePic"`
+	Nusnetid   string                `form:"NUSNET_ID" binding:"required"`
+	Password   string                `form:"password" binding:"required"`
+	Name       string                `form:"name"`
+	Facultyid  int                   `form:"faculty"`
+	Gradyear   int                   `form:"gradYear"`
+	Profilepic *multipart.FileHeader `form:"profilePic"`
 }
 
 type Accounttypes struct {

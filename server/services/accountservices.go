@@ -1,9 +1,14 @@
 package services
 
 import (
+	"bytes"
+	"errors"
 	"fmt"
 	"log"
+	"mime/multipart"
 	"net/http"
+	"os"
+	"path/filepath"
 	"regexp"
 	"strings"
 	"time"
@@ -11,6 +16,10 @@ import (
 	"github.com/OrbitalbooKING/booKING/server/config"
 	"github.com/OrbitalbooKING/booKING/server/models"
 	"github.com/OrbitalbooKING/booKING/server/utils"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/google/uuid"
 
 	"github.com/jinzhu/gorm"
 
@@ -22,7 +31,7 @@ import (
 func Register(c *gin.Context) {
 	// Validate input
 	var input models.CreateAccountInput
-	if err := c.ShouldBindJSON(&input); err != nil {
+	if err := c.Bind(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": "Check input fields."})
 		fmt.Println("Error in parsing inputs for account creation.")
 		return
@@ -76,13 +85,34 @@ func Register(c *gin.Context) {
 		fmt.Println("accountStatus does not exist. " + err.Error() + "\n")
 	}
 
+	// create S3 session for profile pic upload
+	s, err := CreateS3Session()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": "Unable to create AWS session for profile pic upload"})
+		fmt.Println("Unable to create AWS session for profile pic upload " + err.Error())
+	}
+
+	file, err := input.Profilepic.Open()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": "Unable to parse profile pic upload"})
+		fmt.Println("Unable to parse profile pic upload " + err.Error())
+	}
+
+	picID, err := UploadFileToS3(s, file, input.Profilepic)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": "Unable to upload profile pic to S3"})
+		fmt.Println("Unable to upload profile pic to S3. " + err.Error() + "\n")
+	} else {
+		fmt.Println("Image uploaded successfully!")
+	}
+
 	account := models.Accounts{
 		Nusnetid:        input.Nusnetid,
 		Passwordhash:    input.Password,
 		Name:            input.Name,
 		Facultyid:       input.Facultyid,
 		Gradyear:        input.Gradyear,
-		Profilepic:      input.Profilepic,
+		Profilepic:      picID,
 		Accounttypeid:   accountType.ID,
 		Points:          50,
 		Createdat:       time.Now(),
@@ -521,4 +551,81 @@ func GetAccountType(DB *gorm.DB, typeID int) (models.Accounttypes, bool, error) 
 		return models.Accounttypes{}, false, result.Error
 	}
 	return accountType, true, nil
+}
+
+func CreateS3Session() (*session.Session, error) {
+	// bucketID := os.Getenv("ORBITAL_BOOKING_BUCKET_ID")
+	// if bucketID == "" {
+	// 	if config.ORBITAL_BOOKING_BUCKET_ID == "" {
+	// 		return nil, errors.New("AWS bucket ID not setup, go to config.go to input")
+	// 	} else {
+	// 		bucketID = config.ORBITAL_BOOKING_BUCKET_ID
+	// 	}
+	// }
+	// bucketKey := os.Getenv("ORBITAL_BOOKING_BUCKET_KEY")
+	// if bucketKey == "" {
+	// 	if config.ORBITAL_BOOKING_BUCKET_KEY == "" {
+	// 		return nil, errors.New("AWS bucket key not setup, go to config.go to input")
+	// 	} else {
+	// 		bucketKey = config.ORBITAL_BOOKING_BUCKET_KEY
+	// 	}
+	// }
+
+	s, err := session.NewSession(&aws.Config{
+		Region: aws.String("ap-southeast-1"),
+		// Credentials: credentials.NewStaticCredentials(
+		// 	bucketID,  // id
+		// 	bucketKey, // secret
+		// 	""),       // token can be left blank for now
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return s, err
+}
+
+func UploadFileToS3(s *session.Session, file multipart.File, fileHeader *multipart.FileHeader) (uuid.UUID, error) {
+	// get the file size and read
+	// the file content into a buffer
+	size := fileHeader.Size
+	buffer := make([]byte, size)
+	file.Read(buffer)
+
+	// create a unique file name for the file
+	ID, err := uuid.NewRandom()
+	if err != nil {
+		fmt.Println("Unable to generate UUID for profile pic. " + err.Error() + "\n")
+		return uuid.UUID{}, err
+	}
+	tempFileName := "profile_pictures/" + ID.String() + filepath.Ext(fileHeader.Filename)
+
+	bucketName := os.Getenv("ORBITAL_BOOKING_BUCKET_NAME")
+	if bucketName == "" {
+		if config.ORBITAL_BOOKING_BUCKET_NAME == "" {
+			return uuid.UUID{}, errors.New("AWS bucket name not setup, go to config.go to input")
+		} else {
+			bucketName = config.ORBITAL_BOOKING_BUCKET_NAME
+		}
+	}
+
+	// config settings: this is where you choose the bucket,
+	// filename, content-type and storage class of the file
+	// you're uploading
+	_, err = s3.New(s).PutObject(&s3.PutObjectInput{
+		Bucket:               aws.String(bucketName),
+		Key:                  aws.String(tempFileName),
+		ACL:                  aws.String("public-read"), // could be private if you want it to be access by only authorized users
+		Body:                 bytes.NewReader(buffer),
+		ContentLength:        aws.Int64(int64(size)),
+		ContentType:          aws.String(http.DetectContentType(buffer)),
+		ContentDisposition:   aws.String("attachment"),
+		ServerSideEncryption: aws.String("AES256"),
+		StorageClass:         aws.String("INTELLIGENT_TIERING"),
+	})
+	if err != nil {
+		return uuid.UUID{}, err
+	}
+
+	return ID, err
 }

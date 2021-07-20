@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"math/rand"
+	"mime/multipart"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -153,7 +154,7 @@ func TestGetAccountExists_True(t *testing.T) {
 		Name:       "test",
 		Facultyid:  0,
 		Gradyear:   0,
-		Profilepic: "test",
+		Profilepic: &multipart.FileHeader{},
 	}
 	if !GetAccountExists(repo.db, input) {
 		t.Fatalf("Expected to get that account exists is true, but got false.")
@@ -175,7 +176,7 @@ func TestGetAccountExists_False(t *testing.T) {
 		Name:       "test",
 		Facultyid:  0,
 		Gradyear:   0,
-		Profilepic: "test",
+		Profilepic: &multipart.FileHeader{},
 	}
 	if GetAccountExists(repo.db, input) {
 		t.Fatalf("Expected to get that account exists is false, but got true.")
@@ -270,7 +271,7 @@ func TestCreateAccount_ValidInput(t *testing.T) {
 		Name:            "test",
 		Facultyid:       1,
 		Gradyear:        2022,
-		Profilepic:      "testURL",
+		Profilepic:      uuid.UUID{},
 		Accounttypeid:   1,
 		Points:          50.0,
 		Createdat:       time.Time{},
@@ -361,7 +362,7 @@ func TestGetAccount_True(t *testing.T) {
 		Name:            "test",
 		Facultyid:       1,
 		Gradyear:        2022,
-		Profilepic:      "testURL",
+		Profilepic:      uuid.UUID{},
 		Accounttypeid:   1,
 		Points:          50,
 		Createdat:       time.Time{},
@@ -449,7 +450,7 @@ func TestUpdateAccountPassword(t *testing.T) {
 		Name:       "test",
 		Facultyid:  1,
 		Gradyear:   2022,
-		Profilepic: "testURL",
+		Profilepic: &multipart.FileHeader{},
 	}
 
 	expected := models.Accounts{
@@ -459,7 +460,7 @@ func TestUpdateAccountPassword(t *testing.T) {
 		Name:            "test",
 		Facultyid:       1,
 		Gradyear:        2022,
-		Profilepic:      "testURL",
+		Profilepic:      uuid.UUID{},
 		Accounttypeid:   1,
 		Points:          50,
 		Createdat:       time.Time{},
@@ -584,7 +585,7 @@ func TestRegister_ValidNewAcc(t *testing.T) {
 		Name:       "TestStudent",
 		Facultyid:  1,
 		Gradyear:   2022,
-		Profilepic: "testURL",
+		Profilepic: &multipart.FileHeader{},
 	}
 	toSendCorrect, err := json.Marshal(testCorrectInput)
 	if err != nil {
@@ -624,7 +625,7 @@ func TestRegister_InvalidUsedAcc(t *testing.T) {
 		Name:       "test",
 		Facultyid:  1,
 		Gradyear:   2022,
-		Profilepic: "testURL",
+		Profilepic: &multipart.FileHeader{},
 	}
 	toSendExisting, err := json.Marshal(testExistingInput)
 	if err != nil {

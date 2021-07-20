@@ -84,7 +84,7 @@ CREATE TABLE IF NOT EXISTS accounts (
     name VARCHAR(250),
     facultyID INT REFERENCES faculties,
     gradYear INT,
-    profilePic VARCHAR(250),
+    profilePic uuid,
     accountTypeID INT REFERENCES accountTypes,
     points REAL,
     createdAt TIMESTAMP,

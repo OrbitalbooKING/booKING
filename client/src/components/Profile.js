@@ -154,7 +154,7 @@ function Profile() {
                                             <div>NUSNET ID: {profileInfo === undefined ? "" : profileInfo.NUSNET_ID}</div>
                                             <div>Graduation year: {profileInfo === undefined ? "" : profileInfo.Gradyear}</div>
                                             <div>Faculty: {profileInfo === undefined ? "" : profileInfo.Facultyname}</div>
-                                            <div>Points: {profileInfo === undefined ? "" : profileInfo.Points}</div>
+                                            <div>Points: {profileInfo === undefined ? "" : Math.round(profileInfo.Points * 10) / 10}</div>
                                         </div>
                                     </div>
                                     <br />
@@ -192,8 +192,8 @@ function Profile() {
                                                                 <div style={{width: 80, textAlign: 'center', alignSelf: 'center'}}>{val.Sharable ? "Yes" : "No"} </div>
                                                                 <div style={{width: 60, textAlign: 'center', alignSelf: 'center'}}>
                                                                     <DropdownButton id="dropdown-basic-button" title="Edit">
-                                                                        <Dropdown.Item onClick={deleteBooking(val)}>Delete</Dropdown.Item>
                                                                         <Dropdown.Item onClick={editBooking(val)}>Edit</Dropdown.Item>
+                                                                        <Dropdown.Item onClick={deleteBooking(val)}>Delete</Dropdown.Item>
                                                                     </DropdownButton>
                                                                 </div>
                                                             </div>
@@ -226,7 +226,7 @@ function Profile() {
                                         <div className="display-old-header"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>Faculty </div></div>
                                         <div className="display-old"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>{profileInfo === undefined ? "" : profileInfo.Facultyname} </div></div>
                                         <div className="display-old-header"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>Points </div></div>
-                                        <div className="display-old"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>{profileInfo === undefined ? "" : profileInfo.Points} </div></div>
+                                        <div className="display-old"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>{profileInfo === undefined ? "" : Math.round(profileInfo.Points * 10) / 10} </div></div>
                                     </div>
                                 </div>
 
@@ -298,8 +298,8 @@ function Profile() {
                                                             <div style={{width: "auto", textAlign: 'center', alignSelf: 'center', paddingTop: 10}}>
                                                                 {/* <button type="submit" className="btn btn-primary btn-block" onClick={book(val)}>Book</button> */}
                                                                 <DropdownButton id="dropdown-basic-button" title="Edit">
-                                                                    <Dropdown.Item onClick={deleteBooking(val)}>Delete</Dropdown.Item>
                                                                     <Dropdown.Item onClick={editBooking(val)}>Edit</Dropdown.Item>
+                                                                    <Dropdown.Item onClick={deleteBooking(val)}>Delete</Dropdown.Item>
                                                                 </DropdownButton>
                                                             </div>
                                                             <hr />

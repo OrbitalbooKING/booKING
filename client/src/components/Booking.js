@@ -794,7 +794,7 @@ function Booking() {
                                             </div>
                                             <br />
                                             <div style={{display: 'flex', flexDirection: 'row'}}>
-                                                <div style={{width: "50%", textAlign: 'left', alignSelf: 'center'}}>Points left: {points}</div>
+                                                <div style={{width: "50%", textAlign: 'left', alignSelf: 'center'}}>Points left: {Math.round(points * 10) / 10}</div>
                                                 <div style={{width: "50%", textAlign: 'right', alignSelf: 'center'}}>Points needed: {cost}</div>
                                             </div>
                                             <br />
@@ -927,7 +927,7 @@ function Booking() {
                                         </div>
                                         <br />
                                         <div style={{display: 'flex', flexDirection: 'row'}}>
-                                            <div style={{width: "45%", textAlign: 'left', alignSelf: 'center'}}>Points left: {points}</div>
+                                            <div style={{width: "45%", textAlign: 'left', alignSelf: 'center'}}>Points left: {Math.round(points * 10) / 10}</div>
                                             <div style={{width: "55%", textAlign: 'right', alignSelf: 'center'}}>Points needed: {cost}</div>
                                         </div>
                                         <br />

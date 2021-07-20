@@ -396,7 +396,7 @@ function Home() {
                                         : searchResults.length === 0 
                                             ? <div className="display-selected-venue">
                                                 <div style={{textAlign: 'center', alignSelf: 'center'}}>
-                                                    <h3>No details to display</h3>
+                                                    <h3>No results found</h3>
                                                 </div>
                                             </div>
                                             : searchResults.map((val, key) => {
@@ -435,7 +435,7 @@ function Home() {
                                     : searchResults.length === 0 
                                         ? <div className="display-selected-venue">
                                             <div style={{textAlign: 'center', alignSelf: 'center'}}>
-                                                <h3>No details to display</h3>
+                                                <h3>No results found</h3>
                                             </div>
                                         </div>
                                         : searchResults.map((val, key) => {
@@ -452,12 +452,17 @@ function Home() {
                                                         <div className="display-old"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>{val.Maxcapacity} </div></div>
                                                         <div className="display-old-header"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>Equipment </div></div>
                                                         <div className="display-old"><div style={{display: 'flex', width: "auto", textAlign: 'center', alignSelf: 'center', justifyContent: 'center'}}>
-                                                            {val.Facilitiesdict.Projector === undefined && val.Facilitiesdict.Screen === undefined && val.Facilitiesdict.Desktop === undefined && val.Facilitiesdict.Whiteboard === undefined ? "Nil" : ""}
+                                                            {/* {val.Facilitiesdict.Projector === undefined && val.Facilitiesdict.Screen === undefined && val.Facilitiesdict.Desktop === undefined && val.Facilitiesdict.Whiteboard === undefined ? "Nil" : ""}
                                                             
                                                             {val.Facilitiesdict.Projector === undefined ? "" : val.Facilitiesdict.Projector === 1 ? val.Facilitiesdict.Projector + " projector" : val.Facilitiesdict.Projector + " projectors"}
                                                             <br />{val.Facilitiesdict.Screen === undefined ? "" : val.Facilitiesdict.Screen === 1 ? val.Facilitiesdict.Screen + " screen" : val.Facilitiesdict.Screen + " screens"}
                                                             <br />{val.Facilitiesdict.Desktop === undefined ? "" : val.Facilitiesdict.Desktop === 1 ? val.Facilitiesdict.Desktop + " desktop" : val.Facilitiesdict.Desktop + " desktops"}
-                                                            <br />{val.Facilitiesdict.Whiteboard === undefined ? "" : val.Facilitiesdict.Whiteboard === 1 ? val.Facilitiesdict.Whiteboard + " whiteboard" : val.Facilitiesdict.Whiteboard + " whiteboards"}
+                                                            <br />{val.Facilitiesdict.Whiteboard === undefined ? "" : val.Facilitiesdict.Whiteboard === 1 ? val.Facilitiesdict.Whiteboard + " whiteboard" : val.Facilitiesdict.Whiteboard + " whiteboards"} */}
+                                                                <div>{val.Facilitiesdict.Projector === undefined && val.Facilitiesdict.Screen === undefined && val.Facilitiesdict.Desktop === undefined && val.Facilitiesdict.Whiteboard === undefined ? "Nil" : ""}</div>
+                                                                <div>{val.Facilitiesdict.Projector === undefined ? "" : val.Facilitiesdict.Projector === 1 ? val.Facilitiesdict.Projector + " projector" : val.Facilitiesdict.Projector + " projectors"}</div>
+                                                                <div>{val.Facilitiesdict.Screen === undefined ? "" : val.Facilitiesdict.Screen === 1 ? val.Facilitiesdict.Screen + " screen" : val.Facilitiesdict.Screen + " screens"}</div>
+                                                                <div>{val.Facilitiesdict.Desktop === undefined ? "" : val.Facilitiesdict.Desktop === 1 ? val.Facilitiesdict.Desktop + " desktop" : val.Facilitiesdict.Desktop + " desktops"}</div>
+                                                                <div>{val.Facilitiesdict.Whiteboard === undefined ? "" : val.Facilitiesdict.Whiteboard === 1 ? val.Facilitiesdict.Whiteboard + " whiteboard" : val.Facilitiesdict.Whiteboard + " whiteboards"}</div>
                                                         </div></div>
                                                         <div style={{width: "auto", textAlign: 'center', alignSelf: 'center', paddingTop: 10}}>
                                                             <button type="submit" className="btn btn-primary btn-block" onClick={book(val)}>Book</button>

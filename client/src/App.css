@@ -36,14 +36,39 @@ body, html, #root {
   top: 0;
 }
 
-.parent{
+.parent-booking{
   margin-top: 56px;
-  position: absolute; 
+  position: absolute;
   top: 0px; 
   left: 0px;
   right: 0px; 
   bottom: 0px;
+}
 
+.parent-home{
+  margin-top: 56px;
+  position: absolute;
+  top: 0px; 
+  left: 0px;
+  right: 0px; 
+  bottom: 0px;
+}
+
+.parent{
+  margin-top: 56px;
+  position: absolute;
+  top: 0px; 
+  left: 0px;
+  right: 0px; 
+  bottom: 0px;
+}
+
+.home-page {
+  width: auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .content{
@@ -123,6 +148,27 @@ body, html, #root {
   overflow-x: auto;
 }
 
+.help-page{
+  width: auto;
+  height: auto;
+  background: #ffffff;
+  box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
+  padding: 3% 3%;
+  border-radius: 15px;
+  transition: all .3s;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  display: flex;
+  flex-direction: column;
+
+  overflow-y: auto;
+  overflow-x: auto;
+}
+
 .custom-control-label {
   font-weight: 400;
 }
@@ -164,7 +210,27 @@ body, html, #root {
 }
 
 .venue-list {
-  width: 1000px;
+  width: auto;
+  background: #ffffff;
+  box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
+  padding: 1% 1%;
+  border-radius: 15px;
+  transition: all .3s;
+}
+
+.venue-list-mobile {
+  width: auto;
+  height: 300px;
+  background: #ffffff;
+  box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
+  padding: 20px 20px 20px 20px;
+  border-radius: 15px;
+  transition: all .3s;
+}
+
+.delete-list-mobile {
+  width: auto;
+  height: auto;
   background: #ffffff;
   box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
   padding: 1% 1%;
@@ -191,7 +257,7 @@ body, html, #root {
 }
 
 .display-selected-venue-header {
-  width: 900px;
+  width: auto;
   margin: auto;
   background: #ffffff;
   padding: 10px 20px 10px 20px;
@@ -218,7 +284,7 @@ body, html, #root {
 }
 
 .display-selected-venue {
-  width: 900px;
+  width: auto;
   margin: auto;
   background: #e5e5e5;
   padding: 10px 20px 10px 20px;
@@ -267,12 +333,12 @@ body, html, #root {
   margin: auto;
   background: #e5e5e5;
   padding: 10px 20px 10px 20px;
-  border-radius: 15px;
+  border-radius: 8px;
   transition: all .3s;
 }
 
 .searchbar {
-  width: 1000px;
+  width: auto;
   background: #ffffff;
   box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
   padding: 2% 2%;
@@ -290,9 +356,27 @@ body, html, #root {
   text-align: center;
 }
 
+.stack-searchbar {
+  display: flex;
+  flex-direction: row;
+  padding: 5px 5px 5px 5px;
+}
+
 .booking-selector {
-  width: 1060px;
-  height: 540px;
+  width: auto;
+  height: auto;
+  margin: auto;
+  background: #ffffff;
+  box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
+  padding: 20px 20px 20px 20px;
+  border-radius: 15px;
+  transition: all .3s;
+}
+
+.booking-selector-mobile {
+  width: auto;
+  height: auto;
+  resize: both;
   margin: auto;
   background: #ffffff;
   box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
@@ -307,6 +391,16 @@ body, html, #root {
   background: #ffffff;
   box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
   padding: 40px 55px 40px 55px;
+  border-radius: 15px;
+  transition: all .3s;
+}
+
+.profile-mobile {
+  width: auto;
+  height: 300px;
+  background: #ffffff;
+  box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
+  padding: 20px 20px 20px 20px;
   border-radius: 15px;
   transition: all .3s;
 }
@@ -328,15 +422,6 @@ body, html, #root {
   padding: 10px 20px 10px 20px;
   border-radius: 15px;
   transition: all .3s;
-}
-
-.home-page {
-  width: auto;
-  height: auto;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
 }
 
 @media (max-width: 450px) {
@@ -368,6 +453,27 @@ body, html, #root {
     text-align: center;
   }
 
+  .help-page{
+    width: 80%;
+    height: auto;
+    background: #ffffff;
+    box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
+    padding: 3% 3%;
+    border-radius: 15px;
+    transition: all .3s;
+  
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  
+    display: flex;
+    flex-direction: column;
+  
+    overflow-y: auto;
+    overflow-x: auto;
+  }
+
   .sign-up{
     width: 80%;
     height: auto;
@@ -394,5 +500,70 @@ body, html, #root {
     align-content: center;
     align-items: center;
     text-align: center;
+  }
+
+  .parent-booking{
+    margin-top: 56px;
+    width: auto;
+    height: 190%;
+    position: absolute;
+    top: 0px; 
+    left: 0px;
+    right: 0px; 
+    bottom: 0px;
+  }
+
+  .parent-home{
+    margin-top: 56px;
+    width: auto;
+    height: 110%;
+    position: absolute;
+    top: 0px; 
+    left: 0px;
+    right: 0px; 
+    bottom: 0px;
+  }
+
+  .stack-searchbar {
+    display: flex;
+    flex-direction: column;
+
+    justify-self: center;
+    justify-content: center;
+    justify-items: center;
+    align-self: center;
+    align-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  .venue-list {
+    display: none;
+  }
+
+  .booking-selector {
+    display: none;
+  }
+
+  .profile {
+    display: none;
+  }
+}
+
+@media (min-width: 450px) {
+  .venue-list-mobile {
+    display: none;
+  }
+
+  .delete-list-mobile {
+    display: none;
+  }
+
+  .booking-selector-mobile {
+    display: none;
+  }
+
+  .profile-mobile {
+    display: none;
   }
 }

@@ -73,14 +73,27 @@ type PendingBookings struct {
 	Eventstart       time.Time
 	Eventend         time.Time
 	Bookingid        uuid.UUID
-	Cost             float32
+	Cost             float64
 	Venuemaxcapacity int
 }
 
 type BookingCart struct {
 	PendingBookings []PendingBookings
-	TotalCost       float32
-	UserPoints      float32
+	TotalCost       float64
+	UserPoints      float64
+	ValidCheckout   bool
+}
+
+type EditBookingInput struct {
+	NUSNET_ID    string `json:"NUSNET_ID"`
+	OldBookingID string `json:"OldBookingID"`
+}
+
+type EditBookingCart struct {
+	OldBooking      BookingRequests
+	PendingBookings []PendingBookings
+	TotalCost       float64
+	UserPoints      float64
 	ValidCheckout   bool
 }
 
@@ -98,7 +111,7 @@ type Currentbookings struct {
 	Eventend        time.Time
 	Bookingstatusid int
 	Lastupdated     time.Time
-	Cost            float32
+	Cost            float64
 }
 
 type BookingDetails struct {
@@ -111,7 +124,7 @@ type BookingDetails struct {
 	Bookingid                uuid.UUID
 	Bookingstatusdescription string
 	Sharable                 bool
-	Cost                     float32
+	Cost                     float64
 }
 
 type BookingRequests struct {
@@ -125,6 +138,6 @@ type BookingRequests struct {
 	ID                       uuid.UUID `json:"BookingID"`
 	Bookingstatusdescription string
 	Sharable                 bool
-	Cost                     float32
+	Cost                     float64
 	Maxcapacity              int
 }

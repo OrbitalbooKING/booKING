@@ -29,9 +29,11 @@ function Help() {
     return (
         <Layout1>
             <div className="parent">
-                <div className="welcome-page">
-                    <div style={{overflowWrap: 'break-word', wordBreak: 'break-all'}}>
+                <div className="help-page">
+                    <div>
                         <h5>Refer to our user guide: </h5>
+                    </div>
+                    <div style={{overflowWrap: 'break-word', wordBreak: 'break-all'}}>
                         <h5>https://docs.google.com/document/d/1zvFvemhVmstVMCiOg0dLkmLf1wWBZFmuWxLuLHR_zJg/edit?usp=sharing</h5>
                         <span className="message">{ isCopied ? "Copied!" : ""}</span>
                     </div>

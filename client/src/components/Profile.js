@@ -141,7 +141,7 @@ function Profile() {
         <>
             {Cookies.get("name") !== undefined && Cookies.get("id") !== undefined
                 ? <Layout2 id={Cookies.get("id")} name={Cookies.get("name")} action="Viewing profile">
-                        <div className="parent">
+                        <div className="parent-home">
                             <div className="home-page">
                                 <div className="profile">
                                     <h3>Profile</h3>
@@ -154,7 +154,7 @@ function Profile() {
                                             <div>NUSNET ID: {profileInfo === undefined ? "" : profileInfo.NUSNET_ID}</div>
                                             <div>Graduation year: {profileInfo === undefined ? "" : profileInfo.Gradyear}</div>
                                             <div>Faculty: {profileInfo === undefined ? "" : profileInfo.Facultyname}</div>
-                                            <div>Points: {profileInfo === undefined ? "" : profileInfo.Points}</div>
+                                            <div>Points: {profileInfo === undefined ? "" : Math.round(profileInfo.Points * 10) / 10}</div>
                                         </div>
                                     </div>
                                     <br />
@@ -171,7 +171,6 @@ function Profile() {
                                         </div>
                                     </div>
                                     <div style={{overflowY: "auto", height: 200}}>
-
                                         {bookings === undefined 
                                             ? <div><h2 style={{textAlign: 'center', alignContent: 'center'}}>Loading... </h2></div> 
                                             : bookings.length === 0 
@@ -192,10 +191,9 @@ function Profile() {
                                                                 <div style={{width: 80, textAlign: 'center', alignSelf: 'center'}}>{val.Bookingstatusdescription} </div>
                                                                 <div style={{width: 80, textAlign: 'center', alignSelf: 'center'}}>{val.Sharable ? "Yes" : "No"} </div>
                                                                 <div style={{width: 60, textAlign: 'center', alignSelf: 'center'}}>
-                                                                    {/* <button type="submit" className="btn btn-primary btn-block" onClick={editBooking(val)}>Edit</button> */}
                                                                     <DropdownButton id="dropdown-basic-button" title="Edit">
-                                                                        <Dropdown.Item onClick={deleteBooking(val)}>Delete</Dropdown.Item>
                                                                         <Dropdown.Item onClick={editBooking(val)}>Edit</Dropdown.Item>
+                                                                        <Dropdown.Item onClick={deleteBooking(val)}>Delete</Dropdown.Item>
                                                                     </DropdownButton>
                                                                 </div>
                                                             </div>
@@ -205,6 +203,111 @@ function Profile() {
                                                     </div>);
                                                 })
                                         }
+                                    </div>
+                                </div>
+
+                                <div className="profile-mobile">
+                                    <div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}><h3>Profile</h3></div>
+                                    <div style={{overflowY: "auto", height: 230}}>
+                                        <img className="profilePic" src = {profilePic} alt="profilePic" style={{display: 'block', margin: 'auto'}}/>
+                                        {/* <div style={{display: 'inline-block', paddingLeft: 20}}>
+                                            <div>Username: {profileInfo === undefined ? "" : profileInfo.Name}</div>
+                                            <div>NUSNET ID: {profileInfo === undefined ? "" : profileInfo.NUSNET_ID}</div>
+                                            <div>Graduation year: {profileInfo === undefined ? "" : profileInfo.Gradyear}</div>
+                                            <div>Faculty: {profileInfo === undefined ? "" : profileInfo.Facultyname}</div>
+                                            <div>Points: {profileInfo === undefined ? "" : profileInfo.Points}</div>
+                                        </div> */}
+                                        <div className="display-old-header"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>Username </div></div>
+                                        <div className="display-old"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>{profileInfo === undefined ? "" : profileInfo.Name} </div></div>
+                                        <div className="display-old-header"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>NUSNET ID </div></div>
+                                        <div className="display-old"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>{profileInfo === undefined ? "" : profileInfo.NUSNET_ID} </div></div>
+                                        <div className="display-old-header"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>Graduation year </div></div>
+                                        <div className="display-old"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>{profileInfo === undefined ? "" : profileInfo.Gradyear} </div></div>
+                                        <div className="display-old-header"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>Faculty </div></div>
+                                        <div className="display-old"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>{profileInfo === undefined ? "" : profileInfo.Facultyname} </div></div>
+                                        <div className="display-old-header"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>Points </div></div>
+                                        <div className="display-old"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>{profileInfo === undefined ? "" : Math.round(profileInfo.Points * 10) / 10} </div></div>
+                                    </div>
+                                </div>
+
+                                {/* <div className="profile-mobile">
+                                    <div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}><h3>Profile</h3></div>
+                                    <div style={{overflowY: "auto", height: 250}}>
+                                        <img className="profilePic" src = {profilePic} alt="profilePic" style={{display: 'block', margin: 'auto'}}/>
+                                        <div style={{display: 'inline-block', paddingLeft: 20}}>
+                                            <div>Username: {profileInfo === undefined ? "" : profileInfo.Name}</div>
+                                            <div>NUSNET ID: {profileInfo === undefined ? "" : profileInfo.NUSNET_ID}</div>
+                                            <div>Graduation year: {profileInfo === undefined ? "" : profileInfo.Gradyear}</div>
+                                            <div>Faculty: {profileInfo === undefined ? "" : profileInfo.Facultyname}</div>
+                                            <div>Points: {profileInfo === undefined ? "" : profileInfo.Points}</div>
+                                        </div>
+                                    </div>
+                                </div> */}
+
+                                {/* <div className="profile-mobile">
+                                    <div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}><h3>Bookings</h3></div>
+                                    <div style={{overflowY: "auto", height: 250}}>
+                                        <img className="profilePic" src = {profilePic} alt="profilePic" style={{display: 'block', margin: 'auto'}}/>
+                                        <div style={{display: 'inline-block', paddingLeft: 20}}>
+                                            <div>Username: {profileInfo === undefined ? "" : profileInfo.Name}</div>
+                                            <div>NUSNET ID: {profileInfo === undefined ? "" : profileInfo.NUSNET_ID}</div>
+                                            <div>Graduation year: {profileInfo === undefined ? "" : profileInfo.Gradyear}</div>
+                                            <div>Faculty: {profileInfo === undefined ? "" : profileInfo.Facultyname}</div>
+                                            <div>Points: {profileInfo === undefined ? "" : profileInfo.Points}</div>
+                                        </div>
+                                    </div>
+                                </div> */}
+                                <br />
+                                <div className="venue-list-mobile">
+                                    <div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}><h3>Bookings</h3></div>
+                                    <div style={{overflowY: "auto", height: 230}}>
+                                    {bookings === undefined 
+                                        ? <div><h2 style={{textAlign: 'center', alignContent: 'center'}}>Loading... </h2></div> 
+                                        : bookings.length === 0 
+                                            ? <div className="display-selected-venue">
+                                                <div style={{textAlign: 'center', alignSelf: 'center'}}>
+                                                    <h3>No bookings to display</h3>
+                                                </div>
+                                            </div>
+                                            : bookings.map((val, key) => {
+                                                return (<div key={key}>
+                                                    <div style={{display: 'flex', flexDirection: 'column'}}>
+                                                        <div>
+                                                            <div className="display-old-header"><div style={{width: 220, textAlign: 'center', alignSelf: 'center'}}>Booking id </div></div>
+                                                            <div className="display-old"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>{val.Bookingid.substring(0, 4)} </div></div>
+                                                            <div className="display-old-header"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>Venue name </div></div>
+                                                            <div className="display-old"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>{val.Venuename} </div></div>
+                                                            <div className="display-old-header"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>Location </div></div>
+                                                            <div className="display-old"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>{val.Buildingname} {val.Unit} </div></div>
+                                                            <div className="display-old-header"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>Date </div></div>
+                                                            <div className="display-old"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>{dateConverter(val.Eventstart)} </div></div>
+                                                            <div className="display-old-header"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>Pax </div></div>
+                                                            <div className="display-old"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>{val.Pax} </div></div>
+                                                            <div className="display-old-header"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>Status </div></div>
+                                                            <div className="display-old"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>{val.Bookingstatusdescription} </div></div>
+                                                            <div className="display-old-header"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>Sharing </div></div>
+                                                            <div className="display-old"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>{val.Sharable ? "Yes" : "No"} </div></div>
+                                                            {/* <div className="display-old"><div style={{display: 'flex', width: "auto", textAlign: 'center', alignSelf: 'center', justifyContent: 'center'}}>
+                                                                {val.Facilitiesdict.Projector === undefined && val.Facilitiesdict.Screen === undefined && val.Facilitiesdict.Desktop === undefined && val.Facilitiesdict.Whiteboard === undefined ? "Nil" : ""}
+                                                                
+                                                                {val.Facilitiesdict.Projector === undefined ? "" : val.Facilitiesdict.Projector === 1 ? val.Facilitiesdict.Projector + " projector" : val.Facilitiesdict.Projector + " projectors"}
+                                                                <br />{val.Facilitiesdict.Screen === undefined ? "" : val.Facilitiesdict.Screen === 1 ? val.Facilitiesdict.Screen + " screen" : val.Facilitiesdict.Screen + " screens"}
+                                                                <br />{val.Facilitiesdict.Desktop === undefined ? "" : val.Facilitiesdict.Desktop === 1 ? val.Facilitiesdict.Desktop + " desktop" : val.Facilitiesdict.Desktop + " desktops"}
+                                                                <br />{val.Facilitiesdict.Whiteboard === undefined ? "" : val.Facilitiesdict.Whiteboard === 1 ? val.Facilitiesdict.Whiteboard + " whiteboard" : val.Facilitiesdict.Whiteboard + " whiteboards"}
+                                                            </div></div> */}
+                                                            <div style={{width: "auto", textAlign: 'center', alignSelf: 'center', paddingTop: 10}}>
+                                                                {/* <button type="submit" className="btn btn-primary btn-block" onClick={book(val)}>Book</button> */}
+                                                                <DropdownButton id="dropdown-basic-button" title="Edit">
+                                                                    <Dropdown.Item onClick={editBooking(val)}>Edit</Dropdown.Item>
+                                                                    <Dropdown.Item onClick={deleteBooking(val)}>Delete</Dropdown.Item>
+                                                                </DropdownButton>
+                                                            </div>
+                                                            <hr />
+                                                        </div>
+                                                    </div>
+                                                </div>);
+                                            })
+                                    }
                                     </div>
                                 </div>
                             </div>

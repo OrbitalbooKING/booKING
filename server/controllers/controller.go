@@ -24,6 +24,7 @@ func StartAll(r *gin.Engine) {
 	api.PATCH("/reset", services.ResetPassword)
 	api.GET("/home", services.GetVenues)
 	api.GET("/search", services.SearchVenues)
+	api.POST("/transfer_points", services.TransferPoints)
 
 	api.GET("/get_profile", services.GetProfile)
 	api.GET("/get_bookings", services.GetBookings)
@@ -38,6 +39,7 @@ func StartAll(r *gin.Engine) {
 	api.POST("/make_pending_booking", services.MakePendingBooking)
 	api.DELETE("/delete_pending_bookings", services.DeletePendingBookings)
 	api.DELETE("/delete_confirmed_bookings", services.DeleteConfirmedBookings)
+	api.GET("/get_user_with_temp_points", services.GetUserWithTempPoints)
 
 	// PUT for updating account
 

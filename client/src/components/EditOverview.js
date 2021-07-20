@@ -285,7 +285,7 @@ function EditOverview() {
                                                     <div className="display-old-header"><div style={{width: 220, textAlign: 'center', alignSelf: 'center'}}>Max capacity </div></div>
                                                     <div className="display-old"><div style={{width: 220, textAlign: 'center', alignSelf: 'center'}}>{val.Maxcapacity} </div></div>
                                                     <div className="display-old-header"><div style={{width: 220, textAlign: 'center', alignSelf: 'center'}}>Equipment </div></div>
-                                                    <div className="display-old"><div style={{display: 'flex', width: 220, textAlign: 'center', alignSelf: 'center', justifyContent: 'center'}}>
+                                                    <div className="display-old"><div style={{display: 'flex', flexDirection: 'column', width: 220, textAlign: 'center', alignSelf: 'center', justifyContent: 'center'}}>
                                                         {/* {val.Facilitiesdict.Projector === undefined ? "" : val.Facilitiesdict.Projector === 1 ? val.Facilitiesdict.Projector + " projector" : val.Facilitiesdict.Projector + " projectors"}
                                                         <br />{val.Facilitiesdict.Screen === undefined ? "" : val.Facilitiesdict.Screen === 1 ? val.Facilitiesdict.Screen + " screen" : val.Facilitiesdict.Screen + " screens"}
                                                         <br />{val.Facilitiesdict.Desktop === undefined ? "" : val.Facilitiesdict.Desktop === 1 ? val.Facilitiesdict.Desktop + " desktop" : val.Facilitiesdict.Desktop + " desktops"}

@@ -363,7 +363,7 @@ function EditHome() {
                                                     <div className="display-old-header"><div style={{width: 220, textAlign: 'center', alignSelf: 'center'}}>Max capacity </div></div>
                                                     <div className="display-old"><div style={{width: 220, textAlign: 'center', alignSelf: 'center'}}>{val.Maxcapacity} </div></div>
                                                     <div className="display-old-header"><div style={{width: 220, textAlign: 'center', alignSelf: 'center'}}>Equipment </div></div>
-                                                    <div className="display-old"><div style={{display: 'flex', width: 220, textAlign: 'center', alignSelf: 'center', justifyContent: 'center'}}>
+                                                    <div className="display-old"><div style={{display: 'flex', flexDirection: 'column', width: 220, textAlign: 'center', alignSelf: 'center', justifyContent: 'center'}}>
                                                         {/* {val.Facilitiesdict.Projector === undefined && val.Facilitiesdict.Screen === undefined && val.Facilitiesdict.Desktop === undefined && val.Facilitiesdict.Whiteboard === undefined ? "Nil" : ""}
                                                         
                                                         {val.Facilitiesdict.Projector === undefined ? "" : val.Facilitiesdict.Projector === 1 ? val.Facilitiesdict.Projector + " projector" : val.Facilitiesdict.Projector + " projectors"}

@@ -3,6 +3,9 @@ language: go
 go: 
 - 1.16.x
 
+
+
 script:
+- GO111MODULE=on go get -u github.com/raviqqe/liche
 - go build
 - go test -v ./...

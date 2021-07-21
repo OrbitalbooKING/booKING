@@ -15,6 +15,7 @@ const (
 	ORBITAL_BOOKING_BUCKET_KEY    = ""
 	ORBITAL_BOOKING_BUCKET_REGION = "ap-southeast-1"
 	PROFILE_PIC_FOLDER            = "profile_pictures/"
+	DEFAULT_PICTURE_NAME          = "default.png"
 
 	POINTS_DISCOUNT = 0.2
 	MAX_POINTS      = 100.0

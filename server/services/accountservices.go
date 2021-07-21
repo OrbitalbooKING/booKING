@@ -99,18 +99,21 @@ func Register(c *gin.Context) {
 		fmt.Println("Unable to create AWS session for profile pic upload " + err.Error())
 	}
 
-	file, err := input.Profilepic.Open()
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": "Unable to parse profile pic upload"})
-		fmt.Println("Unable to parse profile pic upload " + err.Error())
-	}
+	var picID uuid.UUID
+	if input.Profilepic != nil {
+		file, err := input.Profilepic.Open()
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": "Unable to parse profile pic upload"})
+			fmt.Println("Unable to parse profile pic upload " + err.Error())
+		}
 
-	picID, err := UploadFileToS3(s, file, input.Profilepic)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": "Unable to upload profile pic to S3"})
-		fmt.Println("Unable to upload profile pic to S3. " + err.Error() + "\n")
-	} else {
-		fmt.Println("Image uploaded successfully!")
+		picID, err = UploadFileToS3(s, file, input.Profilepic)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": "Unable to upload profile pic to S3"})
+			fmt.Println("Unable to upload profile pic to S3. " + err.Error() + "\n")
+		} else {
+			fmt.Println("Image uploaded successfully!")
+		}
 	}
 
 	account := models.Accounts{
@@ -653,7 +656,14 @@ func MakeProfilePicURL(ID uuid.UUID) (string, error) {
 		}
 	}
 
-	URL := "https://" + bucketName + ".s3." + config.ORBITAL_BOOKING_BUCKET_REGION + ".amazonaws.com/" +
-		config.PROFILE_PIC_FOLDER + ID.String()
+	var fileName string
+	if ID == uuid.Nil {
+		fileName = "default.png"
+	} else {
+		fileName = ID.String()
+	}
+
+	URL := fmt.Sprintf("https://"+"%s"+".s3."+"%s"+".amazonaws.com/"+"%s"+"%s",
+		bucketName, config.ORBITAL_BOOKING_BUCKET_REGION, config.PROFILE_PIC_FOLDER, fileName)
 	return URL, nil
 }

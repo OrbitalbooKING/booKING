@@ -53,9 +53,9 @@ type LoginOutput struct {
 type CreateAccountInput struct {
 	Nusnetid   string                `form:"NUSNET_ID" binding:"required"`
 	Password   string                `form:"password" binding:"required"`
-	Name       string                `form:"name"`
-	Facultyid  int                   `form:"faculty"`
-	Gradyear   int                   `form:"gradYear"`
+	Name       string                `form:"name" binding:"required"`
+	Facultyid  int                   `form:"faculty" binding:"required"`
+	Gradyear   int                   `form:"gradYear" binding:"required"`
 	Profilepic *multipart.FileHeader `form:"profilePic"`
 }
 

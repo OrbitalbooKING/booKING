@@ -16,6 +16,7 @@ import (
 	"github.com/OrbitalbooKING/booKING/server/models"
 	"github.com/OrbitalbooKING/booKING/server/utils"
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/google/uuid"
@@ -31,7 +32,7 @@ func Register(c *gin.Context) {
 	// Validate input
 	var input models.CreateAccountInput
 	if err := c.Bind(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": "Check input fields."})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": "All input fields required."})
 		fmt.Println("Error in parsing inputs for account creation.")
 		return
 	}
@@ -41,6 +42,13 @@ func Register(c *gin.Context) {
 
 	// check valid nusnetid and password strength
 	if !regexIDCheck(c, input.Nusnetid) || !regexPasswordCheck(c, input.Password) {
+		return
+	}
+
+	// check if name is blank space
+	if input.Name == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Input name cannot be blank!"})
+		fmt.Println("Input name cannot be blank!")
 		return
 	}
 
@@ -559,29 +567,29 @@ func GetAccountType(DB *gorm.DB, typeID int) (models.Accounttypes, bool, error) 
 }
 
 func CreateS3Session() (*session.Session, error) {
-	// bucketID := os.Getenv("ORBITAL_BOOKING_BUCKET_ID")
-	// if bucketID == "" {
-	// 	if config.ORBITAL_BOOKING_BUCKET_ID == "" {
-	// 		return nil, errors.New("AWS bucket ID not setup, go to config.go to input")
-	// 	} else {
-	// 		bucketID = config.ORBITAL_BOOKING_BUCKET_ID
-	// 	}
-	// }
-	// bucketKey := os.Getenv("ORBITAL_BOOKING_BUCKET_KEY")
-	// if bucketKey == "" {
-	// 	if config.ORBITAL_BOOKING_BUCKET_KEY == "" {
-	// 		return nil, errors.New("AWS bucket key not setup, go to config.go to input")
-	// 	} else {
-	// 		bucketKey = config.ORBITAL_BOOKING_BUCKET_KEY
-	// 	}
-	// }
+	bucketID := os.Getenv("ORBITAL_BOOKING_BUCKET_ID")
+	if bucketID == "" {
+		if config.ORBITAL_BOOKING_BUCKET_ID == "" {
+			return nil, errors.New("AWS bucket ID not setup, go to config.go to input")
+		} else {
+			bucketID = config.ORBITAL_BOOKING_BUCKET_ID
+		}
+	}
+	bucketKey := os.Getenv("ORBITAL_BOOKING_BUCKET_KEY")
+	if bucketKey == "" {
+		if config.ORBITAL_BOOKING_BUCKET_KEY == "" {
+			return nil, errors.New("AWS bucket key not setup, go to config.go to input")
+		} else {
+			bucketKey = config.ORBITAL_BOOKING_BUCKET_KEY
+		}
+	}
 
 	s, err := session.NewSession(&aws.Config{
 		Region: aws.String("ap-southeast-1"),
-		// Credentials: credentials.NewStaticCredentials(
-		// 	bucketID,  // id
-		// 	bucketKey, // secret
-		// 	""),       // token can be left blank for now
+		Credentials: credentials.NewStaticCredentials(
+			bucketID,  // id
+			bucketKey, // secret
+			""),       // token can be left blank for now
 	})
 	if err != nil {
 		return nil, err

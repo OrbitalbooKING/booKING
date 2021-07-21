@@ -1,5 +1,5 @@
 language: go 
 
 script:
-- go mod download
+- go build
 - go test -v ./...

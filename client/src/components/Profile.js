@@ -7,7 +7,7 @@ import Unauthorised from "./Unauthorised";
 
 import moment from "moment";
 
-import profilePic from "../assets/profile.png";
+import DefaultPic from "../assets/profile.png";
 import * as Cookies from "js-cookie";
 
 import Dropdown from "react-bootstrap/esm/Dropdown";
@@ -146,16 +146,32 @@ function Profile() {
                                 <div className="profile">
                                     <h3>Profile</h3>
                                     <div className="display-selected-venue" style={{height: 'auto'}}>
-                                        <div style={{height: 90, display: 'inline-block', paddingLeft: 10}}>
+                                        {/* <div style={{height: 90, display: 'inline-block', paddingLeft: 10}}>
                                             <img className="profilePic" src = {profilePic} alt="profilePic" style={{display: 'block', margin: 'auto'}}/>
+                                        </div> */}
+                                        <div style={{display: 'flex', flexDirection: 'row'}}>
+                                            <div style={{alignSelf: 'center'}}>
+                                                {profileInfo === undefined ? <img src={DefaultPic} style={{width: 100, height: 100}} alt="profilePic" /> : <img src={(profileInfo.ProfilepicURL)} style={{width: 100, height: 100}} alt="profilePic" />}
+                                            </div>
+                                            <div style={{paddingLeft: 20}}>
+                                                <div>
+                                                    <div>Username: {profileInfo === undefined ? "" : profileInfo.Name}</div>
+                                                    <div>NUSNET ID: {profileInfo === undefined ? "" : profileInfo.NUSNET_ID}</div>
+                                                    <div>Graduation year: {profileInfo === undefined ? "" : profileInfo.Gradyear}</div>
+                                                    <div>Faculty: {profileInfo === undefined ? "" : profileInfo.Facultyname}</div>
+                                                    <div>Points: {profileInfo === undefined ? "" : Math.round(profileInfo.Points * 10) / 10}</div>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div style={{display: 'inline-block', paddingLeft: 20}}>
+                                        
+                                        
+                                        {/* <div style={{display: 'inline-block', paddingLeft: 20}}>
                                             <div>Username: {profileInfo === undefined ? "" : profileInfo.Name}</div>
                                             <div>NUSNET ID: {profileInfo === undefined ? "" : profileInfo.NUSNET_ID}</div>
                                             <div>Graduation year: {profileInfo === undefined ? "" : profileInfo.Gradyear}</div>
                                             <div>Faculty: {profileInfo === undefined ? "" : profileInfo.Facultyname}</div>
                                             <div>Points: {profileInfo === undefined ? "" : Math.round(profileInfo.Points * 10) / 10}</div>
-                                        </div>
+                                        </div> */}
                                     </div>
                                     <br />
                                     <h3>Bookings</h3>
@@ -209,7 +225,8 @@ function Profile() {
                                 <div className="profile-mobile">
                                     <div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}><h3>Profile</h3></div>
                                     <div style={{overflowY: "auto", height: 230}}>
-                                        <img className="profilePic" src = {profilePic} alt="profilePic" style={{display: 'block', margin: 'auto'}}/>
+                                        {/* <img className="profilePic" src = {DefaultPic} alt="profilePic" style={{display: 'block', margin: 'auto'}}/> */}
+                                        
                                         {/* <div style={{display: 'inline-block', paddingLeft: 20}}>
                                             <div>Username: {profileInfo === undefined ? "" : profileInfo.Name}</div>
                                             <div>NUSNET ID: {profileInfo === undefined ? "" : profileInfo.NUSNET_ID}</div>
@@ -217,6 +234,12 @@ function Profile() {
                                             <div>Faculty: {profileInfo === undefined ? "" : profileInfo.Facultyname}</div>
                                             <div>Points: {profileInfo === undefined ? "" : profileInfo.Points}</div>
                                         </div> */}
+                                        <div style={{display: 'flex', flex: 1}}>
+                                            <div style={{margin: '0 auto'}}>
+                                                {profileInfo === undefined ? <img src={DefaultPic} style={{width: 100, height: 100}} alt="profilePic" /> : <img src={(profileInfo.ProfilepicURL)} style={{width: 100, height: 100}} alt="profilePic" />}
+                                            </div>
+                                        </div>
+                                        
                                         <div className="display-old-header"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>Username </div></div>
                                         <div className="display-old"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>{profileInfo === undefined ? "" : profileInfo.Name} </div></div>
                                         <div className="display-old-header"><div style={{width: "auto", textAlign: 'center', alignSelf: 'center'}}>NUSNET ID </div></div>
@@ -265,7 +288,7 @@ function Profile() {
                                         ? <div><h2 style={{textAlign: 'center', alignContent: 'center'}}>Loading... </h2></div> 
                                         : bookings.length === 0 
                                             ? <div className="display-selected-venue">
-                                                <div style={{textAlign: 'center', alignSelf: 'center'}}>
+                                                <div style={{width: 220, textAlign: 'center', alignSelf: 'center'}}>
                                                     <h3>No bookings to display</h3>
                                                 </div>
                                             </div>

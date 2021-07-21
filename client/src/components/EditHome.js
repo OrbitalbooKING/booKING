@@ -353,7 +353,7 @@ function EditHome() {
                                         return (<div key={key}>
                                             <div style={{display: 'flex', flexDirection: 'column'}}>
                                                 <div style={{width: 220, textAlign: 'center', alignSelf: 'center'}}><h3>Currently selected:</h3></div>
-                                                <div style={{overflowY: "auto", height: 440}}>
+                                                <div style={{overflowY: "auto", height: 470}}>
                                                     <div className="display-old-header"><div style={{width: 220, textAlign: 'center', alignSelf: 'center'}}>Venue type </div></div>
                                                     <div className="display-old"><div style={{width: 220, textAlign: 'center', alignSelf: 'center'}}>{val.Roomtypename} </div></div>
                                                     <div className="display-old-header"><div style={{width: 220, textAlign: 'center', alignSelf: 'center'}}>Venue name </div></div>

@@ -13,6 +13,9 @@ import Select from '@material-ui/core/Select';
 import { makeStyles } from "@material-ui/core/styles";
 
 import * as Cookies from "js-cookie";
+import FormData from 'form-data';
+
+import DefaultPic from "../assets/profile.png";
 
 const style = {
     padding: 5
@@ -53,6 +56,72 @@ function SignUpForm() {
 
     const [facultyList, setFacultyList] = useState();
 
+    const [profilePic, setProfilePic] = useState(null);
+
+    const onImageChange = (event) => {
+        if (event.target.files && event.target.files[0]) {
+            let img = event.target.files[0];
+            setProfilePic(img);
+        }
+    };
+
+    const removeImage = () => {
+        setProfilePic(null);
+    };
+
+    // const submitForm = e => {
+    //     e.preventDefault();
+
+    //     if (details.password !== details.confirmPassword) {
+    //         setError("Passwords do not match!");
+    //     } else if (details.id !== "" && details.password === "" && details.confirmPassword === "") {
+    //         setError("Please enter a password!");
+    //     } else if (details.password === details.confirmPassword && details.id !== "") {
+    //         let facultyId = "";
+    //         for (let i = 0; i < facultyList.length; i++) {
+    //             if (faculty === facultyList[i].Facultydescription) {
+    //                 facultyId = facultyList[i].ID;
+    //                 continue;
+    //             }
+    //         }
+    //         Axios.post(configData.LOCAL_HOST + "/register", {
+    //             name: details.username,
+    //             NUSNET_ID: details.id,
+    //             faculty: facultyId,
+    //             gradYear: gradYear,
+    //             password: details.password
+    //         }).then(response => {
+    //             history.push({
+    //                 pathname: "/sign-up-success",
+    //                 state: { message: response.data.message }
+    //             });
+    //         }).catch((error) => {
+    //             if (error.response) {
+    //                 console.log("response");
+    //                 // The request was made and the server responded with a status code
+    //                 // that falls out of the range of 2xx
+    //                 if (error.response.status === 400) {
+    //                     setError(error.response.data.message);
+    //                 }
+    //             } else if (error.request) {
+    //                 console.log("request");
+    //                 // The request was made but no response was received
+    //                 // `error.request` is an instance of XMLHttpRequest in the 
+    //                 // browser and an instance of
+    //                 // http.ClientRequest in node.js
+    //                 console.log(error.request);
+    //             } else {
+    //                 // Something happened in setting up the request that triggered an Error
+    //                 setError("Query failed!");
+    //             }
+    //         });
+    //     } else if (details.id === "" && details.password !== "" && details.confirmPassword !== "") {
+    //         setError("Please enter your NUSNET ID!");
+    //     } else {
+    //         setError("Create your account!");
+    //     }
+    // };
+
     const submitForm = e => {
         e.preventDefault();
 
@@ -68,13 +137,21 @@ function SignUpForm() {
                     continue;
                 }
             }
-            Axios.post(configData.LOCAL_HOST + "/register", {
-                name: details.username,
-                NUSNET_ID: details.id,
-                faculty: facultyId,
-                gradYear: gradYear,
-                password: details.password
-            }).then(response => {
+
+            let bodyFormData = new FormData();
+
+            bodyFormData.append('name', details.username);
+            bodyFormData.append('NUSNET_ID', details.id);
+            bodyFormData.append('faculty', facultyId);
+            bodyFormData.append('gradYear', gradYear);
+            bodyFormData.append('password', details.password);
+            if (profilePic !== null) {
+                bodyFormData.append('profilePic', profilePic);
+            }
+
+            Axios.post(configData.LOCAL_HOST + "/register", 
+                bodyFormData
+            ).then(response => {
                 history.push({
                     pathname: "/sign-up-success",
                     state: { message: response.data.message }
@@ -148,13 +225,24 @@ function SignUpForm() {
                                 <span className="message">{error}</span>
                             </div>
 
+                            <div style={{display: 'flex', flexDirection: 'row', paddingLeft: 10, paddingBottom: 5}}>
+                                {profilePic === null ? <img src={DefaultPic} style={{width: 100, height: 100}} alt="profilePic" /> : <img src={URL.createObjectURL(profilePic)} style={{width: 100, height: 100}} alt="profilePic" />}
+                                <div style={{display: 'flex', flexDirection: 'column', width: 'auto', margin: '0 auto', justifyContent: 'center'}}>
+                                    <input type="file" id="upload" style={{display: 'none'}} accept="image/png, image/jpeg" onChange={onImageChange} />
+                                    <label htmlFor="upload">Upload image</label>
+                                    <input type="button" id="remove" style={{display: 'none'}} onClick={removeImage} />
+                                    {profilePic === null ? "" : <label htmlFor="remove">Remove image</label>}
+                                </div>
+                            </div>
+
                             <div className="form-group" style={style}>
                                 <input type="text" className="form-control" placeholder="Username"  onChange={e => setDetails({...details, username: e.target.value})} value={details.username} />
                             </div> 
                             
                             <div className="form-group" style={style}>
                                 <input style={{width: '60%', float: 'left'}}type="text" className="form-control" placeholder="NUSNET ID"  onChange={e => setDetails({...details, id: e.target.value})} value={details.id} />
-                                <div><FormControl style={{width: '40%', float: 'left'}}>
+                                <div>
+                                    <FormControl style={{width: '40%', float: 'left'}}>
                                     <InputLabel id="demo-simple-select-label">Grad. year</InputLabel>
                                     <Select
                                     labelId="demo-simple-select-label"
@@ -171,7 +259,7 @@ function SignUpForm() {
                                 </FormControl></div>
                             </div>
                             
-                            <FormControl style={{width: '100%', padding: 5}}>
+                            <FormControl style={{width: '95%',}}>
                                 <InputLabel id="demo-simple-select-label">Faculty</InputLabel>
                                 <Select
                                 labelId="demo-simple-select-label"

@@ -10,9 +10,9 @@ const (
 	LOCAL_HOST  = "localhost:3002"
 	HEROKU_HOST = "https://orbitalbooking.herokuapp.com"
 
-	ORBITAL_BOOKING_BUCKET_NAME   = "orbital-booking"
-	ORBITAL_BOOKING_BUCKET_ID     = "AKIAT3B525TII5SBF2OT"
-	ORBITAL_BOOKING_BUCKET_KEY    = "Wjz5bCb+TQjVqWOke7HvO1BLSQzu15Hq/BjgKMqe"
+	ORBITAL_BOOKING_BUCKET_NAME   = ""
+	ORBITAL_BOOKING_BUCKET_ID     = ""
+	ORBITAL_BOOKING_BUCKET_KEY    = ""
 	ORBITAL_BOOKING_BUCKET_REGION = "ap-southeast-1"
 	PROFILE_PIC_FOLDER            = "profile_pictures/"
 	DEFAULT_PICTURE_NAME          = "default.png"

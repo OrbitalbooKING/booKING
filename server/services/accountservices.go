@@ -396,29 +396,13 @@ func EditProfile(c *gin.Context) {
 		return
 	}
 
-	// create S3 session for profile pic upload
-	_, err := CreateS3Session()
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": "Unable to create AWS session for profile pic upload"})
-		fmt.Println("Unable to create AWS session for profile pic upload " + err.Error())
+	if err := UpdateProfile(DB, input); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": "Encountered an error updating profile."})
+		fmt.Println("Encountered an error updating profile." + err.Error())
+	} else {
+		c.JSON(http.StatusOK, gin.H{"success": true, "message": "Profile successfully updated!"})
+		fmt.Println("Profile successfully updated!")
 	}
-
-	// var picID uuid.UUID
-	// if input.Profilepic != nil {
-	// 	file, err := input.Profilepic.Open()
-	// 	if err != nil {
-	// 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": "Unable to parse profile pic upload"})
-	// 		fmt.Println("Unable to parse profile pic upload " + err.Error())
-	// 	}
-
-	// 	picID, err = UploadFileToS3(s, file, input.Profilepic)
-	// 	if err != nil {
-	// 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": "Unable to upload profile pic to S3"})
-	// 		fmt.Println("Unable to upload profile pic to S3. " + err.Error() + "\n")
-	// 	} else {
-	// 		fmt.Println("Image uploaded successfully!")
-	// 	}
-	// }
 }
 
 func GetAccountTypeDetails(DB *gorm.DB, theType string) (models.Accounttypes, bool, error) {
@@ -711,13 +695,73 @@ func MakeProfilePicURL(ID uuid.UUID) (string, error) {
 	return URL, nil
 }
 
-func UpdateProfile(DB *gorm.DB, newInput models.EditProfile) {
+func UpdateProfile(DB *gorm.DB, newInput models.EditProfile) error {
 	query := "UPDATE accounts"
-
+	updated := false
+	var tempID uuid.UUID
 	if newInput.Name != "" {
-		query += fmt.Sprintf("SET name = '%s'", newInput.Name)
+		query += fmt.Sprintf(" SET name = '%s'", newInput.Name)
+		updated = true
 	}
 	if newInput.Facultyid != 0 {
-		return
+		if updated {
+			query += ","
+		} else {
+			query += " SET"
+		}
+		query += fmt.Sprintf(" facultyid = %d", newInput.Facultyid)
+		updated = true
 	}
+	if newInput.Gradyear != 0 {
+		if updated {
+			query += ","
+		} else {
+			query += " SET"
+		}
+		query += fmt.Sprintf(" gradyear = %d", newInput.Gradyear)
+		updated = true
+	}
+	if newInput.Profilepic != nil {
+		var err error
+		tempID, err = uuid.NewRandom()
+		if err != nil {
+			return err
+		}
+
+		// create S3 session for profile pic upload
+		s, err := CreateS3Session()
+		if err != nil {
+			return fmt.Errorf("unable to create AWS session for profile pic upload %s", err.Error())
+		}
+
+		if newInput.Profilepic != nil {
+			file, err := newInput.Profilepic.Open()
+			if err != nil {
+				return fmt.Errorf("unable to parse profile pic upload %s", err.Error())
+			}
+
+			tempID, err = UploadFileToS3(s, file, newInput.Profilepic)
+			if err != nil {
+				return fmt.Errorf("unable to upload profile pic to S3 %s", err.Error())
+			} else {
+				fmt.Println("New image uploaded successfully!")
+			}
+		}
+
+		tempQuery := "UPDATE accounts SET profilepic = ? WHERE nusnetid = ?"
+		if err := DB.Exec(tempQuery, tempID, newInput.Nusnetid).Error; err != nil {
+			return err
+		}
+		return nil
+	}
+	query += fmt.Sprintf(" WHERE nusnetid = '%s'", newInput.Nusnetid)
+	if err := DB.Exec(query).Error; err != nil {
+		return err
+	}
+
+	updateTime := "UPDATE accounts SET lastupdated = ? WHERE nusnetid = ?"
+	if err := DB.Exec(updateTime, time.Now(), newInput.Nusnetid).Error; err != nil {
+		return err
+	}
+	return nil
 }

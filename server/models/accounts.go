@@ -76,3 +76,11 @@ type PointsTarget struct {
 	Target string  `json:"target"`
 	Points float64 `json:"points"`
 }
+
+type EditProfile struct {
+	Nusnetid   string                `form:"NUSNET_ID"`
+	Name       string                `form:"name" binding:"required"`
+	Facultyid  int                   `form:"faculty" binding:"required"`
+	Gradyear   int                   `form:"gradYear" binding:"required"`
+	Profilepic *multipart.FileHeader `form:"profilePic"`
+}

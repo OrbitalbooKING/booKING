@@ -378,6 +378,49 @@ func TransferPoints(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"success": true, "message": successMessage})
 }
 
+// POST /edit_profile
+// Edit profile details
+func EditProfile(c *gin.Context) {
+	// Validate input
+	var input models.EditProfile
+	if err := c.Bind(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": "All input fields required."})
+		fmt.Println("Error in parsing inputs for account creation.")
+		return
+	}
+
+	// check if name is blank space
+	if input.Name == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Input name cannot be blank!"})
+		fmt.Println("Input name cannot be blank!")
+		return
+	}
+
+	// create S3 session for profile pic upload
+	_, err := CreateS3Session()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": "Unable to create AWS session for profile pic upload"})
+		fmt.Println("Unable to create AWS session for profile pic upload " + err.Error())
+	}
+
+	// var picID uuid.UUID
+	// if input.Profilepic != nil {
+	// 	file, err := input.Profilepic.Open()
+	// 	if err != nil {
+	// 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": "Unable to parse profile pic upload"})
+	// 		fmt.Println("Unable to parse profile pic upload " + err.Error())
+	// 	}
+
+	// 	picID, err = UploadFileToS3(s, file, input.Profilepic)
+	// 	if err != nil {
+	// 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": "Unable to upload profile pic to S3"})
+	// 		fmt.Println("Unable to upload profile pic to S3. " + err.Error() + "\n")
+	// 	} else {
+	// 		fmt.Println("Image uploaded successfully!")
+	// 	}
+	// }
+}
+
 func GetAccountTypeDetails(DB *gorm.DB, theType string) (models.Accounttypes, bool, error) {
 	var accountType models.Accounttypes
 	query := "SELECT * FROM accounttypes WHERE accounttypename = ?"
@@ -616,7 +659,7 @@ func UploadFileToS3(s *session.Session, file multipart.File, fileHeader *multipa
 	}
 	tempFileName := "profile_pictures/" + ID.String()
 
-	bucketName := os.Getenv("ORBITAL_BOOKING_BUCKET_NAME")
+	bucketName := os.Getenv("ORBITAL-BOOKING-BUCKET-NAME")
 	if bucketName == "" {
 		if config.ORBITAL_BOOKING_BUCKET_NAME == "" {
 			return uuid.UUID{}, errors.New("AWS bucket name not setup, go to config.go to input")
@@ -666,4 +709,15 @@ func MakeProfilePicURL(ID uuid.UUID) (string, error) {
 	URL := fmt.Sprintf("https://"+"%s"+".s3."+"%s"+".amazonaws.com/"+"%s"+"%s",
 		bucketName, config.ORBITAL_BOOKING_BUCKET_REGION, config.PROFILE_PIC_FOLDER, fileName)
 	return URL, nil
+}
+
+func UpdateProfile(DB *gorm.DB, newInput models.EditProfile) {
+	query := "UPDATE accounts"
+
+	if newInput.Name != "" {
+		query += fmt.Sprintf("SET name = '%s'", newInput.Name)
+	}
+	if newInput.Facultyid != 0 {
+		return
+	}
 }

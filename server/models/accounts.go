@@ -79,9 +79,9 @@ type PointsTarget struct {
 
 type EditProfile struct {
 	Nusnetid   string                `form:"NUSNET_ID"`
-	Name       string                `form:"name" binding:"required"`
-	Facultyid  int                   `form:"faculty" binding:"required"`
-	Gradyear   int                   `form:"gradYear" binding:"required"`
+	Name       string                `form:"name"`
+	Facultyid  int                   `form:"faculty"`
+	Gradyear   int                   `form:"gradYear"`
 	Profilepic *multipart.FileHeader `form:"profilePic"`
 }
 

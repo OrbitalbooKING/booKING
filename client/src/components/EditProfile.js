@@ -227,7 +227,7 @@ function EditProfile() {
     if (profileInfo !== undefined && facultyList !== undefined) {
       setUsername(profileInfo.Name);
       setGradYear(profileInfo.Gradyear);
-      setFaculty(profileInfo.Facultyname);
+      setFaculty(profileInfo.Facultydescription);
     }
   }, [profileInfo, facultyList]);
 

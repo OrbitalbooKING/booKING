@@ -678,6 +678,8 @@ func GetPendingBookings(DB *gorm.DB, input models.User, statusCode models.Bookin
 }
 
 func InsertBooking(DB *gorm.DB, overLimitAndTime bool, s models.BookingInput, venue models.Venues, statusCode models.Bookingstatuses) (uuid.UUID, bool, error) {
+	ourZone := time.FixedZone("UTC", 8*3600)
+	time.Local = ourZone
 	// pump into bookings table
 	if overLimitAndTime {
 		errorMessage := fmt.Sprintf("Unable to make booking for venue %s at time %s to time %s as there are not enough available slots left, or event time has already past.",
@@ -693,8 +695,8 @@ func InsertBooking(DB *gorm.DB, overLimitAndTime bool, s models.BookingInput, ve
 			Venueid:         s.Venueid,
 			Pax:             s.Pax,
 			Createdat:       time.Now(),
-			Eventstart:      s.Eventstart,
-			Eventend:        s.Eventend,
+			Eventstart:      s.Eventstart.Local().Add(8 * time.Hour),
+			Eventend:        s.Eventend.Local().Add(8 * time.Hour),
 			Bookingstatusid: statusCode.ID,
 			Lastupdated:     time.Now(),
 			Cost:            CostComputation(s.Pax, eventDuration, s.Sharable),

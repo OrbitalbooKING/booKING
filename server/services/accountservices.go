@@ -456,6 +456,8 @@ func TransferPoints(c *gin.Context) {
 		fmt.Sprintln("Error in getting all inputs for function %s. "+err.Error()+"\n", ERROR_STRING)
 		return
 	}
+	// converts id to lowercase
+	input.Target = strings.ToLower(input.Target)
 
 	receiver, exists, err := GetAccount(DB, models.User{Nusnetid: input.Target})
 	if !exists {

@@ -726,7 +726,7 @@ func GetAccountType(DB *gorm.DB, typeID int) (models.Accounttypes, bool, error) 
 }
 
 func CreateS3Session() (*session.Session, error) {
-	bucketID := os.Getenv("ORBITAL_BOOKING_BUCKET_ID")
+	bucketID := os.Getenv("ORBITAL-BOOKING-BUCKET-ID")
 	if bucketID == "" {
 		if config.ORBITAL_BOOKING_BUCKET_ID == "" {
 			return nil, errors.New("AWS bucket ID not setup, go to config.go to input")
@@ -734,7 +734,7 @@ func CreateS3Session() (*session.Session, error) {
 			bucketID = config.ORBITAL_BOOKING_BUCKET_ID
 		}
 	}
-	bucketKey := os.Getenv("ORBITAL_BOOKING_BUCKET_KEY")
+	bucketKey := os.Getenv("ORBITAL-BOOKING-BUCKET-KEY")
 	if bucketKey == "" {
 		if config.ORBITAL_BOOKING_BUCKET_KEY == "" {
 			return nil, errors.New("AWS bucket key not setup, go to config.go to input")

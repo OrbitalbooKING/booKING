@@ -457,8 +457,8 @@ func MakeTimeslotArr(operatingHours models.UnavailableTimings, timingWithPax []m
 	time.Local = ourZone
 	for start := operatingHours.Starthour; start.Before(operatingHours.Endhour); start = start.Add(time.Hour) {
 		var temp models.Timeslots
-		temp.EventStart = start.Local().Add(-time.Hour * 8)
-		temp.EventEnd = start.Local().Add(-time.Hour * 7)
+		temp.EventStart = start.Local()
+		temp.EventEnd = start.Local()
 		temp.Available = true
 
 		for _, s := range timingWithPax {
@@ -695,8 +695,8 @@ func InsertBooking(DB *gorm.DB, overLimitAndTime bool, s models.BookingInput, ve
 			Venueid:         s.Venueid,
 			Pax:             s.Pax,
 			Createdat:       time.Now(),
-			Eventstart:      s.Eventstart.Local().Add(8 * time.Hour),
-			Eventend:        s.Eventend.Local().Add(8 * time.Hour),
+			Eventstart:      s.Eventstart,
+			Eventend:        s.Eventend,
 			Bookingstatusid: statusCode.ID,
 			Lastupdated:     time.Now(),
 			Cost:            CostComputation(s.Pax, eventDuration, s.Sharable),

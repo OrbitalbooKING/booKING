@@ -28,8 +28,8 @@ func MakePendingApprovalHTML(info EmailInfo) hermes.Email {
 			{Key: "BookingID", Value: s.ID.String()},
 			{Key: "Venue", Value: s.Venuename},
 			{Key: "Unit", Value: s.Buildingname + " " + s.Unit},
-			{Key: "Start", Value: s.Eventstart.Format(time.RFC1123Z)},
-			{Key: "End", Value: (s.Eventstart.Add(time.Hour).Format(time.RFC1123Z))},
+			{Key: "Start", Value: s.Eventstart.Format(time.ANSIC)},
+			{Key: "End", Value: s.Eventstart.Add(time.Hour).Format(time.ANSIC)},
 			{Key: "Pax", Value: fmt.Sprintf("%d", s.Pax)},
 			{Key: "Cost", Value: fmt.Sprintf("%.1f", s.Cost)},
 		}

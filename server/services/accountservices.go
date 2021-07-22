@@ -223,9 +223,74 @@ func Login(c *gin.Context) {
 	}
 }
 
-// PATCH /reset
+// PATCH /reset_password
 // Reset password
 func ResetPassword(c *gin.Context) {
+	var input models.CreateAccountInput
+	// Validate input
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Have you input correctly? " + err.Error()})
+		fmt.Println("Error parsing reset inputs. " + err.Error())
+		return
+	}
+
+	if !regexPasswordCheck(c, input.Password) {
+		return
+	}
+
+	// check if account already exists
+	if !GetAccountExists(DB, input) {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Account does not exist!"})
+		fmt.Println("Unable to find account.")
+		return
+	}
+
+	// get account
+	user := models.User{
+		Nusnetid: input.Nusnetid,
+		Password: input.Password,
+	}
+	retrieved, exists, err := GetAccount(DB, user)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Unable to get account!" + err.Error()})
+		fmt.Println("Unable to get account." + err.Error())
+		return
+	}
+	if !exists {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Account does not exist"})
+		fmt.Println("account does not exist. " + err.Error() + "\n")
+		return
+	}
+
+	// check if new password is same as the old password
+	match := utils.CheckPasswordHash(user, retrieved.Passwordhash) // non hashed input first, followed by hashed one retrieved from DB
+	if match {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "New password cannot be the same as old password!"})
+		fmt.Println("Old password reused.")
+		return
+	}
+
+	// hashing the password
+	if err := utils.HashPassword(&user); err != nil {
+		fmt.Println("Error in hashing user password: " + err.Error())
+		return
+	}
+	input.Password = user.Password
+
+	// update password
+	if err := UpdateAccountPassword(DB, retrieved, input); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Unable to reset password."})
+		fmt.Println("Error in updating database. " + err.Error() + "\n")
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"success": true, "message": "Account successfully reset!"})
+	log.Println("Password successfully reset!")
+}
+
+// PATCH /reset
+// Reset password
+func TriggerPasswordReset(c *gin.Context) {
 	var input models.CreateAccountInput
 	// Validate input
 	if err := c.ShouldBindJSON(&input); err != nil {

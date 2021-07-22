@@ -21,7 +21,7 @@ func StartAll(r *gin.Engine) {
 	api.POST("/register", services.Register)
 	api.GET("/get_faculty", services.GetFaculties)
 	api.POST("/login", services.Login)
-	api.PATCH("/reset", services.ResetPassword)
+	api.PATCH("/reset_password", services.ResetPassword)
 	api.GET("/home", services.GetVenues)
 	api.GET("/search", services.SearchVenues)
 	api.POST("/transfer_points", services.TransferPoints)

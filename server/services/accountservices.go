@@ -20,6 +20,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/google/uuid"
+	"github.com/sethvargo/go-password/password"
 
 	"github.com/jinzhu/gorm"
 
@@ -271,6 +272,7 @@ func ResetPassword(c *gin.Context) {
 		return
 	}
 
+	user.Password = input.NewPassword
 	// hashing the password
 	if err := utils.HashPassword(&user); err != nil {
 		fmt.Println("Error in hashing user password: " + err.Error())
@@ -285,14 +287,14 @@ func ResetPassword(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"success": true, "message": "Account successfully reset!"})
+	c.JSON(http.StatusOK, gin.H{"success": true, "message": "Password successfully reset!"})
 	log.Println("Password successfully reset!")
 }
 
-// PATCH /reset
-// Reset password
+// POST /trigger_password_reset
+// Resets account to a temporary password
 func TriggerPasswordReset(c *gin.Context) {
-	var input models.CreateAccountInput
+	var input models.User
 	// Validate input
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Have you input correctly? " + err.Error()})
@@ -300,12 +302,8 @@ func TriggerPasswordReset(c *gin.Context) {
 		return
 	}
 
-	if !regexPasswordCheck(c, input.Password) {
-		return
-	}
-
 	// check if account already exists
-	if !GetAccountExists(DB, input) {
+	if !GetAccountExists(DB, models.CreateAccountInput{Nusnetid: input.Nusnetid}) {
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Account does not exist!"})
 		fmt.Println("Unable to find account.")
 		return
@@ -314,7 +312,6 @@ func TriggerPasswordReset(c *gin.Context) {
 	// get account
 	user := models.User{
 		Nusnetid: input.Nusnetid,
-		Password: input.Password,
 	}
 	retrieved, exists, err := GetAccount(DB, user)
 	if err != nil {
@@ -328,30 +325,45 @@ func TriggerPasswordReset(c *gin.Context) {
 		return
 	}
 
-	// check if new password is same as the old password
-	match := utils.CheckPasswordHash(user, retrieved.Passwordhash) // non hashed input first, followed by hashed one retrieved from DB
-	if match {
-		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "New password cannot be the same as old password!"})
-		fmt.Println("Old password reused.")
-		return
+	// generate new password
+	tempPass, err := password.Generate(10, 3, 3, false, false)
+	for !regexPasswordCheck(c, tempPass) {
+		tempPass, err = password.Generate(10, 3, 3, false, false)
+	}
+	if err != nil {
+		errorMessage := fmt.Sprintf("Error generating temporary password. " + err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": errorMessage})
+		fmt.Println(errorMessage)
 	}
 
+	user.Password = tempPass
 	// hashing the password
 	if err := utils.HashPassword(&user); err != nil {
 		fmt.Println("Error in hashing user password: " + err.Error())
 		return
 	}
-	input.Password = user.Password
 
 	// update password
-	if err := UpdateAccountPassword(DB, retrieved, input); err != nil {
+	if err := UpdateAccountPassword(DB, retrieved, models.CreateAccountInput{Password: user.Password}); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Unable to reset password."})
 		fmt.Println("Error in updating database. " + err.Error() + "\n")
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"success": true, "message": "Account successfully reset!"})
-	log.Println("Password successfully reset!")
+	emailInfo := models.ResetInfo{
+		Name:      retrieved.Name,
+		NUSNET_ID: retrieved.Nusnetid,
+		TempPass:  tempPass,
+	}
+	if err := SendPasswordResetEmail(emailInfo); err != nil {
+		errorMessage := fmt.Sprintf("Error sending reset email. " + err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": errorMessage})
+		fmt.Println(errorMessage)
+	} else {
+		successMessage := "Temporary password has been sent to your NUSNET email!" + "\n" + "Check your junk folder if you are unable to find the email."
+		c.JSON(http.StatusOK, gin.H{"success": true, "message": successMessage})
+		fmt.Println(successMessage)
+	}
 }
 
 // GET /get_profile

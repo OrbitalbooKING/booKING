@@ -9,6 +9,7 @@ const (
 
 	LOCAL_HOST  = "localhost:3002"
 	HEROKU_HOST = "https://orbitalbooking.herokuapp.com"
+	APP_LOGO    = "https://github.com/OrbitalbooKING/booKING/blob/master/assets/logo.png?raw=true"
 
 	ORBITAL_BOOKING_BUCKET_NAME   = ""
 	ORBITAL_BOOKING_BUCKET_ID     = ""

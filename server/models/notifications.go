@@ -4,23 +4,23 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/OrbitalbooKING/booKING/server/config"
 	"github.com/matcornic/hermes/v2"
 )
 
-type EmailInfo struct {
+type PendingApprovalInfo struct {
 	Name      string
 	NUSNET_ID string
 	Bookings  []BookingRequests
 }
 
-type PendingApprovalEmail struct {
+type ResetInfo struct {
+	Name      string
+	NUSNET_ID string
+	TempPass  string
 }
 
-func (email *PendingApprovalEmail) Name() string {
-	return "PendingApprovalEmail"
-}
-
-func MakePendingApprovalHTML(info EmailInfo) hermes.Email {
+func MakePendingApprovalHTML(info PendingApprovalInfo) hermes.Email {
 	// write bookings
 	var data [][]hermes.Entry
 	for _, s := range info.Bookings {
@@ -64,10 +64,40 @@ func MakePendingApprovalHTML(info EmailInfo) hermes.Email {
 					Instructions: "You can check the status of your booking and more in your dashboard. Log in to the app now to check:",
 					Button: hermes.Button{
 						Text: "Go to booKING",
-						Link: "https://orbitalbooKING.herokuapp.com",
+						Link: config.HEROKU_HOST,
 					},
 				},
 			},
+		},
+	}
+}
+
+func MakePasswordResetHTML(info ResetInfo) hermes.Email {
+	return hermes.Email{
+		Body: hermes.Body{
+			Name: info.Name,
+			Intros: []string{
+				fmt.Sprintf("You have received this email because a password reset request for your booKING account tied to the NUSNET ID %s was received.", info.NUSNET_ID),
+				"Use the temporary password we have generated for you to log in.",
+				"You are highly encouraged to reset your password once you have logged in.",
+			},
+			Dictionary: []hermes.Entry{
+				{Key: "Temporary password", Value: info.TempPass},
+			},
+			Actions: []hermes.Action{
+				{
+					Instructions: "Login now.",
+					Button: hermes.Button{
+						Color: "#0000FF",
+						Text:  "Go to booKING",
+						Link:  config.HEROKU_HOST,
+					},
+				},
+			},
+			Outros: []string{
+				"If you did not request a password reset, no further action is required on your part.",
+			},
+			Signature: "Thanks",
 		},
 	}
 }

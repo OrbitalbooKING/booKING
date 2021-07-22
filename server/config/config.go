@@ -20,6 +20,7 @@ const (
 
 	POINTS_DISCOUNT = 0.2
 	MAX_POINTS      = 100.0
+	WEEKLY_POINTS   = 50.0
 
 	NUS_EMAIL_DOMAIN      = "@u.nus.edu"
 	SENDER_EMAIL_ADDRESS  = ""

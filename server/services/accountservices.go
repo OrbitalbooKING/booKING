@@ -246,7 +246,7 @@ func PointsUpdate(c *gin.Context) {
 	user := models.User{
 		Nusnetid: input.Nusnetid,
 	}
-	_, exists, err := GetAccount(DB, user)
+	retrieved, exists, err := GetAccount(DB, user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Unable to get account!" + err.Error()})
 		fmt.Println("Unable to get account." + err.Error())
@@ -258,6 +258,21 @@ func PointsUpdate(c *gin.Context) {
 		return
 	}
 
+	added, err := RefillPoints(retrieved)
+	if err != nil {
+		errorMessage := fmt.Sprintf("Error refilling points for user" + err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": errorMessage})
+		fmt.Println(errorMessage)
+		return
+	}
+	if added == 0.0 {
+		c.JSON(http.StatusOK, gin.H{"success": true, "message": "No points refilled as week has not past."})
+		fmt.Println("No points refilled as week has not past.")
+	} else {
+		successMessage := fmt.Sprintf("Added %.1f points to user %s's account.", added, retrieved.Name)
+		c.JSON(http.StatusOK, gin.H{"success": true, "message": successMessage})
+		fmt.Println(successMessage)
+	}
 }
 
 // PATCH /reset_password
@@ -878,4 +893,25 @@ func UpdateProfile(DB *gorm.DB, newInput models.EditProfile) error {
 		return err
 	}
 	return nil
+}
+
+func RefillPoints(retrieved models.Accounts) (float64, error) {
+	lastYear, lastWeek := retrieved.Lastupdated.ISOWeek()
+	currentYear, currentWeek := time.Now().ISOWeek()
+	var toAdd float64
+	query := "UPDATE accounts SET points = ? WHERE nusnetid = ?"
+	if currentYear > lastYear || (currentYear == lastYear && currentWeek > lastWeek) {
+		if retrieved.Points <= config.MAX_POINTS-config.WEEKLY_POINTS {
+			toAdd = config.WEEKLY_POINTS
+		} else {
+			toAdd = retrieved.Points + config.WEEKLY_POINTS - config.MAX_POINTS
+		}
+	} else {
+		return 0.0, nil
+	}
+	if err := DB.Exec(query, toAdd, retrieved.Nusnetid).Error; err != nil {
+		return 0.0, err
+	} else {
+		return toAdd, nil
+	}
 }

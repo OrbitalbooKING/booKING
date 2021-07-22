@@ -1,53 +1,40 @@
 import { useHistory } from "react-router-dom";
-import Layout3 from "../layouts/Layout3";
+import Layout2 from "../layouts/Layout2";
 import Unauthorised from "./Unauthorised";
 
 import * as Cookies from "js-cookie";
 
-function StaffLoginSuccess() {
+function EditProfileSuccess() {
   let history = useHistory();
 
-  const goHome = () => {
-    // history.push({
-    //     pathname: "/home",
-    //     state: {
-    //         id: props.location.state.id,
-    //         name: props.location.state.name
-    //     }
-    // });
-    history.push("/staff-home");
+  const goProfile = () => {
+    history.push("/profile");
   };
 
   return (
     <>
       {Cookies.get("name") !== undefined && Cookies.get("id") !== undefined ? (
-        <Layout3
+        <Layout2
           id={Cookies.get("id")}
           name={Cookies.get("name")}
-          action="Logged in!"
+          action="Edit profile success!"
         >
           <div className="parent">
             <div className="welcome-page">
-              <h2>
-                Welcome{" "}
-                {Cookies.get("name") !== ""
-                  ? Cookies.get("name")
-                  : Cookies.get("id")}
-                !
-              </h2>
+              <h2>You have successfully updated profile!</h2>
               <div>
                 <button
                   style={{ float: "left" }}
                   type="submit"
                   className="btn btn-primary btn-block"
-                  onClick={goHome}
+                  onClick={goProfile}
                 >
-                  Home
+                  Profile
                 </button>
               </div>
             </div>
           </div>
-        </Layout3>
+        </Layout2>
       ) : (
         <Unauthorised />
       )}
@@ -55,4 +42,4 @@ function StaffLoginSuccess() {
   );
 }
 
-export default StaffLoginSuccess;
+export default EditProfileSuccess;

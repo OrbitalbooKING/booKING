@@ -1,40 +1,28 @@
 import { useHistory } from "react-router-dom";
-import Layout3 from "../layouts/Layout3";
+import Layout2 from "../layouts/Layout2";
+import Home from "./Home";
 import Unauthorised from "./Unauthorised";
 
-import * as Cookies from "js-cookie";
-
-function StaffLoginSuccess() {
+function TransferSuccess(props) {
   let history = useHistory();
 
   const goHome = () => {
-    // history.push({
-    //     pathname: "/home",
-    //     state: {
-    //         id: props.location.state.id,
-    //         name: props.location.state.name
-    //     }
-    // });
-    history.push("/staff-home");
+    history.push("/home");
   };
 
   return (
     <>
-      {Cookies.get("name") !== undefined && Cookies.get("id") !== undefined ? (
-        <Layout3
+      {Cookies.get("name") !== undefined &&
+      Cookies.get("id") !== undefined &&
+      props.location.state !== undefined ? (
+        <Layout2
           id={Cookies.get("id")}
           name={Cookies.get("name")}
-          action="Logged in!"
+          action="Transfer success!"
         >
           <div className="parent">
             <div className="welcome-page">
-              <h2>
-                Welcome{" "}
-                {Cookies.get("name") !== ""
-                  ? Cookies.get("name")
-                  : Cookies.get("id")}
-                !
-              </h2>
+              <h2>{props.location.state.message}</h2>
               <div>
                 <button
                   style={{ float: "left" }}
@@ -47,7 +35,11 @@ function StaffLoginSuccess() {
               </div>
             </div>
           </div>
-        </Layout3>
+        </Layout2>
+      ) : Cookies.get("name") !== undefined &&
+        Cookies.get("id") !== undefined &&
+        props.location.state === undefined ? (
+        <Home />
       ) : (
         <Unauthorised />
       )}
@@ -55,4 +47,4 @@ function StaffLoginSuccess() {
   );
 }
 
-export default StaffLoginSuccess;
+export default TransferSuccess;

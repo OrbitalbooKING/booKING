@@ -6,32 +6,44 @@ import Unauthorised from "./Unauthorised";
 import * as Cookies from "js-cookie";
 
 function DeletionSuccess(props) {
+  let history = useHistory();
 
-    let history = useHistory();
+  const goHome = () => {
+    history.push("/home");
+  };
 
-    const goHome = () => {
-        history.push("/home");
-    };
-
-    return (
-        <>
-            {props.location.state !== undefined 
-                ? <Layout2 id={Cookies.get("id")} name={Cookies.get("name")} action="Deletion success!">
-                        <div className="parent">
-                            <div className="welcome-page">
-                                <h2>{props.location.state.message}</h2>
-                                <div>
-                                    <button style={{float: 'left'}} type="submit" className="btn btn-primary btn-block" onClick={goHome}>Home</button> 
-                                </div>
-                            </div>
-                        </div>
-                    </Layout2>
-                : Cookies.get("name") !== undefined && Cookies.get("id") !== undefined
-                    ? <Home />
-                    : <Unauthorised />
-            }
-        </>
-    );
+  return (
+    <>
+      {props.location.state !== undefined ? (
+        <Layout2
+          id={Cookies.get("id")}
+          name={Cookies.get("name")}
+          action="Deletion success!"
+        >
+          <div className="parent">
+            <div className="welcome-page">
+              <h2>{props.location.state.message}</h2>
+              <div>
+                <button
+                  style={{ float: "left" }}
+                  type="submit"
+                  className="btn btn-primary btn-block"
+                  onClick={goHome}
+                >
+                  Home
+                </button>
+              </div>
+            </div>
+          </div>
+        </Layout2>
+      ) : Cookies.get("name") !== undefined &&
+        Cookies.get("id") !== undefined ? (
+        <Home />
+      ) : (
+        <Unauthorised />
+      )}
+    </>
+  );
 }
 
 export default DeletionSuccess;

@@ -139,7 +139,7 @@ function TransferPoints() {
                       type="text"
                       className="form-control"
                       placeholder="Points to transfer"
-                      onChange={(e) => setPoints(e.target.value)}
+                      onChange={(e) => setPoints(Number(e.target.value))}
                       value={points}
                     />
                     <div

@@ -3,6 +3,8 @@ import Layout2 from "../layouts/Layout2";
 import Home from "./Home";
 import Unauthorised from "./Unauthorised";
 
+import * as Cookies from "js-cookie";
+
 function TransferSuccess(props) {
   let history = useHistory();
 

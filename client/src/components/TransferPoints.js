@@ -5,33 +5,11 @@ import configData from "../config.json";
 import Layout2 from "../layouts/Layout2";
 import Unauthorised from "./Unauthorised";
 
-import Input from "@material-ui/core/Input";
-import InputLabel from "@material-ui/core/InputLabel";
-import MenuItem from "@material-ui/core/MenuItem";
-import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
-import { makeStyles } from "@material-ui/core/styles";
-
 import * as Cookies from "js-cookie";
-import FormData from "form-data";
-
-import DefaultPic from "../assets/profile.png";
 
 const style = {
   padding: 5,
 };
-
-const useStyles = makeStyles((theme) => ({
-  formControl: {
-    minWidth: 100,
-  },
-  formControl2: {
-    minWidth: 300,
-  },
-  menuPaper: {
-    maxHeight: 200,
-  },
-}));
 
 function TransferPoints() {
   let history = useHistory();

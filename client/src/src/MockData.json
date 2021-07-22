@@ -1,0 +1,43 @@
+[
+    {
+        "ID": 1,
+        "Venuename": "Meeting Room 5 (MR5)",
+        "Unit": "01-22",
+        "Maxcapacity": 82,
+        "Buildingname": "COM1",
+        "Roomtypeid": "Meeting Rooms",
+        "Venuestatusid": 3,
+        "Facilitiesdict": {
+            "Desktop": 21,
+            "Whiteboard": 19
+        }
+    },
+    {
+        "ID": 2,
+        "Venuename": "Meeting Room 6 (MR6)",
+        "Unit": "01-18",
+        "Maxcapacity": 48,
+        "Buildingname": "COM1",
+        "Roomtypeid": "Meeting Rooms",
+        "Venuestatusid": 3,
+        "Facilitiesdict": {
+            "Desktop": 27,
+            "Projector": 31
+        }
+    },
+    {
+        "ID": 3,
+        "Venuename": "Meeting Room 7 (MR7)",
+        "Unit": "05-10",
+        "Maxcapacity": 82,
+        "Buildingname": "AS6",
+        "Roomtypeid": "Meeting Rooms",
+        "Venuestatusid": 2,
+        "Facilitiesdict": {
+            "Desktop": 50,
+            "Projector": 21,
+            "Screen": 34,
+            "Whiteboard": 11
+        }
+    }
+]

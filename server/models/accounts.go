@@ -84,3 +84,9 @@ type EditProfile struct {
 	Gradyear   int                   `form:"gradYear" binding:"required"`
 	Profilepic *multipart.FileHeader `form:"profilePic"`
 }
+
+type PasswordReset struct {
+	Nusnetid    string `json:"NUSNET_ID"`
+	OldPassword string `json:"oldPassword"`
+	NewPassword string `json:"newPassword"`
+}

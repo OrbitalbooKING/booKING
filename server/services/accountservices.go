@@ -224,6 +224,42 @@ func Login(c *gin.Context) {
 	}
 }
 
+// POST /points_update
+// resets the points for the user for the week
+func PointsUpdate(c *gin.Context) {
+	var input models.User
+	// Validate input
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Have you input correctly? " + err.Error()})
+		fmt.Println("Error parsing reset inputs. " + err.Error())
+		return
+	}
+
+	// check if account already exists
+	if !GetAccountExists(DB, models.CreateAccountInput{Nusnetid: input.Nusnetid}) {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Account does not exist!"})
+		fmt.Println("Unable to find account.")
+		return
+	}
+
+	// get account
+	user := models.User{
+		Nusnetid: input.Nusnetid,
+	}
+	_, exists, err := GetAccount(DB, user)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Unable to get account!" + err.Error()})
+		fmt.Println("Unable to get account." + err.Error())
+		return
+	}
+	if !exists {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Account does not exist"})
+		fmt.Println("account does not exist. " + err.Error() + "\n")
+		return
+	}
+
+}
+
 // PATCH /reset_password
 // Reset password
 func ResetPassword(c *gin.Context) {
@@ -752,7 +788,7 @@ func UploadFileToS3(s *session.Session, file multipart.File, fileHeader *multipa
 }
 
 func MakeProfilePicURL(ID uuid.UUID) (string, error) {
-	bucketName := os.Getenv("ORBITAL_BOOKING_BUCKET_NAME")
+	bucketName := os.Getenv("ORBITAL-BOOKING-BUCKET-NAME")
 	if bucketName == "" {
 		if config.ORBITAL_BOOKING_BUCKET_NAME == "" {
 			return "", errors.New("AWS bucket name not setup, go to config.go to input")

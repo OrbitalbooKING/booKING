@@ -200,7 +200,7 @@ function Profile() {
                           Faculty:{" "}
                           {profileInfo === undefined
                             ? ""
-                            : profileInfo.Facultyname}
+                            : profileInfo.Facultydescription}
                         </div>
                         <div>
                           Points:{" "}
@@ -551,7 +551,7 @@ function Profile() {
                         alignSelf: "center",
                       }}
                     >
-                      {profileInfo === undefined ? "" : profileInfo.Facultyname}{" "}
+                      {profileInfo === undefined ? "" : profileInfo.Facultydescription}{" "}
                     </div>
                   </div>
                   <div className="display-old-header">

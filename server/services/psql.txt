@@ -87,8 +87,8 @@ CREATE TABLE IF NOT EXISTS accounts (
     profilePic uuid,
     accountTypeID INT REFERENCES accountTypes,
     points REAL,
-    createdAt TIMESTAMP,
-    lastUpdated TIMESTAMP,
+    createdAt TIMESTAMPTZ,
+    lastUpdated TIMESTAMPTZ,
     accountStatusID INT REFERENCES accountStatuses
 );
 
@@ -97,11 +97,11 @@ CREATE TABLE IF NOT EXISTS currentBookings (
     nusnetID VARCHAR(8) REFERENCES accounts(nusnetID),
     venueID INT REFERENCES venues,
     pax INT,
-    createdAt TIMESTAMP,
-    eventStart TIMESTAMP,
-    eventEnd TIMESTAMP,
+    createdAt TIMESTAMPTZ,
+    eventStart TIMESTAMPTZ,
+    eventEnd TIMESTAMPTZ,
     bookingstatusID INT REFERENCES bookingStatuses,
-    lastUpdated TIMESTAMP,
+    lastUpdated TIMESTAMPTZ,
     cost REAL
 );
 

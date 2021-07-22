@@ -118,7 +118,6 @@ function TransferPoints() {
 
                   <div className="form-group" style={style}>
                     <input
-                      //   style={{ width: "60%", float: "left" }}
                       type="text"
                       className="form-control"
                       placeholder="Target recipient of points"
@@ -149,7 +148,7 @@ function TransferPoints() {
                         justifyContent: "center",
                       }}
                     >
-                      Points Left: {pointsLeft}
+                      Points Left: {Math.round(pointsLeft * 10) / 10}
                     </div>
                   </div>
 

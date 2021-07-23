@@ -15,7 +15,7 @@ function Layout2(props) {
   let history = useHistory();
 
   const getHelp = () => {
-    history.push("/help-logged-in");
+    history.push("/help");
   };
 
   const viewProfile = () => {
@@ -29,6 +29,7 @@ function Layout2(props) {
   const logout = () => {
     Cookies.remove("name", { sameSite: "None", secure: true });
     Cookies.remove("id", { sameSite: "None", secure: true });
+    Cookies.remove("account", { sameSite: "None", secure: true });
 
     sessionStorage.removeItem("sessionExpiry");
 
@@ -37,6 +38,7 @@ function Layout2(props) {
       state: {
         id: props.id,
         name: props.name,
+        success: true,
       },
     });
   };

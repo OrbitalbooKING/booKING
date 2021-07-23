@@ -20,5 +20,6 @@ func main() {
 		fmt.Println("Database connected successfully.")
 	}
 	services.LoadAllCSV()
+	services.CreateAdminAccount()
 	controllers.StartAll(r)
 }

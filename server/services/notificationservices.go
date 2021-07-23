@@ -145,3 +145,63 @@ func SendPasswordResetEmail(emailInfo models.ResetInfo) error {
 	fmt.Println("Email sent successfully!")
 	return nil
 }
+
+func SendStaffCreationEmail(emailInfo models.StaffCreationInfo) error {
+	// Configure hermes by setting a theme and your product info
+	h := hermes.Hermes{
+		// Optional Theme
+		// Theme: new(Default)
+		Product: hermes.Product{
+			// Appears in header & footer of e-mails
+			Name: "OrbitalbooKING",
+			Link: config.HEROKU_HOST,
+			// Optional product logo
+			Logo: config.APP_LOGO,
+		},
+	}
+
+	// Sender data.
+	from := os.Getenv("EMAIL_ADDRESS")
+	if from == "" {
+		if config.SENDER_EMAIL_ADDRESS == "" {
+			return fmt.Errorf("email to send notifications not yet setup, go to server/services/config.go to input SENDER_EMAIL_ADDRESS")
+		}
+		from = config.SENDER_EMAIL_ADDRESS
+	}
+	password := os.Getenv("EMAIL_PASSWORD")
+	if password == "" {
+		if config.SENDER_EMAIL_PASSWORD == "" {
+			return fmt.Errorf("email to send notifications not yet setup, go to server/services/config.go to input SENDER_EMAIL_ADDRESS")
+		}
+		password = config.SENDER_EMAIL_PASSWORD
+	}
+
+	// Receiver email address.
+	to := []string{
+		emailInfo.StaffID + config.NUS_EMAIL_DOMAIN,
+	}
+
+	// smtp server configuration.
+	smtpHost := "smtp.gmail.com"
+	smtpPort := "587"
+
+	// Message.
+	message, err := h.GenerateHTML(models.MakeStaffCreationHTML(emailInfo))
+	if err != nil {
+		return err
+	}
+
+	mime := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
+	message = mime + message
+
+	// Authentication.
+	auth := smtp.PlainAuth("", from, password, smtpHost)
+
+	// Sending email.
+	err = smtp.SendMail(smtpHost+":"+smtpPort, auth, from, to, []byte(message))
+	if err != nil {
+		return err
+	}
+	fmt.Println("Email sent successfully!")
+	return nil
+}

@@ -379,6 +379,7 @@ func CheckBooking(c *gin.Context) {
 }
 
 // GET /get_user_with_temp_points
+// gets a user with temporary points from deleting a booking
 func GetUserWithTempPoints(c *gin.Context) {
 	var input models.EditBookingInput
 	if err := c.ShouldBindQuery(&input); err != nil {
@@ -426,6 +427,9 @@ func GetUserWithTempPoints(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": editCart})
 	fmt.Println("Return successful!")
 }
+
+// PUT /reject_booking
+// rejects
 
 func RetrieveBookingRequests(DB *gorm.DB, statusIDs []int) ([]models.BookingRequests, bool, error) {
 	// get list of bookings that fit into the statusIDs

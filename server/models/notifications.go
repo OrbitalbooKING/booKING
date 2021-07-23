@@ -20,6 +20,12 @@ type ResetInfo struct {
 	TempPass  string
 }
 
+type StaffCreationInfo struct {
+	Name     string
+	StaffID  string
+	TempPass string
+}
+
 func MakePendingApprovalHTML(info PendingApprovalInfo) hermes.Email {
 	// write bookings
 	var data [][]hermes.Entry
@@ -88,7 +94,7 @@ func MakePasswordResetHTML(info ResetInfo) hermes.Email {
 				{
 					Instructions: "Login now.",
 					Button: hermes.Button{
-						Color: "#0000FF",
+						Color: "#5aafff",
 						Text:  "Go to booKING",
 						Link:  config.HEROKU_HOST,
 					},
@@ -98,6 +104,35 @@ func MakePasswordResetHTML(info ResetInfo) hermes.Email {
 				"If you did not request a password reset, no further action is required on your part.",
 			},
 			Signature: "Thanks",
+		},
+	}
+}
+
+func MakeStaffCreationHTML(info StaffCreationInfo) hermes.Email {
+	return hermes.Email{
+		Body: hermes.Body{
+			Name: info.Name,
+			Intros: []string{
+				"Welcome to booKING! We're very excited to have you on board.",
+				fmt.Sprintf("We have received your registration for a staff account with ID %s.", info.StaffID),
+				"A temporary password has been generated for you to log in for the first time.",
+				"Please change this password as soon as you log in.",
+			},
+			Dictionary: []hermes.Entry{
+				{Key: "Temporary password", Value: info.TempPass},
+			},
+			Actions: []hermes.Action{
+				{
+					Instructions: "Log in now:",
+					Button: hermes.Button{
+						Text: "booKING",
+						Link: config.HEROKU_HOST,
+					},
+				},
+			},
+			Outros: []string{
+				"Need help, or have questions? Just reply to this email, we'd love to help.",
+			},
 		},
 	}
 }

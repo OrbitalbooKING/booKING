@@ -536,6 +536,175 @@ func EditProfile(c *gin.Context) {
 	}
 }
 
+// POST /create_staff
+// Creates a staff account
+func CreateStaff(c *gin.Context) {
+	// Validate input
+	var input models.CreateStaffAccountInput
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": "All input fields required."})
+		fmt.Println("Error in parsing inputs for account creation.")
+		return
+	}
+
+	// check if account already exists
+	if GetAccountExists(DB, models.CreateAccountInput{Nusnetid: input.StaffID}) {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Account already exists!"})
+		fmt.Println("Account already exists.")
+		return
+	}
+
+	// get accountTypeID
+	accountType, exists, err := GetAccountTypeDetails(DB, "Staff")
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "Unable to determine account type"})
+		fmt.Println("Unable to get accountTypeID. " + err.Error() + "\n")
+	}
+	if !exists {
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "Trying to set account to invalid type"})
+		fmt.Println("accountType does not exist. " + err.Error() + "\n")
+	}
+
+	// get accountStatusID
+	accountStatus, exists, err := GetAccountStatus(DB, "Offline")
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "Unable to determine account status"})
+		fmt.Println("Unable to get accountStatusID. " + err.Error() + "\n")
+	}
+	if !exists {
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "Trying to set account to invalid status"})
+		fmt.Println("accountStatus does not exist. " + err.Error() + "\n")
+	}
+
+	// generate new password
+	tempPass, err := password.Generate(10, 3, 3, false, false)
+	for !regexPasswordCheck(c, tempPass) {
+		tempPass, err = password.Generate(10, 3, 3, false, false)
+	}
+	if err != nil {
+		errorMessage := fmt.Sprintf("Error generating temporary password. " + err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": errorMessage})
+		fmt.Println(errorMessage)
+	}
+	user := models.User{
+		Nusnetid: input.StaffID,
+		Password: tempPass,
+	}
+
+	// hashing the password
+	if err := utils.HashPassword(&user); err != nil {
+		fmt.Println("Error in hashing user password: " + err.Error())
+		return
+	}
+
+	staffAcc := models.Accounts{
+		Nusnetid:        input.StaffID,
+		Passwordhash:    user.Password,
+		Name:            input.Name,
+		Gradyear:        9999,
+		Facultyid:       1,
+		Accounttypeid:   accountType.ID,
+		Points:          0,
+		Createdat:       time.Now(),
+		Lastupdated:     time.Now(),
+		Accountstatusid: accountStatus.ID,
+	}
+
+	if err := CreateAccount(DB, staffAcc); err != nil {
+		fmt.Println("Unable to create staff account. " + err.Error() + "\n")
+	} else {
+		fmt.Println("staff account successfully created!")
+	}
+
+	emailInfo := models.StaffCreationInfo{
+		Name:     input.Name,
+		StaffID:  input.StaffID,
+		TempPass: tempPass,
+	}
+	if err := SendStaffCreationEmail(emailInfo); err != nil {
+		errorMessage := fmt.Sprintf("Error sending staff creation email. " + err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": errorMessage})
+		fmt.Println(errorMessage)
+	} else {
+		successMessage := "Staff account successfully created." + "\n" + "Temporary password sent to registered staff's email."
+		c.JSON(http.StatusOK, gin.H{"success": true, "message": successMessage})
+		fmt.Println(successMessage)
+	}
+}
+
+func CreateAdminAccount() {
+	adminID := os.Getenv("STAFF_ID")
+	if adminID == "" {
+		if config.ADMIN_ID == "" {
+			fmt.Println("Error creating admin account. Go to config.go to setup admin's user id.")
+		}
+		adminID = config.ADMIN_ID
+	}
+	adminPass := os.Getenv("STAFF_PASS")
+	if adminPass == "" {
+		if config.ADMIN_PASS == "" {
+			fmt.Println("Error creating admin account. Go to config.go to setup admin's password.")
+		}
+		adminPass = config.ADMIN_PASS
+	}
+
+	// check if admin account already created
+	if GetAccountExists(DB, models.CreateAccountInput{Nusnetid: adminID}) {
+		return
+	}
+
+	// hashing the password
+	admin := models.User{
+		Nusnetid: adminID,
+		Password: adminPass,
+	}
+	err := utils.HashPassword(&admin)
+	if err != nil {
+		fmt.Println("Error in hashing admin password. " + err.Error())
+	}
+
+	// get accountTypeID
+	accountType, exists, err := GetAccountTypeDetails(DB, "Admin")
+	if err != nil {
+		fmt.Println("Unable to get accountTypeID. " + err.Error() + "\n")
+		return
+	}
+	if !exists {
+		fmt.Println("accountType does not exist. " + err.Error() + "\n")
+		return
+	}
+
+	// get accountStatusID
+	accountStatus, exists, err := GetAccountStatus(DB, "Offline")
+	if err != nil {
+		fmt.Println("Unable to get accountStatusID. " + err.Error() + "\n")
+		return
+	}
+	if !exists {
+		fmt.Println("accountStatus does not exist. " + err.Error() + "\n")
+		return
+	}
+
+	adminAcc := models.Accounts{
+		Nusnetid:        adminID,
+		Passwordhash:    admin.Password,
+		Name:            "Admin",
+		Gradyear:        9999,
+		Facultyid:       1,
+		Accounttypeid:   accountType.ID,
+		Points:          0,
+		Createdat:       time.Now(),
+		Lastupdated:     time.Now(),
+		Accountstatusid: accountStatus.ID,
+	}
+
+	if err := CreateAccount(DB, adminAcc); err != nil {
+		fmt.Println("Unable to create admin account. " + err.Error() + "\n")
+	} else {
+		fmt.Println("Admin account successfully created!")
+	}
+}
+
 func GetAccountTypeDetails(DB *gorm.DB, theType string) (models.Accounttypes, bool, error) {
 	var accountType models.Accounttypes
 	query := "SELECT * FROM accounttypes WHERE accounttypename = ?"

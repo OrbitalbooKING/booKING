@@ -59,6 +59,11 @@ type CreateAccountInput struct {
 	Profilepic *multipart.FileHeader `form:"profilePic"`
 }
 
+type CreateStaffAccountInput struct {
+	StaffID string `json:"staff_ID" binding:"required"`
+	Name    string `json:"name" binding:"required"`
+}
+
 type Accounttypes struct {
 	ID                     int    `csv:"accountTypeID"`
 	Accounttypename        string `csv:"typeName"`

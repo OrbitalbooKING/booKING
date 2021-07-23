@@ -38,18 +38,18 @@ To maximise the venue and resources usage in School of Computing, we hope to hel
 1. - [x] User authentication
 2. - [x] Adding all the venues to the database 
 3. - [x] Venue reservation
-   - - [x] Venue classifications 
-   - - [x] Resources available in each venue 
+   - - [X] Venue classifications 
+   - - [X] Resources available in each venue 
 4. - [x] Available venues search function
 5. - [X] Venue reservation notification
-6. - [x] Autocomplete function in venue search bar 
+6. - [X] Autocomplete function in venue search bar 
 7. - [X] Points system
 8. - [X] Create an interface for staff in SoC to view and approve/reject venue bookings, this allows them to prioritise SoC users who wants to reserve a venue
 
 ### **Advanced Features: (4 weeks)**
 1. - [x] Venue sharing system
 2. - [ ] Automatic categorisation of venue type
-3. - [ ] Priority queue for SoC users to reserve rooms over non-SoC users
+3. - [X] Priority queue for SoC users to reserve rooms over non-SoC users
 
 ### **Nice-to-have Features: (2 weeks)**
 1. - [X] Prevent interval bookings (don’t let users book 30 mins and leave it empty for 30 mins etc) 

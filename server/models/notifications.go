@@ -166,7 +166,7 @@ func MakeRejectHTML(info RejectInfo) hermes.Email {
 			},
 			Actions: []hermes.Action{
 				{
-					Instructions: "Log in to make another booking, or check the status of all your booking(s):",
+					Instructions: "Log in to make another booking, or check the status of your booking(s):",
 					Button: hermes.Button{
 						Text: "booKING",
 						Link: config.HEROKU_HOST,

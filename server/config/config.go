@@ -12,7 +12,7 @@ const (
 
 	LOCAL_HOST  = "localhost:3002"
 	HEROKU_HOST = "https://orbitalbooking.herokuapp.com"
-	APP_LOGO    = "https://github.com/OrbitalbooKING/booKING/blob/master/assets/logo.png?raw=true"
+	APP_LOGO    = "https://orbital-booking.s3.ap-southeast-1.amazonaws.com/logo.png"
 
 	ORBITAL_BOOKING_BUCKET_NAME   = ""
 	ORBITAL_BOOKING_BUCKET_ID     = ""
@@ -27,7 +27,7 @@ const (
 
 	NUS_EMAIL_DOMAIN      = "@u.nus.edu"
 	SENDER_EMAIL_ADDRESS  = "orbitalbooking2021@gmail.com"
-	SENDER_EMAIL_PASSWORD = "s4dept@35SCE"
+	SENDER_EMAIL_PASSWORD = "2@changePass"
 
 	CSV_MAIN_DIRECTORY    = "https://raw.githubusercontent.com/OrbitalbooKING/booKING/main/server"
 	ACCOUNTTYPES_CSV      = CSV_MAIN_DIRECTORY + "/services/DummyCSV/accountTypes.csv"

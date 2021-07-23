@@ -10,9 +10,10 @@ const (
 	ADMIN_ID   = ""
 	ADMIN_PASS = ""
 
-	LOCAL_HOST  = "localhost:3002"
-	HEROKU_HOST = "https://orbitalbooking.herokuapp.com"
-	APP_LOGO    = "https://orbital-booking.s3.ap-southeast-1.amazonaws.com/logo.png"
+	LOCAL_HOST             = "localhost:3002"
+	HEROKU_HOST            = "https://orbitalbooking.herokuapp.com"
+	HEROKU_HOST_RESET_PAGE = "https://bookingdevelopment.herokuapp.com/reset-password"
+	APP_LOGO               = "https://orbital-booking.s3.ap-southeast-1.amazonaws.com/logo.png"
 
 	ORBITAL_BOOKING_BUCKET_NAME   = ""
 	ORBITAL_BOOKING_BUCKET_ID     = ""

@@ -138,6 +138,14 @@ func Register(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"success": true, "message": "Account successfully created!"})
 		fmt.Println("Account successfully created!")
 	}
+
+	emailInfo := models.AccountCreationInfo{
+		Name:      account.Name,
+		NUSNET_ID: account.Nusnetid,
+	}
+	if err := SendAccountCreationEmail(emailInfo); err != nil {
+		fmt.Printf("Unable to send account creation email for account with NUSNET ID %s. "+err.Error()+"\n", account.Nusnetid)
+	}
 }
 
 // GET /get_faculty

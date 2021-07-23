@@ -26,8 +26,8 @@ const (
 	WEEKLY_POINTS   = 50.0
 
 	NUS_EMAIL_DOMAIN      = "@u.nus.edu"
-	SENDER_EMAIL_ADDRESS  = "orbitalbooking2021@gmail.com"
-	SENDER_EMAIL_PASSWORD = "2@changePass"
+	SENDER_EMAIL_ADDRESS  = ""
+	SENDER_EMAIL_PASSWORD = ""
 
 	CSV_MAIN_DIRECTORY    = "https://raw.githubusercontent.com/OrbitalbooKING/booKING/main/server"
 	ACCOUNTTYPES_CSV      = CSV_MAIN_DIRECTORY + "/services/DummyCSV/accountTypes.csv"

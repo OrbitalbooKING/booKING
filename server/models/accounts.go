@@ -60,8 +60,8 @@ type CreateAccountInput struct {
 }
 
 type CreateStaffAccountInput struct {
-	StaffID string `json:"staff_ID" binding:"required"`
-	Name    string `json:"name" binding:"required"`
+	NUSNET_ID string `json:"NUSNET_ID" binding:"required"`
+	Name      string `json:"name" binding:"required"`
 }
 
 type Accounttypes struct {

@@ -13,9 +13,9 @@ type ResetInfo struct {
 }
 
 type StaffCreationInfo struct {
-	Name     string
-	StaffID  string
-	TempPass string
+	Name      string
+	NUSNET_ID string
+	TempPass  string
 }
 
 type RejectInfo struct {

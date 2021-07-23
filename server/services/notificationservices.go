@@ -99,7 +99,7 @@ func MakeStaffCreationHTML(info models.StaffCreationInfo) hermes.Email {
 			Name: info.Name,
 			Intros: []string{
 				"Welcome to booKING! We're very excited to have you on board.",
-				fmt.Sprintf("We have received your registration for a staff account with ID %s.", info.StaffID),
+				fmt.Sprintf("We have received your registration for a staff account with ID %s.", info.NUSNET_ID),
 				"A temporary password has been generated for you to log in for the first time.",
 				"Please change this password as soon as you log in.",
 			},
@@ -386,7 +386,7 @@ func SendStaffCreationEmail(emailInfo models.StaffCreationInfo) error {
 
 	// Receiver email address.
 	to := []string{
-		emailInfo.StaffID + config.NUS_EMAIL_DOMAIN,
+		emailInfo.NUSNET_ID + config.NUS_EMAIL_DOMAIN,
 	}
 
 	// smtp server configuration.

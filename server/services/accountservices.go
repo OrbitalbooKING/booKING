@@ -556,7 +556,7 @@ func CreateStaff(c *gin.Context) {
 	}
 
 	// check if account already exists
-	if GetAccountExists(DB, models.CreateAccountInput{Nusnetid: input.StaffID}) {
+	if GetAccountExists(DB, models.CreateAccountInput{Nusnetid: input.NUSNET_ID}) {
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Account already exists!"})
 		fmt.Println("Account already exists.")
 		return
@@ -595,7 +595,7 @@ func CreateStaff(c *gin.Context) {
 		fmt.Println(errorMessage)
 	}
 	user := models.User{
-		Nusnetid: input.StaffID,
+		Nusnetid: input.NUSNET_ID,
 		Password: tempPass,
 	}
 
@@ -606,7 +606,7 @@ func CreateStaff(c *gin.Context) {
 	}
 
 	staffAcc := models.Accounts{
-		Nusnetid:        input.StaffID,
+		Nusnetid:        input.NUSNET_ID,
 		Passwordhash:    user.Password,
 		Name:            input.Name,
 		Gradyear:        9999,
@@ -625,9 +625,9 @@ func CreateStaff(c *gin.Context) {
 	}
 
 	emailInfo := models.StaffCreationInfo{
-		Name:     input.Name,
-		StaffID:  input.StaffID,
-		TempPass: tempPass,
+		Name:      input.Name,
+		NUSNET_ID: input.NUSNET_ID,
+		TempPass:  tempPass,
 	}
 	if err := SendStaffCreationEmail(emailInfo); err != nil {
 		errorMessage := fmt.Sprintf("Error sending staff creation email. " + err.Error())

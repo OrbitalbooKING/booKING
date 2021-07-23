@@ -26,6 +26,14 @@ type StaffCreationInfo struct {
 	TempPass string
 }
 
+type RejectInfo struct {
+	Name      string
+	NUSNET_ID string
+	BookingID string
+	Booking   BookingRequests
+	Reason    string
+}
+
 func MakePendingApprovalHTML(info PendingApprovalInfo) hermes.Email {
 	// write bookings
 	var data [][]hermes.Entry
@@ -124,6 +132,41 @@ func MakeStaffCreationHTML(info StaffCreationInfo) hermes.Email {
 			Actions: []hermes.Action{
 				{
 					Instructions: "Log in now:",
+					Button: hermes.Button{
+						Text: "booKING",
+						Link: config.HEROKU_HOST,
+					},
+				},
+			},
+			Outros: []string{
+				"Need help, or have questions? Just reply to this email, we'd love to help.",
+			},
+		},
+	}
+}
+
+func MakeRejectHTML(info RejectInfo) hermes.Email {
+	return hermes.Email{
+		Body: hermes.Body{
+			Name: info.Name,
+			Intros: []string{
+				"We are sorry to inform that your booking has been rejected.",
+				"The cost of the booking will be refunded into your account.",
+				"Details of the rejected booking are as follows:",
+			},
+			Dictionary: []hermes.Entry{
+				{Key: "BookingID", Value: info.Booking.ID.String()},
+				{Key: "Venue", Value: info.Booking.Venuename},
+				{Key: "Unit", Value: info.Booking.Buildingname + " " + info.Booking.Unit},
+				{Key: "Start", Value: info.Booking.Eventstart.Format(time.ANSIC)},
+				{Key: "End", Value: info.Booking.Eventstart.Add(time.Hour).Format(time.ANSIC)},
+				{Key: "Pax", Value: fmt.Sprintf("%d", info.Booking.Pax)},
+				{Key: "Cost", Value: fmt.Sprintf("%.1f", info.Booking.Cost)},
+				{Key: "Reason provided by staff", Value: info.Reason},
+			},
+			Actions: []hermes.Action{
+				{
+					Instructions: "Log in to make another booking, or check the status of all your booking(s):",
 					Button: hermes.Button{
 						Text: "booKING",
 						Link: config.HEROKU_HOST,

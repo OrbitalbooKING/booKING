@@ -125,7 +125,7 @@ func Register(c *gin.Context) {
 		Gradyear:        input.Gradyear,
 		Profilepic:      picID,
 		Accounttypeid:   accountType.ID,
-		Points:          50,
+		Points:          config.WEEKLY_POINTS,
 		Createdat:       time.Now(),
 		Lastupdated:     time.Now(),
 		Accountstatusid: accountStatus.ID,

@@ -100,7 +100,7 @@ func MakeBooking(c *gin.Context) {
 		bookings = append(bookings, booking)
 	}
 
-	emailInfo, err := PopulateEmailInfo(bookings)
+	emailInfo, err := PopulatePendingEmailInfo(bookings)
 	if err != nil {
 		errorMessage := "Encountered error when retrieving info to send email. " + err.Error()
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": errorMessage})
@@ -329,7 +329,7 @@ func GetBookingRequests(c *gin.Context) {
 func ApproveBookings(c *gin.Context) {
 	var input models.MakeDeleteBookings
 	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": "Check input NUSNET_ID"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": "Check input bookingID"})
 		fmt.Println("Error in reading input NUSNET_ID. " + err.Error() + "\n")
 		return
 	}
@@ -429,7 +429,74 @@ func GetUserWithTempPoints(c *gin.Context) {
 }
 
 // PUT /reject_booking
-// rejects
+// rejects a booking with a reason given
+func RejectBooking(c *gin.Context) {
+	var input models.RejectInput
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": "Check input bookingID"})
+		fmt.Println("Error in reading input NUSNET_ID. " + err.Error() + "\n")
+		return
+	}
+
+	// get ID to update status to
+	statusID, err := GetBookingStatusCode(DB, "Rejected")
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": "Unable to query for booking status ID."})
+		fmt.Println("Unable to query for booking status ID. " + err.Error() + "\n")
+		return
+	}
+
+	count, err := UpdateBookingsStatus(DB, models.MakeDeleteBookings{BookingID: []string{input.BookingID}}, statusID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": "Unable to update booking successfully."})
+		fmt.Println("Unable to update booking successfully. " + err.Error() + "\n")
+		return
+	} else {
+		successMsg := fmt.Sprintf("Successfully rejected %d booking(s)!", count)
+		fmt.Println(successMsg)
+	}
+
+	// get booking to refund points
+	booking, exists, err := RetrieveBooking(DB, models.URLBooking{BookingID: input.BookingID})
+	if !exists {
+		errorMessage := fmt.Sprintf("No booking with ID %s exists.", booking.ID)
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": errorMessage})
+		fmt.Println(errorMessage)
+		return
+	}
+	if err != nil {
+		errorMessage := fmt.Sprintf("No booking with ID %s exists.", booking.ID)
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": errorMessage})
+		fmt.Println(errorMessage)
+		return
+	}
+
+	refunded, err := AddPoints(DB, booking.Nusnetid, booking.Cost)
+	if err != nil {
+		errorMessage := fmt.Sprintf("Unable to refund points for booking with ID %s to user %s. "+err.Error(), booking.ID, booking.Nusnetid)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": errorMessage})
+		fmt.Println(errorMessage)
+		return
+	}
+
+	emailInfo, err := PopulateRejectEmailInfo(booking.ID.String(), input.Reason)
+	if err != nil {
+		errorMessage := fmt.Sprintf("Unable to populate reject email for booking with ID %s to user %s. "+err.Error(), booking.ID, booking.Nusnetid)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": errorMessage})
+		fmt.Println(errorMessage)
+	}
+
+	if err := SendRejectBookingEmail(emailInfo); err != nil {
+		errorMessage := fmt.Sprintf("Unable to send reject email for booking with ID %s to user %s. "+err.Error(), booking.ID, booking.Nusnetid)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": errorMessage})
+		fmt.Println(errorMessage)
+	}
+
+	successMessage := fmt.Sprintf("Successfully rejected booking with ID %s. Total of %.1f point(s) refunded to user %s.",
+		booking.ID, refunded, booking.Nusnetid)
+	c.JSON(http.StatusOK, gin.H{"success": true, "message": successMessage})
+	fmt.Println(successMessage)
+}
 
 func RetrieveBookingRequests(DB *gorm.DB, statusIDs []int) ([]models.BookingRequests, bool, error) {
 	// get list of bookings that fit into the statusIDs

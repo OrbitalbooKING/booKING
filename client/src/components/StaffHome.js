@@ -368,7 +368,11 @@ function StaffHome() {
                         </div>
                       );
                     })
-                  ) : status === "Pending" ? (
+                  ) : status === "Pending" &&
+                    bookingsList.filter(
+                      (data) =>
+                        data.Bookingstatusdescription === "Pending approval"
+                    ).length > 0 ? (
                     bookingsList
                       .filter(
                         (data) =>
@@ -495,7 +499,8 @@ function StaffHome() {
                           </div>
                         );
                       })
-                  ) : bookingsList.filter(
+                  ) : status === "Pending" &&
+                    bookingsList.filter(
                       (data) =>
                         data.Bookingstatusdescription === "Pending approval"
                     ).length === 0 ? (
@@ -509,7 +514,10 @@ function StaffHome() {
                         <h3>No bookings to display</h3>
                       </div>
                     </div>
-                  ) : status === "Approved" ? (
+                  ) : status === "Approved" &&
+                    bookingsList.filter(
+                      (data) => data.Bookingstatusdescription === "Approved"
+                    ).length > 0 ? (
                     bookingsList
                       .filter(
                         (data) => data.Bookingstatusdescription === "Approved"

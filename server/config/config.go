@@ -7,11 +7,24 @@ const (
 	DB_PASSWORD = "root"
 	DB_NAME     = "goauth"
 
-	LOCAL_HOST  = "localhost:3002"
-	HEROKU_HOST = "https://orbitalbooking.herokuapp.com"
+	ADMIN_ID   = ""
+	ADMIN_PASS = ""
+
+	LOCAL_HOST             = "localhost:3002"
+	HEROKU_HOST            = "https://orbitalbooking.herokuapp.com"
+	HEROKU_HOST_RESET_PAGE = "https://bookingdevelopment.herokuapp.com/reset-password"
+	APP_LOGO               = "https://orbital-booking.s3.ap-southeast-1.amazonaws.com/logo.png"
+
+	ORBITAL_BOOKING_BUCKET_NAME   = ""
+	ORBITAL_BOOKING_BUCKET_ID     = ""
+	ORBITAL_BOOKING_BUCKET_KEY    = ""
+	ORBITAL_BOOKING_BUCKET_REGION = "ap-southeast-1"
+	PROFILE_PIC_FOLDER            = "profile_pictures/"
+	DEFAULT_PICTURE_NAME          = "default.png"
 
 	POINTS_DISCOUNT = 0.2
 	MAX_POINTS      = 100.0
+	WEEKLY_POINTS   = 50.0
 
 	NUS_EMAIL_DOMAIN      = "@u.nus.edu"
 	SENDER_EMAIL_ADDRESS  = ""

@@ -141,3 +141,8 @@ type BookingRequests struct {
 	Cost                     float64
 	Maxcapacity              int
 }
+
+type RejectInput struct {
+	BookingID string `json:"bookingID"`
+	Reason    string `json:"reason"`
+}

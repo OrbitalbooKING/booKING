@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import Axios from "axios";
 import configData from "../config.json";
-import Layout3 from "../layouts/Layout3";
+import Layout2 from "../layouts/Layout2";
 import Home from "./Home";
 import Unauthorised from "./Unauthorised";
 
@@ -23,6 +23,7 @@ import subDays from "date-fns/subDays";
 import "react-datepicker/dist/react-datepicker.css";
 
 import * as Cookies from "js-cookie";
+import Spinner from "react-bootstrap/Spinner";
 
 const useStyles = makeStyles((theme) => ({
   menuPaper: {
@@ -30,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function StaffVenues() {
+function StudentHome() {
   let history = useHistory();
 
   const classes = useStyles();
@@ -260,9 +261,8 @@ function StaffVenues() {
     <>
       {Cookies.get("name") !== undefined &&
       Cookies.get("id") !== undefined &&
-      (Cookies.get("account") === "Staff" ||
-        Cookies.get("account") === "Admin") ? (
-        <Layout3
+      Cookies.get("account") === "Student" ? (
+        <Layout2
           id={Cookies.get("id")}
           name={Cookies.get("name")}
           action="Viewing venues"
@@ -643,12 +643,17 @@ function StaffVenues() {
                 </div>
                 <div style={{ overflowY: "auto", height: 200 }}>
                   {searchResults === undefined ? (
-                    <div>
-                      <h2
-                        style={{ textAlign: "center", alignContent: "center" }}
-                      >
-                        Loading...{" "}
-                      </h2>
+                    <div
+                      style={{
+                        justifyContent: "center",
+                        alignItems: "center",
+                        display: "flex",
+                        flexDirection: "column",
+                      }}
+                    >
+                      <Spinner animation="border" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                      </Spinner>
                     </div>
                   ) : searchResults.length === 0 ? (
                     <div className="display-selected-venue">
@@ -788,12 +793,17 @@ function StaffVenues() {
                 </div>
                 <div style={{ overflowY: "auto", height: 230 }}>
                   {searchResults === undefined ? (
-                    <div>
-                      <h2
-                        style={{ textAlign: "center", alignContent: "center" }}
-                      >
-                        Loading...{" "}
-                      </h2>
+                    <div
+                      style={{
+                        justifyContent: "center",
+                        alignItems: "center",
+                        display: "flex",
+                        flexDirection: "column",
+                      }}
+                    >
+                      <Spinner animation="border" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                      </Spinner>
                     </div>
                   ) : searchResults.length === 0 ? (
                     <div className="display-selected-venue">
@@ -990,7 +1000,7 @@ function StaffVenues() {
               </div>
             </div>
           </div>
-        </Layout3>
+        </Layout2>
       ) : Cookies.get("name") !== undefined &&
         Cookies.get("id") !== undefined &&
         Cookies.get("account") !== undefined ? (
@@ -1002,4 +1012,4 @@ function StaffVenues() {
   );
 }
 
-export default StaffVenues;
+export default StudentHome;

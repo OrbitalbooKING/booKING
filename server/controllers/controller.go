@@ -21,10 +21,14 @@ func StartAll(r *gin.Engine) {
 	api.POST("/register", services.Register)
 	api.GET("/get_faculty", services.GetFaculties)
 	api.POST("/login", services.Login)
-	api.PATCH("/reset", services.ResetPassword)
+	api.PATCH("/reset_password", services.ResetPassword)
+	api.POST("/trigger_password_reset", services.TriggerPasswordReset)
 	api.GET("/home", services.GetVenues)
 	api.GET("/search", services.SearchVenues)
 	api.POST("/transfer_points", services.TransferPoints)
+	api.PUT("/edit_profile", services.EditProfile)
+	api.POST("/points_update", services.PointsUpdate)
+	api.POST("/create_staff", services.CreateStaff)
 
 	api.GET("/get_profile", services.GetProfile)
 	api.GET("/get_bookings", services.GetBookings)
@@ -40,8 +44,7 @@ func StartAll(r *gin.Engine) {
 	api.DELETE("/delete_pending_bookings", services.DeletePendingBookings)
 	api.DELETE("/delete_confirmed_bookings", services.DeleteConfirmedBookings)
 	api.GET("/get_user_with_temp_points", services.GetUserWithTempPoints)
-
-	// PUT for updating account
+	api.PUT("/reject_booking", services.RejectBooking)
 
 	if port := os.Getenv("PORT"); port != "" {
 		r.Run(":" + port)

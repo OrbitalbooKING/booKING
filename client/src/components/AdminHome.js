@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import Axios from "axios";
 import configData from "../config.json";
-import Layout1 from "../layouts/Layout1";
+import Layout3 from "../layouts/Layout3";
 import Home from "./Home";
+import Unauthorised from "./Unauthorised";
 
 import * as Cookies from "js-cookie";
 import Spinner from "react-bootstrap/Spinner";
@@ -12,13 +13,11 @@ const style = {
   padding: 5,
 };
 
-function LoginForm() {
+function AdminHome() {
   let history = useHistory();
 
-  const [details, setDetails] = useState({ id: "", password: "" });
-  const [error, setError] = useState(
-    "Please enter your NUSNET ID and password!"
-  );
+  const [username, setUsername] = useState("");
+  const [id, setId] = useState("");
   const [loading, setLoading] = useState(false);
 
   const submitForm = (e) => {
@@ -26,31 +25,13 @@ function LoginForm() {
 
     setLoading(true);
 
-    Axios.post(configData.LOCAL_HOST + "/login", {
-      NUSNET_ID: details.id,
-      password: details.password,
+    Axios.post(configData.LOCAL_HOST + "/create_staff", {
+      name: username,
+      NUSNET_ID: id,
     })
       .then((response) => {
-        let inThreeHours = 0.125;
-
-        Cookies.set("name", response.data.message.Name, {
-          sameSite: "None",
-          secure: true,
-          expires: inThreeHours,
-        });
-        Cookies.set("id", response.data.message.Nusnetid, {
-          sameSite: "None",
-          secure: true,
-          expires: inThreeHours,
-        });
-        Cookies.set("account", response.data.message.Accounttypename, {
-          sameSite: "None",
-          secure: true,
-          expires: inThreeHours,
-        });
-
         history.push({
-          pathname: "/sign-in-success",
+          pathname: "/creation-success",
           state: { success: true },
         });
       })
@@ -60,7 +41,7 @@ function LoginForm() {
           // The request was made and the server responded with a status code
           // that falls out of the range of 2xx
           if (error.response.status === 400) {
-            setError(error.response.data.message);
+            console.log(error.response.data.message);
             setLoading(false);
           }
         } else if (error.request) {
@@ -73,7 +54,7 @@ function LoginForm() {
           setLoading(false);
         } else {
           // Something happened in setting up the request that triggered an Error
-          setError("Query failed!");
+          console.log("Query failed!");
           setLoading(false);
         }
       });
@@ -81,17 +62,27 @@ function LoginForm() {
 
   return (
     <>
-      {Cookies.get("name") === undefined &&
-      Cookies.get("id") === undefined &&
-      Cookies.get("account") === undefined ? (
-        <Layout1>
+      {Cookies.get("name") !== undefined &&
+      Cookies.get("id") !== undefined &&
+      Cookies.get("account") === "Admin" ? (
+        <Layout3
+          id={Cookies.get("id")}
+          name={Cookies.get("name")}
+          action="Create staff account"
+        >
           <div className="parent">
-            <div className="content">
+            <div className="sign-up">
               <form>
-                <h3>Sign In</h3>
+                <h3>Create Staff Account</h3>
 
-                <div className="error">
-                  <span className="message">{error}</span>
+                <div className="form-group" style={style}>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Username"
+                    onChange={(e) => setUsername(e.target.value)}
+                    value={username}
+                  />
                 </div>
 
                 <div className="form-group" style={style}>
@@ -99,36 +90,19 @@ function LoginForm() {
                     type="text"
                     className="form-control"
                     placeholder="NUSNET ID"
-                    onChange={(e) =>
-                      setDetails({ ...details, id: e.target.value })
-                    }
-                    value={details.id}
-                  />
-                </div>
-
-                <div className="form-group" style={style}>
-                  <input
-                    type="password"
-                    className="form-control"
-                    placeholder="Password"
-                    onChange={(e) =>
-                      setDetails({ ...details, password: e.target.value })
-                    }
-                    value={details.password}
+                    onChange={(e) => setId(e.target.value)}
+                    value={id}
                   />
                 </div>
 
                 <div style={style}>
-                  <p className="forgot-password text-right">
-                    <Link to="/reset-password">Forgot password?</Link>
-                  </p>
                   <button
-                    style={{ float: "left", margin: 5 }}
+                    style={{ float: "left" }}
                     type="submit"
                     className="btn btn-primary btn-block"
                     onClick={submitForm}
                   >
-                    Sign In
+                    Create
                   </button>
                   {loading ? (
                     <Spinner
@@ -145,12 +119,16 @@ function LoginForm() {
               </form>
             </div>
           </div>
-        </Layout1>
-      ) : (
+        </Layout3>
+      ) : Cookies.get("name") !== undefined &&
+        Cookies.get("id") !== undefined &&
+        Cookies.get("account") !== undefined ? (
         <Home />
+      ) : (
+        <Unauthorised />
       )}
     </>
   );
 }
 
-export default LoginForm;
+export default AdminHome;

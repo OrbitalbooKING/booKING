@@ -38,30 +38,25 @@ To maximise the venue and resources usage in School of Computing, we hope to hel
 1. - [x] User authentication
 2. - [x] Adding all the venues to the database 
 3. - [x] Venue reservation
-   - - [ ] Maximum reservation hours per user
-   - - [x] Venue classifications 
-   - - [x] Resources available in each venue 
+   - - [X] Venue classifications 
+   - - [X] Resources available in each venue 
 4. - [x] Available venues search function
-5. - [ ] Venue reservation notification
-6. - [x] Autocomplete function in venue search bar 
-7. - [ ] Points system
-8. - [ ] Approval process; we will create an interface for staff in SoC to view and approve venue bookings, this allows them to prioritise SoC users who wants to reserve a venue
-9. - [ ] Editing of reserved venues by staff users to address ad-hoc changes
+5. - [X] Venue reservation notification
+6. - [X] Autocomplete function in venue search bar 
+7. - [X] Points system
+8. - [X] Create an interface for staff in SoC to view and approve/reject venue bookings, this allows them to prioritise SoC users who wants to reserve a venue
 
 ### **Advanced Features: (4 weeks)**
-1. - [ ] Venue sharing system
+1. - [x] Venue sharing system
 2. - [ ] Automatic categorisation of venue type
-3. - [ ] Priority queue for SoC users to reserve rooms over non-SoC users
+3. - [X] Priority queue for SoC users to reserve rooms over non-SoC users
 
 ### **Nice-to-have Features: (2 weeks)**
-1. - [ ] Prevent interval bookings (don’t let users book 30 mins and leave it empty for 30 mins etc) 
+1. - [X] Prevent interval bookings (don’t let users book 30 mins and leave it empty for 30 mins etc) 
 2. - [ ] Lock incorrect attempts out
-3. - [ ] Minimum number of characters for password
-4. - [ ] Responsive design for different screen sizes
+3. - [X] Minimum number of characters for password
+4. - [X] Responsive design for different screen sizes
 5. - [ ] Statistics displayed for each venue for staff users
-6. - [ ] User-friendly interface
-   - - [ ] Dark Mode
-   - - [ ] Screen size
 
 ---
 ## Tech Stack

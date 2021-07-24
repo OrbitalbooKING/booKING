@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Fira+Sans:400,500,600,700,800');
+@import url("https://fonts.googleapis.com/css?family=Fira+Sans:400,500,600,700,800");
 
 .App {
   text-align: center;
@@ -9,19 +9,28 @@
 }
 
 body {
-  background: #1C8EF9 !important;
+  /* background: #1C8EF9 !important; */
+  background: #5aafff !important;
   min-height: 100vh;
   display: flex;
   font-weight: 400;
-  font-family: 'Fira Sans', sans-serif;
+  font-family: "Fira Sans", sans-serif;
 }
 
-h1,h2,h3,h4,h5,h6,label {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+label {
   font-weight: 500;
-  font-family: 'Fira Sans', sans-serif;
+  font-family: "Fira Sans", sans-serif;
 }
 
-body, html, #root {
+body,
+html,
+#root {
   width: 100%;
   height: 100%;
 }
@@ -36,30 +45,30 @@ body, html, #root {
   top: 0;
 }
 
-.parent-booking{
+.parent-booking {
   margin-top: 56px;
   position: absolute;
-  top: 0px; 
+  top: 0px;
   left: 0px;
-  right: 0px; 
+  right: 0px;
   bottom: 0px;
 }
 
-.parent-home{
+.parent-home {
   margin-top: 56px;
   position: absolute;
-  top: 0px; 
+  top: 0px;
   left: 0px;
-  right: 0px; 
+  right: 0px;
   bottom: 0px;
 }
 
-.parent{
+.parent {
   margin-top: 56px;
   position: absolute;
-  top: 0px; 
+  top: 0px;
   left: 0px;
-  right: 0px; 
+  right: 0px;
   bottom: 0px;
 }
 
@@ -71,14 +80,14 @@ body, html, #root {
   transform: translate(-50%, -50%);
 }
 
-.content{
+.content {
   width: auto;
   height: auto;
   background: #ffffff;
   box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
   padding: 3% 3%;
   border-radius: 15px;
-  transition: all .3s;
+  transition: all 0.3s;
 
   position: absolute;
   top: 50%;
@@ -99,14 +108,14 @@ body, html, #root {
   text-align: center;
 }
 
-.sign-up{
-  width: auto;
+.sign-up {
+  width: 350px;
   height: auto;
   background: #ffffff;
   box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
   padding: 3% 3%;
   border-radius: 15px;
-  transition: all .3s;
+  transition: all 0.3s;
 
   position: absolute;
   top: 50%;
@@ -118,23 +127,19 @@ body, html, #root {
   overflow-y: auto;
   overflow-x: auto;
 
-  justify-self: center;
   justify-content: center;
-  justify-items: center;
-  align-self: center;
   align-content: center;
-  align-items: center;
   text-align: center;
 }
 
-.welcome-page{
+.welcome-page {
   width: auto;
   height: auto;
   background: #ffffff;
   box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
   padding: 3% 3%;
   border-radius: 15px;
-  transition: all .3s;
+  transition: all 0.3s;
 
   position: absolute;
   top: 50%;
@@ -148,14 +153,14 @@ body, html, #root {
   overflow-x: auto;
 }
 
-.help-page{
+.help-page {
   width: auto;
   height: auto;
   background: #ffffff;
   box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
   padding: 3% 3%;
   border-radius: 15px;
-  transition: all .3s;
+  transition: all 0.3s;
 
   position: absolute;
   top: 50%;
@@ -215,7 +220,7 @@ body, html, #root {
   box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
   padding: 1% 1%;
   border-radius: 15px;
-  transition: all .3s;
+  transition: all 0.3s;
 }
 
 .venue-list-mobile {
@@ -225,7 +230,7 @@ body, html, #root {
   box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
   padding: 20px 20px 20px 20px;
   border-radius: 15px;
-  transition: all .3s;
+  transition: all 0.3s;
 }
 
 .delete-list-mobile {
@@ -235,7 +240,7 @@ body, html, #root {
   box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
   padding: 1% 1%;
   border-radius: 15px;
-  transition: all .3s;
+  transition: all 0.3s;
 }
 
 .bookings-list {
@@ -244,7 +249,7 @@ body, html, #root {
   box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
   padding: 1% 1%;
   border-radius: 15px;
-  transition: all .3s;
+  transition: all 0.3s;
 }
 
 .booking-view {
@@ -253,7 +258,7 @@ body, html, #root {
   box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
   padding: 1% 1%;
   border-radius: 15px;
-  transition: all .3s;
+  transition: all 0.3s;
 }
 
 .display-selected-venue-header {
@@ -262,7 +267,7 @@ body, html, #root {
   background: #ffffff;
   padding: 10px 20px 10px 20px;
   border-radius: 15px;
-  transition: all .3s;
+  transition: all 0.3s;
 }
 
 .display-bookings-header {
@@ -271,7 +276,7 @@ body, html, #root {
   background: #ffffff;
   padding: 10px 20px 10px 20px;
   border-radius: 15px;
-  transition: all .3s;
+  transition: all 0.3s;
 }
 
 .display-booking-header {
@@ -280,7 +285,7 @@ body, html, #root {
   background: #ffffff;
   padding: 10px 20px 10px 20px;
   border-radius: 15px;
-  transition: all .3s;
+  transition: all 0.3s;
 }
 
 .display-selected-venue {
@@ -289,7 +294,7 @@ body, html, #root {
   background: #e5e5e5;
   padding: 10px 20px 10px 20px;
   border-radius: 15px;
-  transition: all .3s;
+  transition: all 0.3s;
 }
 
 .display-selected-booking {
@@ -298,7 +303,7 @@ body, html, #root {
   background: #e5e5e5;
   padding: 10px 20px 10px 20px;
   border-radius: 15px;
-  transition: all .3s;
+  transition: all 0.3s;
 }
 
 .display-booking {
@@ -307,7 +312,7 @@ body, html, #root {
   background: #e5e5e5;
   padding: 10px 20px 10px 20px;
   border-radius: 15px;
-  transition: all .3s;
+  transition: all 0.3s;
 }
 
 .column {
@@ -316,7 +321,7 @@ body, html, #root {
   background: #ffffff;
   padding: 10px 20px 10px 20px;
   border-radius: 15px;
-  transition: all .3s;
+  transition: all 0.3s;
   margin-right: 20px;
 }
 
@@ -325,7 +330,7 @@ body, html, #root {
   margin: auto;
   background: #ffffff;
   padding: 10px 20px 10px 20px;
-  transition: all .3s;
+  transition: all 0.3s;
 }
 
 .display-old {
@@ -334,7 +339,7 @@ body, html, #root {
   background: #e5e5e5;
   padding: 10px 20px 10px 20px;
   border-radius: 8px;
-  transition: all .3s;
+  transition: all 0.3s;
 }
 
 .searchbar {
@@ -343,8 +348,8 @@ body, html, #root {
   box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
   padding: 2% 2%;
   border-radius: 15px;
-  transition: all .3s;
-  
+  transition: all 0.3s;
+
   flex-direction: column;
 
   justify-self: center;
@@ -370,7 +375,7 @@ body, html, #root {
   box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
   padding: 20px 20px 20px 20px;
   border-radius: 15px;
-  transition: all .3s;
+  transition: all 0.3s;
 }
 
 .booking-selector-mobile {
@@ -382,7 +387,7 @@ body, html, #root {
   box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
   padding: 20px 20px 20px 20px;
   border-radius: 15px;
-  transition: all .3s;
+  transition: all 0.3s;
 }
 
 .profile {
@@ -392,7 +397,7 @@ body, html, #root {
   box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
   padding: 40px 55px 40px 55px;
   border-radius: 15px;
-  transition: all .3s;
+  transition: all 0.3s;
 }
 
 .profile-mobile {
@@ -402,7 +407,7 @@ body, html, #root {
   box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
   padding: 20px 20px 20px 20px;
   border-radius: 15px;
-  transition: all .3s;
+  transition: all 0.3s;
 }
 
 .display-bookings {
@@ -411,7 +416,7 @@ body, html, #root {
   background: #e5e5e5;
   padding: 10px 20px 10px 20px;
   border-radius: 15px;
-  transition: all .3s;
+  transition: all 0.3s;
 }
 
 .booking-overview {
@@ -421,106 +426,110 @@ body, html, #root {
   background: #ffffff;
   padding: 10px 20px 10px 20px;
   border-radius: 15px;
-  transition: all .3s;
+  transition: all 0.3s;
+}
+
+.dropdown-menu {
+  right: 0;
+  left: auto;
 }
 
 @media (max-width: 450px) {
-  .content{
+  .content {
     width: 80%;
     height: auto;
     background: #ffffff;
     box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
     padding: 1% 1%;
     border-radius: 15px;
-    transition: all .3s;
-  
+    transition: all 0.3s;
+
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     display: flex;
     flex-direction: column;
-  
+
     overflow-y: auto;
     overflow-x: auto;
-  
-    justify-self: center;
+
+    /* justify-self: center;
     justify-content: center;
     justify-items: center;
     align-self: center;
     align-content: center;
     align-items: center;
+    text-align: center; */
+    justify-content: center;
+    align-content: center;
     text-align: center;
   }
 
-  .help-page{
+  .help-page {
     width: 80%;
     height: auto;
     background: #ffffff;
     box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
     padding: 3% 3%;
     border-radius: 15px;
-    transition: all .3s;
-  
+    transition: all 0.3s;
+
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-  
+
     display: flex;
     flex-direction: column;
-  
+
     overflow-y: auto;
     overflow-x: auto;
   }
 
-  .sign-up{
+  .sign-up {
     width: 80%;
     height: auto;
     background: #ffffff;
     box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
     padding: 3% 3%;
     border-radius: 15px;
-    transition: all .3s;
-  
+    transition: all 0.3s;
+
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     display: flex;
     flex-direction: column;
-  
+
     overflow-y: auto;
     overflow-x: auto;
-  
-    justify-self: center;
+
     justify-content: center;
-    justify-items: center;
-    align-self: center;
     align-content: center;
-    align-items: center;
     text-align: center;
   }
 
-  .parent-booking{
+  .parent-booking {
     margin-top: 56px;
     width: auto;
     height: 190%;
     position: absolute;
-    top: 0px; 
+    top: 0px;
     left: 0px;
-    right: 0px; 
+    right: 0px;
     bottom: 0px;
   }
 
-  .parent-home{
+  .parent-home {
     margin-top: 56px;
     width: auto;
     height: 110%;
     position: absolute;
-    top: 0px; 
+    top: 0px;
     left: 0px;
-    right: 0px; 
+    right: 0px;
     bottom: 0px;
   }
 

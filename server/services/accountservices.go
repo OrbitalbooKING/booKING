@@ -1,9 +1,13 @@
 package services
 
 import (
+	"bytes"
+	"errors"
 	"fmt"
 	"log"
+	"mime/multipart"
 	"net/http"
+	"os"
 	"regexp"
 	"strings"
 	"time"
@@ -11,6 +15,12 @@ import (
 	"github.com/OrbitalbooKING/booKING/server/config"
 	"github.com/OrbitalbooKING/booKING/server/models"
 	"github.com/OrbitalbooKING/booKING/server/utils"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/google/uuid"
+	"github.com/sethvargo/go-password/password"
 
 	"github.com/jinzhu/gorm"
 
@@ -22,8 +32,8 @@ import (
 func Register(c *gin.Context) {
 	// Validate input
 	var input models.CreateAccountInput
-	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": "Check input fields."})
+	if err := c.Bind(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": "All input fields required."})
 		fmt.Println("Error in parsing inputs for account creation.")
 		return
 	}
@@ -33,6 +43,13 @@ func Register(c *gin.Context) {
 
 	// check valid nusnetid and password strength
 	if !regexIDCheck(c, input.Nusnetid) || !regexPasswordCheck(c, input.Password) {
+		return
+	}
+
+	// check if name is blank space
+	if input.Name == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Input name cannot be blank!"})
+		fmt.Println("Input name cannot be blank!")
 		return
 	}
 
@@ -76,15 +93,39 @@ func Register(c *gin.Context) {
 		fmt.Println("accountStatus does not exist. " + err.Error() + "\n")
 	}
 
+	// create S3 session for profile pic upload
+	s, err := CreateS3Session()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": "Unable to create AWS session for profile pic upload"})
+		fmt.Println("Unable to create AWS session for profile pic upload " + err.Error())
+	}
+
+	var picID uuid.UUID
+	if input.Profilepic != nil {
+		file, err := input.Profilepic.Open()
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": "Unable to parse profile pic upload"})
+			fmt.Println("Unable to parse profile pic upload " + err.Error())
+		}
+
+		picID, err = UploadFileToS3(s, file, input.Profilepic)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": "Unable to upload profile pic to S3"})
+			fmt.Println("Unable to upload profile pic to S3. " + err.Error() + "\n")
+		} else {
+			fmt.Println("Image uploaded successfully!")
+		}
+	}
+
 	account := models.Accounts{
 		Nusnetid:        input.Nusnetid,
 		Passwordhash:    input.Password,
 		Name:            input.Name,
 		Facultyid:       input.Facultyid,
 		Gradyear:        input.Gradyear,
-		Profilepic:      input.Profilepic,
+		Profilepic:      picID,
 		Accounttypeid:   accountType.ID,
-		Points:          50,
+		Points:          config.WEEKLY_POINTS,
 		Createdat:       time.Now(),
 		Lastupdated:     time.Now(),
 		Accountstatusid: accountStatus.ID,
@@ -96,6 +137,14 @@ func Register(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusOK, gin.H{"success": true, "message": "Account successfully created!"})
 		fmt.Println("Account successfully created!")
+	}
+
+	emailInfo := models.AccountCreationInfo{
+		Name:      account.Name,
+		NUSNET_ID: account.Nusnetid,
+	}
+	if err := SendAccountCreationEmail(emailInfo); err != nil {
+		fmt.Printf("Unable to send account creation email for account with NUSNET ID %s. "+err.Error()+"\n", account.Nusnetid)
 	}
 }
 
@@ -183,10 +232,10 @@ func Login(c *gin.Context) {
 	}
 }
 
-// PATCH /reset
-// Reset password
-func ResetPassword(c *gin.Context) {
-	var input models.CreateAccountInput
+// POST /points_update
+// resets the points for the user for the week
+func PointsUpdate(c *gin.Context) {
+	var input models.User
 	// Validate input
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Have you input correctly? " + err.Error()})
@@ -194,12 +243,8 @@ func ResetPassword(c *gin.Context) {
 		return
 	}
 
-	if !regexPasswordCheck(c, input.Password) {
-		return
-	}
-
 	// check if account already exists
-	if !GetAccountExists(DB, input) {
+	if !GetAccountExists(DB, models.CreateAccountInput{Nusnetid: input.Nusnetid}) {
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Account does not exist!"})
 		fmt.Println("Unable to find account.")
 		return
@@ -208,7 +253,6 @@ func ResetPassword(c *gin.Context) {
 	// get account
 	user := models.User{
 		Nusnetid: input.Nusnetid,
-		Password: input.Password,
 	}
 	retrieved, exists, err := GetAccount(DB, user)
 	if err != nil {
@@ -222,30 +266,163 @@ func ResetPassword(c *gin.Context) {
 		return
 	}
 
+	added, err := RefillPoints(retrieved)
+	if err != nil {
+		errorMessage := fmt.Sprintf("Error refilling points for user" + err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": errorMessage})
+		fmt.Println(errorMessage)
+		return
+	}
+	if added == 0.0 {
+		c.JSON(http.StatusOK, gin.H{"success": true, "message": "No points refilled as week has not past."})
+		fmt.Println("No points refilled as week has not past.")
+	} else {
+		successMessage := fmt.Sprintf("Added %.1f points to user %s's account.", added, retrieved.Name)
+		c.JSON(http.StatusOK, gin.H{"success": true, "message": successMessage})
+		fmt.Println(successMessage)
+	}
+}
+
+// PATCH /reset_password
+// Reset password
+func ResetPassword(c *gin.Context) {
+	var input models.PasswordReset
+	// Validate input
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Have you input correctly? " + err.Error()})
+		fmt.Println("Error parsing reset inputs. " + err.Error())
+		return
+	}
+
+	if !regexPasswordCheck(c, input.NewPassword) {
+		return
+	}
+
+	// get account
+	user := models.User{
+		Nusnetid: input.Nusnetid,
+		Password: input.OldPassword,
+	}
+	retrieved, exists, err := GetAccount(DB, user)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Unable to get account!" + err.Error()})
+		fmt.Println("Unable to get account." + err.Error())
+		return
+	}
+	if !exists {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Account does not exist"})
+		fmt.Println("account does not exist. " + err.Error() + "\n")
+		return
+	}
+
+	// check if old password is same as system records
+	matchOld := utils.CheckPasswordHash(models.User{Password: input.OldPassword}, retrieved.Passwordhash)
+	if !matchOld {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Old password input wrongly!"})
+		fmt.Println("Old password input wrongly.")
+		return
+	}
+
 	// check if new password is same as the old password
-	match := utils.CheckPasswordHash(user, retrieved.Passwordhash) // non hashed input first, followed by hashed one retrieved from DB
-	if match {
+	matchNew := input.OldPassword == input.NewPassword
+	if matchNew {
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "New password cannot be the same as old password!"})
 		fmt.Println("Old password reused.")
 		return
 	}
 
+	user.Password = input.NewPassword
 	// hashing the password
 	if err := utils.HashPassword(&user); err != nil {
 		fmt.Println("Error in hashing user password: " + err.Error())
 		return
 	}
-	input.Password = user.Password
+	input.NewPassword = user.Password
 
 	// update password
-	if err := UpdateAccountPassword(DB, retrieved, input); err != nil {
+	if err := UpdateAccountPassword(DB, retrieved, models.CreateAccountInput{Password: input.NewPassword}); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Unable to reset password."})
 		fmt.Println("Error in updating database. " + err.Error() + "\n")
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"success": true, "message": "Account successfully reset!"})
+	c.JSON(http.StatusOK, gin.H{"success": true, "message": "Password successfully reset!"})
 	log.Println("Password successfully reset!")
+}
+
+// POST /trigger_password_reset
+// Resets account to a temporary password
+func TriggerPasswordReset(c *gin.Context) {
+	var input models.User
+	// Validate input
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Have you input correctly? " + err.Error()})
+		fmt.Println("Error parsing reset inputs. " + err.Error())
+		return
+	}
+
+	// check if account already exists
+	if !GetAccountExists(DB, models.CreateAccountInput{Nusnetid: input.Nusnetid}) {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Account does not exist!"})
+		fmt.Println("Unable to find account.")
+		return
+	}
+
+	// get account
+	user := models.User{
+		Nusnetid: input.Nusnetid,
+	}
+	retrieved, exists, err := GetAccount(DB, user)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Unable to get account!" + err.Error()})
+		fmt.Println("Unable to get account." + err.Error())
+		return
+	}
+	if !exists {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Account does not exist"})
+		fmt.Println("account does not exist. " + err.Error() + "\n")
+		return
+	}
+
+	// generate new password
+	tempPass, err := password.Generate(10, 3, 3, false, false)
+	for !regexPasswordCheck(c, tempPass) {
+		tempPass, err = password.Generate(10, 3, 3, false, false)
+	}
+	if err != nil {
+		errorMessage := fmt.Sprintf("Error generating temporary password. " + err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": errorMessage})
+		fmt.Println(errorMessage)
+	}
+
+	user.Password = tempPass
+	// hashing the password
+	if err := utils.HashPassword(&user); err != nil {
+		fmt.Println("Error in hashing user password: " + err.Error())
+		return
+	}
+
+	// update password
+	if err := UpdateAccountPassword(DB, retrieved, models.CreateAccountInput{Password: user.Password}); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Unable to reset password."})
+		fmt.Println("Error in updating database. " + err.Error() + "\n")
+		return
+	}
+
+	emailInfo := models.ResetInfo{
+		Name:      retrieved.Name,
+		NUSNET_ID: retrieved.Nusnetid,
+		TempPass:  tempPass,
+	}
+	if err := SendPasswordResetEmail(emailInfo); err != nil {
+		errorMessage := fmt.Sprintf("Error sending reset email. " + err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": errorMessage})
+		fmt.Println(errorMessage)
+	} else {
+		successMessage := "Temporary password has been sent to your NUSNET email!" + "\n" + "Check your junk folder if you are unable to find the email."
+		c.JSON(http.StatusOK, gin.H{"success": true, "message": successMessage})
+		fmt.Println(successMessage)
+	}
 }
 
 // GET /get_profile
@@ -267,7 +444,7 @@ func GetProfile(c *gin.Context) {
 	}
 	if !exists {
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Account does not exist"})
-		fmt.Println("account does not exist. " + err.Error() + "\n")
+		fmt.Println("Account does not exist.")
 		return
 	}
 
@@ -287,6 +464,8 @@ func TransferPoints(c *gin.Context) {
 		fmt.Sprintln("Error in getting all inputs for function %s. "+err.Error()+"\n", ERROR_STRING)
 		return
 	}
+	// converts id to lowercase
+	input.Target = strings.ToLower(input.Target)
 
 	receiver, exists, err := GetAccount(DB, models.User{Nusnetid: input.Target})
 	if !exists {
@@ -336,6 +515,202 @@ func TransferPoints(c *gin.Context) {
 	successMessage := fmt.Sprintf("Successfully transferred %.1f points to account with NUSNET ID %s!",
 		transferred, input.Target)
 	c.JSON(http.StatusOK, gin.H{"success": true, "message": successMessage})
+}
+
+// POST /edit_profile
+// Edit profile details
+func EditProfile(c *gin.Context) {
+	// Validate input
+	var input models.EditProfile
+	if err := c.Bind(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": "All input fields required."})
+		fmt.Println("Error in parsing inputs for account creation.")
+		return
+	}
+
+	// check if name is blank space
+	if input.Name == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Input name cannot be blank!"})
+		fmt.Println("Input name cannot be blank!")
+		return
+	}
+
+	if err := UpdateProfile(DB, input); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": "Encountered an error updating profile."})
+		fmt.Println("Encountered an error updating profile." + err.Error())
+	} else {
+		c.JSON(http.StatusOK, gin.H{"success": true, "message": "Profile successfully updated!"})
+		fmt.Println("Profile successfully updated!")
+	}
+}
+
+// POST /create_staff
+// Creates a staff account
+func CreateStaff(c *gin.Context) {
+	// Validate input
+	var input models.CreateStaffAccountInput
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error(), "message": "All input fields required."})
+		fmt.Println("Error in parsing inputs for account creation.")
+		return
+	}
+
+	// check if account already exists
+	if GetAccountExists(DB, models.CreateAccountInput{Nusnetid: input.NUSNET_ID}) {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Account already exists!"})
+		fmt.Println("Account already exists.")
+		return
+	}
+
+	// get accountTypeID
+	accountType, exists, err := GetAccountTypeDetails(DB, "Staff")
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "Unable to determine account type"})
+		fmt.Println("Unable to get accountTypeID. " + err.Error() + "\n")
+	}
+	if !exists {
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "Trying to set account to invalid type"})
+		fmt.Println("accountType does not exist. " + err.Error() + "\n")
+	}
+
+	// get accountStatusID
+	accountStatus, exists, err := GetAccountStatus(DB, "Offline")
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "Unable to determine account status"})
+		fmt.Println("Unable to get accountStatusID. " + err.Error() + "\n")
+	}
+	if !exists {
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "Trying to set account to invalid status"})
+		fmt.Println("accountStatus does not exist. " + err.Error() + "\n")
+	}
+
+	// generate new password
+	tempPass, err := password.Generate(10, 3, 3, false, false)
+	for !regexPasswordCheck(c, tempPass) {
+		tempPass, err = password.Generate(10, 3, 3, false, false)
+	}
+	if err != nil {
+		errorMessage := fmt.Sprintf("Error generating temporary password. " + err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": errorMessage})
+		fmt.Println(errorMessage)
+	}
+	user := models.User{
+		Nusnetid: input.NUSNET_ID,
+		Password: tempPass,
+	}
+
+	// hashing the password
+	if err := utils.HashPassword(&user); err != nil {
+		fmt.Println("Error in hashing user password: " + err.Error())
+		return
+	}
+
+	staffAcc := models.Accounts{
+		Nusnetid:        input.NUSNET_ID,
+		Passwordhash:    user.Password,
+		Name:            input.Name,
+		Gradyear:        9999,
+		Facultyid:       1,
+		Accounttypeid:   accountType.ID,
+		Points:          0,
+		Createdat:       time.Now(),
+		Lastupdated:     time.Now(),
+		Accountstatusid: accountStatus.ID,
+	}
+
+	if err := CreateAccount(DB, staffAcc); err != nil {
+		fmt.Println("Unable to create staff account. " + err.Error() + "\n")
+	} else {
+		fmt.Println("staff account successfully created!")
+	}
+
+	emailInfo := models.StaffCreationInfo{
+		Name:      input.Name,
+		NUSNET_ID: input.NUSNET_ID,
+		TempPass:  tempPass,
+	}
+	if err := SendStaffCreationEmail(emailInfo); err != nil {
+		errorMessage := fmt.Sprintf("Error sending staff creation email. " + err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(), "message": errorMessage})
+		fmt.Println(errorMessage)
+	} else {
+		successMessage := "Staff account successfully created." + "\n" + "Temporary password sent to registered staff's email."
+		c.JSON(http.StatusOK, gin.H{"success": true, "message": successMessage})
+		fmt.Println(successMessage)
+	}
+}
+
+func CreateAdminAccount() {
+	adminID := os.Getenv("ADMIN_ID")
+	if adminID == "" {
+		if config.ADMIN_ID == "" {
+			fmt.Println("Error creating admin account. Go to config.go to setup admin's user id.")
+		}
+		adminID = config.ADMIN_ID
+	}
+	adminPass := os.Getenv("ADMIN_PASS")
+	if adminPass == "" {
+		if config.ADMIN_PASS == "" {
+			fmt.Println("Error creating admin account. Go to config.go to setup admin's password.")
+		}
+		adminPass = config.ADMIN_PASS
+	}
+
+	// check if admin account already created
+	if GetAccountExists(DB, models.CreateAccountInput{Nusnetid: adminID}) {
+		return
+	}
+
+	// hashing the password
+	admin := models.User{
+		Nusnetid: adminID,
+		Password: adminPass,
+	}
+	err := utils.HashPassword(&admin)
+	if err != nil {
+		fmt.Println("Error in hashing admin password. " + err.Error())
+	}
+
+	// get accountTypeID
+	accountType, exists, err := GetAccountTypeDetails(DB, "Admin")
+	if err != nil {
+		fmt.Println("Unable to get accountTypeID. " + err.Error() + "\n")
+		return
+	}
+	if !exists {
+		fmt.Println("accountType does not exist. " + err.Error() + "\n")
+		return
+	}
+
+	// get accountStatusID
+	accountStatus, exists, err := GetAccountStatus(DB, "Offline")
+	if err != nil {
+		fmt.Println("Unable to get accountStatusID. " + err.Error() + "\n")
+		return
+	}
+	if !exists {
+		fmt.Println("accountStatus does not exist. " + err.Error() + "\n")
+		return
+	}
+
+	adminAcc := models.Accounts{
+		Nusnetid:        adminID,
+		Passwordhash:    admin.Password,
+		Name:            "Admin",
+		Gradyear:        9999,
+		Facultyid:       1,
+		Accounttypeid:   accountType.ID,
+		Points:          0,
+		Createdat:       time.Now(),
+		Lastupdated:     time.Now(),
+		Accountstatusid: accountStatus.ID,
+	}
+
+	if err := CreateAccount(DB, adminAcc); err != nil {
+		fmt.Println("Unable to create admin account. " + err.Error() + "\n")
+	} else {
+		fmt.Println("Admin account successfully created!")
+	}
 }
 
 func GetAccountTypeDetails(DB *gorm.DB, theType string) (models.Accounttypes, bool, error) {
@@ -507,6 +882,12 @@ func GetAccountDetailed(DB *gorm.DB, input models.User) (models.AccountDetailed,
 	if result.Error != nil {
 		return models.AccountDetailed{}, false, result.Error
 	}
+	URL, err := MakeProfilePicURL(retrieved.Profilepic)
+	if err != nil {
+		return models.AccountDetailed{}, false, err
+	} else {
+		retrieved.ProfilepicURL = URL
+	}
 	return retrieved, true, nil
 }
 
@@ -521,4 +902,195 @@ func GetAccountType(DB *gorm.DB, typeID int) (models.Accounttypes, bool, error) 
 		return models.Accounttypes{}, false, result.Error
 	}
 	return accountType, true, nil
+}
+
+func CreateS3Session() (*session.Session, error) {
+	bucketID := os.Getenv("ORBITAL-BOOKING-BUCKET-ID")
+	if bucketID == "" {
+		if config.ORBITAL_BOOKING_BUCKET_ID == "" {
+			return nil, errors.New("AWS bucket ID not setup, go to config.go to input")
+		} else {
+			bucketID = config.ORBITAL_BOOKING_BUCKET_ID
+		}
+	}
+	bucketKey := os.Getenv("ORBITAL-BOOKING-BUCKET-KEY")
+	if bucketKey == "" {
+		if config.ORBITAL_BOOKING_BUCKET_KEY == "" {
+			return nil, errors.New("AWS bucket key not setup, go to config.go to input")
+		} else {
+			bucketKey = config.ORBITAL_BOOKING_BUCKET_KEY
+		}
+	}
+
+	s, err := session.NewSession(&aws.Config{
+		Region: aws.String("ap-southeast-1"),
+		Credentials: credentials.NewStaticCredentials(
+			bucketID,  // id
+			bucketKey, // secret
+			""),       // token can be left blank for now
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return s, err
+}
+
+func UploadFileToS3(s *session.Session, file multipart.File, fileHeader *multipart.FileHeader) (uuid.UUID, error) {
+	// get the file size and read
+	// the file content into a buffer
+	size := fileHeader.Size
+	buffer := make([]byte, size)
+	file.Read(buffer)
+
+	// create a unique file name for the file
+	ID, err := uuid.NewRandom()
+	if err != nil {
+		fmt.Println("Unable to generate UUID for profile pic. " + err.Error() + "\n")
+		return uuid.UUID{}, err
+	}
+	tempFileName := "profile_pictures/" + ID.String()
+
+	bucketName := os.Getenv("ORBITAL-BOOKING-BUCKET-NAME")
+	if bucketName == "" {
+		if config.ORBITAL_BOOKING_BUCKET_NAME == "" {
+			return uuid.UUID{}, errors.New("AWS bucket name not setup, go to config.go to input")
+		} else {
+			bucketName = config.ORBITAL_BOOKING_BUCKET_NAME
+		}
+	}
+
+	// config settings: this is where you choose the bucket,
+	// filename, content-type and storage class of the file
+	// you're uploading
+	_, err = s3.New(s).PutObject(&s3.PutObjectInput{
+		Bucket:               aws.String(bucketName),
+		Key:                  aws.String(tempFileName),
+		ACL:                  aws.String("public-read"), // could be private if you want it to be access by only authorized users
+		Body:                 bytes.NewReader(buffer),
+		ContentLength:        aws.Int64(int64(size)),
+		ContentType:          aws.String(http.DetectContentType(buffer)),
+		ContentDisposition:   aws.String("attachment"),
+		ServerSideEncryption: aws.String("AES256"),
+		StorageClass:         aws.String("INTELLIGENT_TIERING"),
+	})
+	if err != nil {
+		return uuid.UUID{}, err
+	}
+
+	return ID, err
+}
+
+func MakeProfilePicURL(ID uuid.UUID) (string, error) {
+	bucketName := os.Getenv("ORBITAL-BOOKING-BUCKET-NAME")
+	if bucketName == "" {
+		if config.ORBITAL_BOOKING_BUCKET_NAME == "" {
+			return "", errors.New("AWS bucket name not setup, go to config.go to input")
+		} else {
+			bucketName = config.ORBITAL_BOOKING_BUCKET_NAME
+		}
+	}
+
+	var fileName string
+	if ID == uuid.Nil {
+		fileName = "default.png"
+	} else {
+		fileName = ID.String()
+	}
+
+	URL := fmt.Sprintf("https://"+"%s"+".s3."+"%s"+".amazonaws.com/"+"%s"+"%s",
+		bucketName, config.ORBITAL_BOOKING_BUCKET_REGION, config.PROFILE_PIC_FOLDER, fileName)
+	return URL, nil
+}
+
+func UpdateProfile(DB *gorm.DB, newInput models.EditProfile) error {
+	query := "UPDATE accounts"
+	updated := false
+	var tempID uuid.UUID
+	if newInput.Name != "" {
+		query += fmt.Sprintf(" SET name = '%s'", newInput.Name)
+		updated = true
+	}
+	if newInput.Facultyid != 0 {
+		if updated {
+			query += ","
+		} else {
+			query += " SET"
+		}
+		query += fmt.Sprintf(" facultyid = %d", newInput.Facultyid)
+		updated = true
+	}
+	if newInput.Gradyear != 0 {
+		if updated {
+			query += ","
+		} else {
+			query += " SET"
+		}
+		query += fmt.Sprintf(" gradyear = %d", newInput.Gradyear)
+		updated = true
+	}
+	if newInput.Profilepic != nil {
+		var err error
+		tempID, err = uuid.NewRandom()
+		if err != nil {
+			return err
+		}
+
+		// create S3 session for profile pic upload
+		s, err := CreateS3Session()
+		if err != nil {
+			return fmt.Errorf("unable to create AWS session for profile pic upload %s", err.Error())
+		}
+
+		if newInput.Profilepic != nil {
+			file, err := newInput.Profilepic.Open()
+			if err != nil {
+				return fmt.Errorf("unable to parse profile pic upload %s", err.Error())
+			}
+
+			tempID, err = UploadFileToS3(s, file, newInput.Profilepic)
+			if err != nil {
+				return fmt.Errorf("unable to upload profile pic to S3 %s", err.Error())
+			} else {
+				fmt.Println("New image uploaded successfully!")
+			}
+		}
+
+		tempQuery := "UPDATE accounts SET profilepic = ? WHERE nusnetid = ?"
+		if err := DB.Exec(tempQuery, tempID, newInput.Nusnetid).Error; err != nil {
+			return err
+		}
+		return nil
+	}
+	query += fmt.Sprintf(" WHERE nusnetid = '%s'", newInput.Nusnetid)
+	if err := DB.Exec(query).Error; err != nil {
+		return err
+	}
+
+	updateTime := "UPDATE accounts SET lastupdated = ? WHERE nusnetid = ?"
+	if err := DB.Exec(updateTime, time.Now(), newInput.Nusnetid).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+func RefillPoints(retrieved models.Accounts) (float64, error) {
+	lastYear, lastWeek := retrieved.Lastupdated.ISOWeek()
+	currentYear, currentWeek := time.Now().ISOWeek()
+	var toAdd float64
+	query := "UPDATE accounts SET points = ? WHERE nusnetid = ?"
+	if currentYear > lastYear || (currentYear == lastYear && currentWeek > lastWeek) {
+		if retrieved.Points <= config.MAX_POINTS-config.WEEKLY_POINTS {
+			toAdd = config.WEEKLY_POINTS
+		} else {
+			toAdd = retrieved.Points + config.WEEKLY_POINTS - config.MAX_POINTS
+		}
+	} else {
+		return 0.0, nil
+	}
+	if err := DB.Exec(query, toAdd, retrieved.Nusnetid).Error; err != nil {
+		return 0.0, err
+	} else {
+		return toAdd, nil
+	}
 }

@@ -11,9 +11,10 @@ import moment from "moment";
 import * as Cookies from "js-cookie";
 import Spinner from "react-bootstrap/Spinner";
 
-function ApprovalOverview() {
+function RejectionOverview() {
   let history = useHistory();
 
+  const [reason, setReason] = useState("");
   const [bookingInfo, setBookingInfo] = useState();
 
   const [loading, setLoading] = useState(false);
@@ -51,20 +52,21 @@ function ApprovalOverview() {
       });
   };
 
-  const approveBooking = () => {
-    if (bookingInfo !== undefined) {
+  const rejectBooking = () => {
+    if (bookingInfo !== undefined && reason !== "") {
       setLoading(true);
 
-      let tempArr = [];
-      tempArr.push(Cookies.get("bookingId"));
-
-      Axios.put(configData.LOCAL_HOST + "/approve_bookings", {
-        bookingID: tempArr,
+      Axios.put(configData.LOCAL_HOST + "/reject_booking", {
+        bookingID: Cookies.get("bookingId"),
+        reason: reason,
       })
         .then((response) => {
           history.push({
-            pathname: "/approval-success",
-            state: { success: true },
+            pathname: "/rejection-success",
+            state: {
+              message: response.data.message,
+              success: true,
+            },
           });
         })
         .catch((error) => {
@@ -119,7 +121,7 @@ function ApprovalOverview() {
         <Layout3
           id={Cookies.get("id")}
           name={Cookies.get("name")}
-          action="Approval confirmation"
+          action="Rejection confirmation"
         >
           <div className="parent">
             <div className="home-page">
@@ -315,25 +317,60 @@ function ApprovalOverview() {
                       </div>
                     )}
                   </div>
-                  <div style={{ textAlign: "right", paddingRight: 15 }}>
-                    <button
-                      type="submit"
-                      className="btn btn-primary btn-block"
-                      onClick={approveBooking}
+                  <div style={{ display: "flex", flexDirection: "row" }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        flex: 1,
+                        paddingLeft: 15,
+                        paddingRight: 15,
+                      }}
                     >
-                      Approve
-                    </button>
-                    {loading ? (
-                      <Spinner
-                        animation="border"
-                        role="status"
-                        style={{ float: "right", margin: 5 }}
-                      >
-                        <span className="visually-hidden">Loading...</span>
-                      </Spinner>
-                    ) : (
-                      ""
-                    )}
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Please enter a reason for rejection"
+                        onChange={(e) => setReason(e.target.value)}
+                        value={reason}
+                      ></input>
+                    </div>
+                    <div style={{ paddingRight: 15 }}>
+                      {reason === "" ? (
+                        <button
+                          style={{ width: 70 }}
+                          type="submit"
+                          className="btn btn-primary btn-block"
+                          disabled
+                        >
+                          Reject
+                        </button>
+                      ) : (
+                        <>
+                          <button
+                            style={{ width: 70 }}
+                            type="submit"
+                            className="btn btn-primary btn-block"
+                            onClick={rejectBooking}
+                          >
+                            Reject
+                          </button>
+                          {loading ? (
+                            <Spinner
+                              animation="border"
+                              role="status"
+                              style={{ float: "right", margin: 5 }}
+                            >
+                              <span className="visually-hidden">
+                                Loading...
+                              </span>
+                            </Spinner>
+                          ) : (
+                            ""
+                          )}
+                        </>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -351,4 +388,4 @@ function ApprovalOverview() {
   );
 }
 
-export default ApprovalOverview;
+export default RejectionOverview;

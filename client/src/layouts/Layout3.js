@@ -18,16 +18,8 @@ function Layout3(props) {
     history.push("/help");
   };
 
-  const getVenues = () => {
-    history.push("/staff-venues");
-  };
-
   const viewProfile = () => {
     history.push("/profile");
-  };
-
-  const transferPoints = () => {
-    history.push("/transfer-points");
   };
 
   const logout = () => {
@@ -48,48 +40,6 @@ function Layout3(props) {
   };
 
   return (
-    // <div>
-    //   <Navbar collapseOnSelect expand="sm" fixed="top">
-    //     <Link className="navbar-brand" to="/home">
-    //       <img
-    //         className="logo"
-    //         src={logo}
-    //         alt="logo"
-    //         style={{ float: "right", paddingLeft: 10 }}
-    //       />
-    //     </Link>
-    //     <div
-    //       style={{
-    //         position: "absolute",
-    //         left: "50%",
-    //         transform: "translate(-50%, 0%)",
-    //       }}
-    //     >
-    //       {props.action === undefined ? "" : props.action}
-    //     </div>
-    //     <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-    //     <Navbar.Collapse id="responsive-navbar-nav">
-    //       <div className="container">
-    //         <Nav className="mr-auto">
-    //           <Nav.Link onClick={getVenues}>Venues</Nav.Link>
-    //           <div style={{ margin: "0 auto", alignSelf: "center" }}></div>
-    //           <Nav.Link onClick={getHelp}>Help</Nav.Link>
-    //           <NavDropdown
-    //             title={props.name !== "" ? props.name : props.id}
-    //             id="basic-nav-dropdown"
-    //           >
-    //             <NavDropdown.Item onClick={viewProfile}>
-    //               Profile
-    //             </NavDropdown.Item>
-    //             <NavDropdown.Divider />
-    //             <NavDropdown.Item onClick={logout}>Logout</NavDropdown.Item>
-    //           </NavDropdown>
-    //         </Nav>
-    //       </div>
-    //     </Navbar.Collapse>
-    //   </Navbar>
-    //   <div>{props.children}</div>
-    // </div>
     <div>
       <Navbar collapseOnSelect expand="sm" fixed="top">
         <Link className="navbar-brand" to="/home">
@@ -114,7 +64,6 @@ function Layout3(props) {
         <Navbar.Collapse id="responsive-navbar-nav">
           <div className="container">
             <Nav className="mr-auto">
-              <Nav.Link onClick={getVenues}>Venues</Nav.Link>
               <div style={{ margin: "0 auto", alignSelf: "center" }}></div>
               <Nav.Link onClick={getHelp}>Help</Nav.Link>
               <NavDropdown
@@ -123,10 +72,6 @@ function Layout3(props) {
               >
                 <NavDropdown.Item onClick={viewProfile}>
                   Profile
-                </NavDropdown.Item>
-                <NavDropdown.Divider />
-                <NavDropdown.Item onClick={transferPoints}>
-                  Transfer points
                 </NavDropdown.Item>
                 <NavDropdown.Divider />
                 <NavDropdown.Item onClick={logout}>Logout</NavDropdown.Item>

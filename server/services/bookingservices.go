@@ -761,11 +761,11 @@ func InsertBooking(DB *gorm.DB, overLimitAndTime bool, s models.BookingInput, ve
 			Nusnetid:        s.Nusnetid,
 			Venueid:         s.Venueid,
 			Pax:             s.Pax,
-			Createdat:       time.Now(),
+			Createdat:       time.Now().Add(8 * time.Hour),
 			Eventstart:      s.Eventstart,
 			Eventend:        s.Eventend,
 			Bookingstatusid: statusCode.ID,
-			Lastupdated:     time.Now(),
+			Lastupdated:     time.Now().Add(8 * time.Hour),
 			Cost:            CostComputation(s.Pax, eventDuration, s.Sharable),
 		}
 		if result := DB.Create(&currentBooking); result.Error != nil {

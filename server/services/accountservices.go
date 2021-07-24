@@ -641,14 +641,14 @@ func CreateStaff(c *gin.Context) {
 }
 
 func CreateAdminAccount() {
-	adminID := os.Getenv("STAFF_ID")
+	adminID := os.Getenv("ADMIN_ID")
 	if adminID == "" {
 		if config.ADMIN_ID == "" {
 			fmt.Println("Error creating admin account. Go to config.go to setup admin's user id.")
 		}
 		adminID = config.ADMIN_ID
 	}
-	adminPass := os.Getenv("STAFF_PASS")
+	adminPass := os.Getenv("ADMIN_PASS")
 	if adminPass == "" {
 		if config.ADMIN_PASS == "" {
 			fmt.Println("Error creating admin account. Go to config.go to setup admin's password.")

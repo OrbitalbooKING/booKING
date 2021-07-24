@@ -25,6 +25,7 @@ import subDays from "date-fns/subDays";
 import "react-datepicker/dist/react-datepicker.css";
 
 import * as Cookies from "js-cookie";
+import Spinner from "react-bootstrap/Spinner";
 
 const useStyles = makeStyles((theme) => ({
   menuPaper: {
@@ -134,7 +135,6 @@ function EditHome() {
       params: search,
     })
       .then((response) => {
-        // console.log(response.data.data[0]);
         setVenueInfo(response.data.data);
       })
       .catch((error) => {
@@ -367,12 +367,17 @@ function EditHome() {
               >
                 <div className="column">
                   {venueInfo === undefined || bookingInfo === undefined ? (
-                    <div>
-                      <h2
-                        style={{ textAlign: "center", alignContent: "center" }}
-                      >
-                        Loading...{" "}
-                      </h2>
+                    <div
+                      style={{
+                        justifyContent: "center",
+                        alignItems: "center",
+                        display: "flex",
+                        flexDirection: "column",
+                      }}
+                    >
+                      <Spinner animation="border" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                      </Spinner>
                     </div>
                   ) : (
                     venueInfo.map((val, key) => {
@@ -1026,15 +1031,17 @@ function EditHome() {
                     </div>
                     <div style={{ overflowY: "auto", height: 200 }}>
                       {searchResults === undefined ? (
-                        <div>
-                          <h2
-                            style={{
-                              textAlign: "center",
-                              alignContent: "center",
-                            }}
-                          >
-                            Loading...{" "}
-                          </h2>
+                        <div
+                          style={{
+                            justifyContent: "center",
+                            alignItems: "center",
+                            display: "flex",
+                            flexDirection: "column",
+                          }}
+                        >
+                          <Spinner animation="border" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                          </Spinner>
                         </div>
                       ) : searchResults.length === 0 ? (
                         <div className="display-selected-venue">
@@ -1158,7 +1165,7 @@ function EditHome() {
                                     }}
                                   >
                                     <button
-                                      type="submit"
+                                      type="button"
                                       className="btn btn-primary btn-block"
                                       onClick={book(val)}
                                     >

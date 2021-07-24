@@ -7,6 +7,7 @@ import Home from "./Home";
 import Unauthorised from "./Unauthorised";
 
 import * as Cookies from "js-cookie";
+import Spinner from "react-bootstrap/Spinner";
 
 const style = {
   padding: 5,
@@ -53,8 +54,12 @@ function TransferPoints() {
   const [pointsLeft, setPointsLeft] = useState();
   const [error, setError] = useState("Transfer your points to your friends!");
 
+  const [loading, setLoading] = useState(false);
+
   const submitForm = (e) => {
     e.preventDefault();
+
+    setLoading(true);
 
     Axios.post(configData.LOCAL_HOST + "/transfer_points", {
       user: Cookies.get("id"),
@@ -77,6 +82,7 @@ function TransferPoints() {
           // that falls out of the range of 2xx
           if (error.response.status === 400) {
             setError(error.response.data.message);
+            setLoading(false);
           }
         } else if (error.request) {
           console.log("request");
@@ -85,9 +91,11 @@ function TransferPoints() {
           // browser and an instance of
           // http.ClientRequest in node.js
           console.log(error.request);
+          setLoading(false);
         } else {
           // Something happened in setting up the request that triggered an Error
           setError("Query failed!");
+          setLoading(false);
         }
       });
   };
@@ -109,10 +117,17 @@ function TransferPoints() {
           <div className="parent">
             <div className="sign-up">
               {pointsLeft === undefined ? (
-                <div>
-                  <h2 style={{ textAlign: "center", alignContent: "center" }}>
-                    Loading...{" "}
-                  </h2>
+                <div
+                  style={{
+                    justifyContent: "center",
+                    alignItems: "center",
+                    display: "flex",
+                    flexDirection: "column",
+                  }}
+                >
+                  <Spinner animation="border" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                  </Spinner>
                 </div>
               ) : (
                 <form>
@@ -167,6 +182,17 @@ function TransferPoints() {
                     >
                       Transfer
                     </button>
+                    {loading ? (
+                      <Spinner
+                        animation="border"
+                        role="status"
+                        style={{ float: "left", margin: 5 }}
+                      >
+                        <span className="visually-hidden">Loading...</span>
+                      </Spinner>
+                    ) : (
+                      ""
+                    )}
                   </div>
                 </form>
               )}

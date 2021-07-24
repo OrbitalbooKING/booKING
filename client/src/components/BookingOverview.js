@@ -9,12 +9,15 @@ import Unauthorised from "./Unauthorised";
 import moment from "moment";
 
 import * as Cookies from "js-cookie";
+import Spinner from "react-bootstrap/Spinner";
 
 function BookingOverview() {
   let history = useHistory();
 
   const [venueInfo, setVenueInfo] = useState();
   const [cart, setCart] = useState();
+
+  const [loading, setLoading] = useState(false);
 
   const venueSearch = () => {
     let search = new URLSearchParams();
@@ -26,7 +29,6 @@ function BookingOverview() {
       params: search,
     })
       .then((response) => {
-        // console.log(response.data.data[0]);
         setVenueInfo(response.data.data);
       })
       .catch((error) => {
@@ -88,6 +90,8 @@ function BookingOverview() {
 
   const confirmBooking = () => {
     if (cart !== undefined) {
+      setLoading(true);
+
       let tempArr = [];
 
       for (let i = 0; i < cart.length; i++) {
@@ -113,6 +117,7 @@ function BookingOverview() {
             // that falls out of the range of 2xx
             if (error.response.status === 400) {
               console.log(error.response.data.message);
+              setLoading(false);
             }
           } else if (error.request) {
             console.log("request");
@@ -121,9 +126,11 @@ function BookingOverview() {
             // browser and an instance of
             // http.ClientRequest in node.js
             console.log(error.request);
+            setLoading(false);
           } else {
             // Something happened in setting up the request that triggered an Error
             console.log("Query failed!");
+            setLoading(false);
           }
         });
     }
@@ -213,10 +220,17 @@ function BookingOverview() {
                   </div>
                 </div>
                 {venueInfo === undefined ? (
-                  <div>
-                    <h2 style={{ textAlign: "center", alignContent: "center" }}>
-                      Loading...{" "}
-                    </h2>
+                  <div
+                    style={{
+                      justifyContent: "center",
+                      alignItems: "center",
+                      display: "flex",
+                      flexDirection: "column",
+                    }}
+                  >
+                    <Spinner animation="border" role="status">
+                      <span className="visually-hidden">Loading...</span>
+                    </Spinner>
                   </div>
                 ) : venueInfo.length === 0 ? (
                   <div className="display-selected-venue">
@@ -342,15 +356,17 @@ function BookingOverview() {
                     }}
                   >
                     {cart === undefined ? (
-                      <div>
-                        <h2
-                          style={{
-                            textAlign: "center",
-                            alignContent: "center",
-                          }}
-                        >
-                          Loading...{" "}
-                        </h2>
+                      <div
+                        style={{
+                          justifyContent: "center",
+                          alignItems: "center",
+                          display: "flex",
+                          flexDirection: "column",
+                        }}
+                      >
+                        <Spinner animation="border" role="status">
+                          <span className="visually-hidden">Loading...</span>
+                        </Spinner>
                       </div>
                     ) : cart.length === 0 ? (
                       <div>
@@ -394,6 +410,17 @@ function BookingOverview() {
                     >
                       Confirm
                     </button>
+                    {loading ? (
+                      <Spinner
+                        animation="border"
+                        role="status"
+                        style={{ float: "right", margin: 5 }}
+                      >
+                        <span className="visually-hidden">Loading...</span>
+                      </Spinner>
+                    ) : (
+                      ""
+                    )}
                   </div>
                 </div>
               </div>
@@ -409,12 +436,17 @@ function BookingOverview() {
                 </div>
                 <div style={{ overflowY: "auto", height: 250 }}>
                   {venueInfo === undefined ? (
-                    <div>
-                      <h2
-                        style={{ textAlign: "center", alignContent: "center" }}
-                      >
-                        Loading...{" "}
-                      </h2>
+                    <div
+                      style={{
+                        justifyContent: "center",
+                        alignItems: "center",
+                        display: "flex",
+                        flexDirection: "column",
+                      }}
+                    >
+                      <Spinner animation="border" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                      </Spinner>
                     </div>
                   ) : venueInfo.length === 0 ? (
                     <div className="display-selected-venue">
@@ -609,15 +641,17 @@ function BookingOverview() {
                     }}
                   >
                     {cart === undefined ? (
-                      <div>
-                        <h2
-                          style={{
-                            textAlign: "center",
-                            alignContent: "center",
-                          }}
-                        >
-                          Loading...{" "}
-                        </h2>
+                      <div
+                        style={{
+                          justifyContent: "center",
+                          alignItems: "center",
+                          display: "flex",
+                          flexDirection: "column",
+                        }}
+                      >
+                        <Spinner animation="border" role="status">
+                          <span className="visually-hidden">Loading...</span>
+                        </Spinner>
                       </div>
                     ) : cart.length === 0 ? (
                       <div>
@@ -660,6 +694,17 @@ function BookingOverview() {
                     >
                       Confirm
                     </button>
+                    {loading ? (
+                      <Spinner
+                        animation="border"
+                        role="status"
+                        style={{ float: "right", margin: 5 }}
+                      >
+                        <span className="visually-hidden">Loading...</span>
+                      </Spinner>
+                    ) : (
+                      ""
+                    )}
                   </div>
                 </div>
               </div>

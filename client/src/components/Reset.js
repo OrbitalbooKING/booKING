@@ -6,6 +6,7 @@ import Layout1 from "../layouts/Layout1";
 import Home from "./Home";
 
 import * as Cookies from "js-cookie";
+import Spinner from "react-bootstrap/Spinner";
 
 const style = {
   padding: 5,
@@ -19,8 +20,12 @@ function ResetForm() {
     "Enter your NUSNET ID to reset your password!"
   );
 
+  const [loading, setLoading] = useState(false);
+
   const resetPassword = (e) => {
     e.preventDefault();
+
+    setLoading(true);
 
     Axios.post(configData.LOCAL_HOST + "/trigger_password_reset", {
       NUSNET_ID: id,
@@ -41,6 +46,7 @@ function ResetForm() {
           // that falls out of the range of 2xx
           if (error.response.status === 400) {
             setError(error.response.data.message);
+            setLoading(false);
           }
         } else if (error.request) {
           console.log("request");
@@ -49,9 +55,11 @@ function ResetForm() {
           // browser and an instance of
           // http.ClientRequest in node.js
           console.log(error.request);
+          setLoading(false);
         } else {
           // Something happened in setting up the request that triggered an Error
           setError("Query failed!");
+          setLoading(false);
         }
       });
   };
@@ -93,6 +101,17 @@ function ResetForm() {
                   >
                     Reset
                   </button>
+                  {loading ? (
+                    <Spinner
+                      animation="border"
+                      role="status"
+                      style={{ float: "left", margin: 5 }}
+                    >
+                      <span className="visually-hidden">Loading...</span>
+                    </Spinner>
+                  ) : (
+                    ""
+                  )}
                 </div>
               </form>
             </div>

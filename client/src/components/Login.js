@@ -6,6 +6,7 @@ import Layout1 from "../layouts/Layout1";
 import Home from "./Home";
 
 import * as Cookies from "js-cookie";
+import Spinner from "react-bootstrap/Spinner";
 
 const style = {
   padding: 5,
@@ -18,9 +19,12 @@ function LoginForm() {
   const [error, setError] = useState(
     "Please enter your NUSNET ID and password!"
   );
+  const [loading, setLoading] = useState(false);
 
-  const handleClick = (e) => {
+  const submitForm = (e) => {
     e.preventDefault();
+
+    setLoading(true);
 
     Axios.post(configData.LOCAL_HOST + "/login", {
       NUSNET_ID: details.id,
@@ -57,6 +61,7 @@ function LoginForm() {
           // that falls out of the range of 2xx
           if (error.response.status === 400) {
             setError(error.response.data.message);
+            setLoading(false);
           }
         } else if (error.request) {
           console.log("request");
@@ -65,9 +70,11 @@ function LoginForm() {
           // browser and an instance of
           // http.ClientRequest in node.js
           console.log(error.request);
+          setLoading(false);
         } else {
           // Something happened in setting up the request that triggered an Error
           setError("Query failed!");
+          setLoading(false);
         }
       });
   };
@@ -119,10 +126,21 @@ function LoginForm() {
                     style={{ float: "left", margin: 5 }}
                     type="submit"
                     className="btn btn-primary btn-block"
-                    onClick={handleClick}
+                    onClick={submitForm}
                   >
                     Sign In
                   </button>
+                  {loading ? (
+                    <Spinner
+                      animation="border"
+                      role="status"
+                      style={{ float: "left", margin: 5 }}
+                    >
+                      <span className="visually-hidden">Loading...</span>
+                    </Spinner>
+                  ) : (
+                    ""
+                  )}
                 </div>
               </form>
             </div>

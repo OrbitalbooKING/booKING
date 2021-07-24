@@ -7,6 +7,7 @@ import Home from "./Home";
 import Unauthorised from "./Unauthorised";
 
 import * as Cookies from "js-cookie";
+import Spinner from "react-bootstrap/Spinner";
 
 const style = {
   padding: 5,
@@ -17,9 +18,12 @@ function AdminHome() {
 
   const [username, setUsername] = useState("");
   const [id, setId] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const submitForm = (e) => {
     e.preventDefault();
+
+    setLoading(true);
 
     Axios.post(configData.LOCAL_HOST + "/create_staff", {
       name: username,
@@ -38,6 +42,7 @@ function AdminHome() {
           // that falls out of the range of 2xx
           if (error.response.status === 400) {
             console.log(error.response.data.message);
+            setLoading(false);
           }
         } else if (error.request) {
           console.log("request");
@@ -46,9 +51,11 @@ function AdminHome() {
           // browser and an instance of
           // http.ClientRequest in node.js
           console.log(error.request);
+          setLoading(false);
         } else {
           // Something happened in setting up the request that triggered an Error
           console.log("Query failed!");
+          setLoading(false);
         }
       });
   };
@@ -97,6 +104,17 @@ function AdminHome() {
                   >
                     Create
                   </button>
+                  {loading ? (
+                    <Spinner
+                      animation="border"
+                      role="status"
+                      style={{ float: "left", margin: 5 }}
+                    >
+                      <span className="visually-hidden">Loading...</span>
+                    </Spinner>
+                  ) : (
+                    ""
+                  )}
                 </div>
               </form>
             </div>

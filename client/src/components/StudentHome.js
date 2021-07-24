@@ -23,6 +23,7 @@ import subDays from "date-fns/subDays";
 import "react-datepicker/dist/react-datepicker.css";
 
 import * as Cookies from "js-cookie";
+import Spinner from "react-bootstrap/Spinner";
 
 const useStyles = makeStyles((theme) => ({
   menuPaper: {
@@ -642,12 +643,17 @@ function StudentHome() {
                 </div>
                 <div style={{ overflowY: "auto", height: 200 }}>
                   {searchResults === undefined ? (
-                    <div>
-                      <h2
-                        style={{ textAlign: "center", alignContent: "center" }}
-                      >
-                        Loading...{" "}
-                      </h2>
+                    <div
+                      style={{
+                        justifyContent: "center",
+                        alignItems: "center",
+                        display: "flex",
+                        flexDirection: "column",
+                      }}
+                    >
+                      <Spinner animation="border" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                      </Spinner>
                     </div>
                   ) : searchResults.length === 0 ? (
                     <div className="display-selected-venue">
@@ -787,12 +793,17 @@ function StudentHome() {
                 </div>
                 <div style={{ overflowY: "auto", height: 230 }}>
                   {searchResults === undefined ? (
-                    <div>
-                      <h2
-                        style={{ textAlign: "center", alignContent: "center" }}
-                      >
-                        Loading...{" "}
-                      </h2>
+                    <div
+                      style={{
+                        justifyContent: "center",
+                        alignItems: "center",
+                        display: "flex",
+                        flexDirection: "column",
+                      }}
+                    >
+                      <Spinner animation="border" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                      </Spinner>
                     </div>
                   ) : searchResults.length === 0 ? (
                     <div className="display-selected-venue">

@@ -23,6 +23,7 @@ import { Calendar, DateObject } from "react-multi-date-picker";
 import moment from "moment";
 
 import * as Cookies from "js-cookie";
+import Spinner from "react-bootstrap/Spinner";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -55,6 +56,9 @@ function Booking() {
   const [selected, setSelected] = useState();
   const [cart, setCart] = useState();
 
+  const [loading, setLoading] = useState(false);
+  const [clearLoading, setClearLoading] = useState(false);
+
   const venueSearch = () => {
     let search = new URLSearchParams();
 
@@ -65,7 +69,6 @@ function Booking() {
       params: search,
     })
       .then((response) => {
-        // console.log(response.data.data[0]);
         setVenueInfo(response.data.data);
       })
       .catch((error) => {
@@ -102,7 +105,6 @@ function Booking() {
         setPoints(response.data.data.UserPoints);
         setCost(response.data.data.TotalCost);
         setBookable(response.data.data.ValidCheckout);
-        // console.log(response.data.data.UserPoints);
       })
       .catch((error) => {
         if (error.response) {
@@ -168,11 +170,9 @@ function Booking() {
     if (event.target.checked) {
       // user selected checkbox
       addToCart(selectedStart, selectedEnd);
-      // setSelected({ ...selected, [event.target.name]: event.target.checked });
     } else {
       // user unselected checkbox
       removeFromCart(selectedStart, selectedEnd);
-      // setSelected({ ...selected, [event.target.name]: event.target.checked });
     }
   };
 
@@ -285,7 +285,6 @@ function Booking() {
     })
       .then((response) => {
         setCart(response.data.data.PendingBookings);
-        // console.log(response.data.data.PendingBookings);
       })
       .catch((error) => {
         if (error.response) {
@@ -447,6 +446,8 @@ function Booking() {
 
   const removeAllFromCart = () => {
     if (cart !== undefined) {
+      setClearLoading(true);
+
       let search = new URLSearchParams();
       for (let i = 0; i < cart.length; i++) {
         search.append("bookingID", cart[i].Bookingid);
@@ -465,6 +466,7 @@ function Booking() {
             // that falls out of the range of 2xx
             if (error.response.status === 400) {
               console.log(error.response.data.message);
+              setClearLoading(false);
             }
           } else if (error.request) {
             console.log("request");
@@ -473,15 +475,18 @@ function Booking() {
             // browser and an instance of
             // http.ClientRequest in node.js
             console.log(error.request);
+            setClearLoading(false);
           } else {
             // Something happened in setting up the request that triggered an Error
             console.log("Query failed!");
+            setClearLoading(false);
           }
         });
     }
   };
 
   const checkoutCart = () => {
+    setLoading(true);
     history.push("/booking-overview");
   };
 
@@ -490,93 +495,105 @@ function Booking() {
 
     return (
       <div>
-        <div style={{ overflowY: "auto", height: 200 }}>
+        <div style={{ overflowY: "auto", height: 200, paddingLeft: 5 }}>
           <FormGroup>
-            {availability === undefined || timings.length === 0
-              ? "Loading..."
-              : Object.entries(availability).map((val, key) => {
-                  if (
-                    date.format("MM/DD/YYYY") ===
-                      moment().format("MM/DD/YYYY") ||
-                    sharing === undefined ||
-                    (capacity === 0 && sharing)
-                  ) {
-                    return (
-                      <FormControlLabel
-                        disabled
-                        control={
-                          <Checkbox
-                            checked={selected[val[0]]}
-                            onChange={handleCheckboxChange}
-                            name={val[0]}
-                          />
-                        }
-                        label={formatter(val[0])}
-                        key={key}
-                      />
-                    );
-                  } else if (val[1]) {
-                    return (
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={selected[val[0]]}
-                            onChange={handleCheckboxChange}
-                            name={val[0]}
-                          />
-                        }
-                        label={formatter(val[0])}
-                        key={key}
-                      />
-                    );
-                  } else {
-                    for (let i = 0; i < cart.length; i++) {
-                      if (
-                        cart[i].Eventstart ===
-                        toIsoString(
-                          new Date(
-                            date.year,
-                            date.month.number - 1,
-                            date.day,
-                            val[0].substring(4, 6),
-                            0,
-                            0,
-                            0
-                          )
-                        ).substring(0, 19) +
-                          "Z"
-                      ) {
-                        return (
-                          <FormControlLabel
-                            control={
-                              <Checkbox
-                                checked={selected[val[0]]}
-                                onChange={handleCheckboxChange}
-                                name={val[0]}
-                              />
-                            }
-                            label={formatter(val[0])}
-                            key={key}
-                          />
-                        );
+            {availability === undefined || timings.length === 0 ? (
+              <div
+                style={{
+                  justifyContent: "center",
+                  alignItems: "center",
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+              >
+                <Spinner animation="border" role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </Spinner>
+              </div>
+            ) : (
+              Object.entries(availability).map((val, key) => {
+                if (
+                  date.format("MM/DD/YYYY") === moment().format("MM/DD/YYYY") ||
+                  sharing === undefined ||
+                  (capacity === 0 && sharing)
+                ) {
+                  return (
+                    <FormControlLabel
+                      disabled
+                      control={
+                        <Checkbox
+                          checked={selected[val[0]]}
+                          onChange={handleCheckboxChange}
+                          name={val[0]}
+                        />
                       }
+                      label={formatter(val[0])}
+                      key={key}
+                    />
+                  );
+                } else if (val[1]) {
+                  return (
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={selected[val[0]]}
+                          onChange={handleCheckboxChange}
+                          name={val[0]}
+                        />
+                      }
+                      label={formatter(val[0])}
+                      key={key}
+                    />
+                  );
+                } else {
+                  for (let i = 0; i < cart.length; i++) {
+                    if (
+                      cart[i].Eventstart ===
+                      toIsoString(
+                        new Date(
+                          date.year,
+                          date.month.number - 1,
+                          date.day,
+                          val[0].substring(4, 6),
+                          0,
+                          0,
+                          0
+                        )
+                      ).substring(0, 19) +
+                        "Z"
+                    ) {
+                      return (
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              checked={selected[val[0]]}
+                              onChange={handleCheckboxChange}
+                              name={val[0]}
+                            />
+                          }
+                          label={formatter(val[0])}
+                          key={key}
+                        />
+                      );
                     }
-                    return (
-                      <FormControlLabel
-                        disabled
-                        control={
-                          <Checkbox
-                            checked={selected[val[0]]}
-                            onChange={handleCheckboxChange}
-                            name={val[0]}
-                          />
-                        }
-                        label={formatter(val[0])}
-                        key={key}
-                      />
-                    );
                   }
-                })}
+                  return (
+                    <FormControlLabel
+                      disabled
+                      control={
+                        <Checkbox
+                          checked={selected[val[0]]}
+                          onChange={handleCheckboxChange}
+                          name={val[0]}
+                        />
+                      }
+                      label={formatter(val[0])}
+                      key={key}
+                    />
+                  );
+                }
+              })
+            )}
           </FormGroup>
         </div>
         <div className="calendar-error">
@@ -836,10 +853,17 @@ function Booking() {
                   </div>
                 </div>
                 {venueInfo === undefined ? (
-                  <div>
-                    <h2 style={{ textAlign: "center", alignContent: "center" }}>
-                      Loading...{" "}
-                    </h2>
+                  <div
+                    style={{
+                      justifyContent: "center",
+                      alignItems: "center",
+                      display: "flex",
+                      flexDirection: "column",
+                    }}
+                  >
+                    <Spinner animation="border" role="status">
+                      <span className="visually-hidden">Loading...</span>
+                    </Spinner>
                   </div>
                 ) : venueInfo.length === 0 ? (
                   <div className="display-selected-venue">
@@ -1056,15 +1080,17 @@ function Booking() {
                       }}
                     >
                       {cart === undefined ? (
-                        <div>
-                          <h2
-                            style={{
-                              textAlign: "center",
-                              alignContent: "center",
-                            }}
-                          >
-                            Loading...{" "}
-                          </h2>
+                        <div
+                          style={{
+                            justifyContent: "center",
+                            alignItems: "center",
+                            display: "flex",
+                            flexDirection: "column",
+                          }}
+                        >
+                          <Spinner animation="border" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                          </Spinner>
                         </div>
                       ) : cart.length === 0 ? (
                         <div>
@@ -1154,6 +1180,17 @@ function Booking() {
                         >
                           Clear cart
                         </button>
+                        {clearLoading ? (
+                          <Spinner
+                            animation="border"
+                            role="status"
+                            style={{ float: "left", margin: 5 }}
+                          >
+                            <span className="visually-hidden">Loading...</span>
+                          </Spinner>
+                        ) : (
+                          ""
+                        )}
                       </div>
                       <div
                         style={{
@@ -1171,13 +1208,28 @@ function Booking() {
                             Checkout
                           </button>
                         ) : bookable && cart.length > 0 ? (
-                          <button
-                            type="submit"
-                            className="btn btn-primary btn-block"
-                            onClick={checkoutCart}
-                          >
-                            Checkout
-                          </button>
+                          <>
+                            <button
+                              type="submit"
+                              className="btn btn-primary btn-block"
+                              onClick={checkoutCart}
+                            >
+                              Checkout
+                            </button>
+                            {loading ? (
+                              <Spinner
+                                animation="border"
+                                role="status"
+                                style={{ float: "right", margin: 5 }}
+                              >
+                                <span className="visually-hidden">
+                                  Loading...
+                                </span>
+                              </Spinner>
+                            ) : (
+                              ""
+                            )}
+                          </>
                         ) : (
                           <button
                             type="submit"
@@ -1204,12 +1256,17 @@ function Booking() {
                 </div>
                 <div style={{ overflowY: "auto", height: 250 }}>
                   {venueInfo === undefined ? (
-                    <div>
-                      <h2
-                        style={{ textAlign: "center", alignContent: "center" }}
-                      >
-                        Loading...{" "}
-                      </h2>
+                    <div
+                      style={{
+                        justifyContent: "center",
+                        alignItems: "center",
+                        display: "flex",
+                        flexDirection: "column",
+                      }}
+                    >
+                      <Spinner animation="border" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                      </Spinner>
                     </div>
                   ) : venueInfo.length === 0 ? (
                     <div className="display-selected-venue">
@@ -1473,15 +1530,17 @@ function Booking() {
                   </div>
                   <div style={{ overflowY: "auto", height: 200 }}>
                     {cart === undefined ? (
-                      <div>
-                        <h2
-                          style={{
-                            textAlign: "center",
-                            alignContent: "center",
-                          }}
-                        >
-                          Loading...{" "}
-                        </h2>
+                      <div
+                        style={{
+                          justifyContent: "center",
+                          alignItems: "center",
+                          display: "flex",
+                          flexDirection: "column",
+                        }}
+                      >
+                        <Spinner animation="border" role="status">
+                          <span className="visually-hidden">Loading...</span>
+                        </Spinner>
                       </div>
                     ) : cart.length === 0 ? (
                       <div>
@@ -1567,6 +1626,22 @@ function Booking() {
                       >
                         Clear cart
                       </button>
+                      {clearLoading ? (
+                        <Spinner
+                          animation="border"
+                          role="status"
+                          style={{
+                            float: "left",
+                            margin: 5,
+                            width: 20,
+                            height: 20,
+                          }}
+                        >
+                          <span className="visually-hidden">Loading...</span>
+                        </Spinner>
+                      ) : (
+                        ""
+                      )}
                     </div>
                     <div
                       style={{
@@ -1584,13 +1659,33 @@ function Booking() {
                           Checkout
                         </button>
                       ) : bookable && cart.length > 0 ? (
-                        <button
-                          type="submit"
-                          className="btn btn-primary btn-block"
-                          onClick={checkoutCart}
-                        >
-                          Checkout
-                        </button>
+                        <>
+                          <button
+                            type="submit"
+                            className="btn btn-primary btn-block"
+                            onClick={checkoutCart}
+                          >
+                            Checkout
+                          </button>
+                          {loading ? (
+                            <Spinner
+                              animation="border"
+                              role="status"
+                              style={{
+                                float: "right",
+                                margin: 5,
+                                width: 20,
+                                height: 20,
+                              }}
+                            >
+                              <span className="visually-hidden">
+                                Loading...
+                              </span>
+                            </Spinner>
+                          ) : (
+                            ""
+                          )}
+                        </>
                       ) : (
                         <button
                           type="submit"

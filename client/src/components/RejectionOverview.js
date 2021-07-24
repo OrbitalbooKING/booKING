@@ -9,12 +9,15 @@ import Unauthorised from "./Unauthorised";
 import moment from "moment";
 
 import * as Cookies from "js-cookie";
+import Spinner from "react-bootstrap/Spinner";
 
 function RejectionOverview() {
   let history = useHistory();
 
   const [reason, setReason] = useState("");
   const [bookingInfo, setBookingInfo] = useState();
+
+  const [loading, setLoading] = useState(false);
 
   const getBookingInfo = () => {
     let search = new URLSearchParams();
@@ -25,7 +28,6 @@ function RejectionOverview() {
       params: search,
     })
       .then((response) => {
-        console.log(response.data.data);
         setBookingInfo(response.data.data);
       })
       .catch((error) => {
@@ -52,6 +54,8 @@ function RejectionOverview() {
 
   const rejectBooking = () => {
     if (bookingInfo !== undefined && reason !== "") {
+      setLoading(true);
+
       Axios.put(configData.LOCAL_HOST + "/reject_booking", {
         bookingID: Cookies.get("bookingId"),
         reason: reason,
@@ -72,6 +76,7 @@ function RejectionOverview() {
             // that falls out of the range of 2xx
             if (error.response.status === 400) {
               console.log(error.response.data.message);
+              setLoading(false);
             }
           } else if (error.request) {
             console.log("request");
@@ -80,9 +85,11 @@ function RejectionOverview() {
             // browser and an instance of
             // http.ClientRequest in node.js
             console.log(error.request);
+            setLoading(false);
           } else {
             // Something happened in setting up the request that triggered an Error
             console.log("Query failed!");
+            setLoading(false);
           }
         });
     }
@@ -207,15 +214,17 @@ function RejectionOverview() {
                   </div>
                   <div style={{ paddingBottom: 10 }}>
                     {bookingInfo === undefined ? (
-                      <div>
-                        <h2
-                          style={{
-                            textAlign: "center",
-                            alignContent: "center",
-                          }}
-                        >
-                          Loading...{" "}
-                        </h2>
+                      <div
+                        style={{
+                          justifyContent: "center",
+                          alignItems: "center",
+                          display: "flex",
+                          flexDirection: "column",
+                        }}
+                      >
+                        <Spinner animation="border" role="status">
+                          <span className="visually-hidden">Loading...</span>
+                        </Spinner>
                       </div>
                     ) : (
                       <div
@@ -311,7 +320,9 @@ function RejectionOverview() {
                   <div style={{ display: "flex", flexDirection: "row" }}>
                     <div
                       style={{
-                        width: 940,
+                        display: "flex",
+                        flexDirection: "row",
+                        flex: 1,
                         paddingLeft: 15,
                         paddingRight: 15,
                       }}
@@ -319,18 +330,47 @@ function RejectionOverview() {
                       <input
                         type="text"
                         className="form-control"
-                        placeholder="Reason for rejection"
+                        placeholder="Please enter a reason for rejection"
                         onChange={(e) => setReason(e.target.value)}
                         value={reason}
                       ></input>
                     </div>
-                    <button
-                      type="submit"
-                      className="btn btn-primary btn-block"
-                      onClick={rejectBooking}
-                    >
-                      Reject
-                    </button>
+                    <div style={{ paddingRight: 15 }}>
+                      {reason === "" ? (
+                        <button
+                          style={{ width: 70 }}
+                          type="submit"
+                          className="btn btn-primary btn-block"
+                          disabled
+                        >
+                          Reject
+                        </button>
+                      ) : (
+                        <>
+                          <button
+                            style={{ width: 70 }}
+                            type="submit"
+                            className="btn btn-primary btn-block"
+                            onClick={rejectBooking}
+                          >
+                            Reject
+                          </button>
+                          {loading ? (
+                            <Spinner
+                              animation="border"
+                              role="status"
+                              style={{ float: "right", margin: 5 }}
+                            >
+                              <span className="visually-hidden">
+                                Loading...
+                              </span>
+                            </Spinner>
+                          ) : (
+                            ""
+                          )}
+                        </>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>

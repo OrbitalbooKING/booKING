@@ -10,6 +10,7 @@ import moment from "moment";
 
 import DefaultPic from "../assets/profile.png";
 import * as Cookies from "js-cookie";
+import Spinner from "react-bootstrap/Spinner";
 
 import Dropdown from "react-bootstrap/esm/Dropdown";
 import DropdownButton from "react-bootstrap/esm/DropdownButton";
@@ -306,12 +307,17 @@ function Profile() {
                 </div>
                 <div style={{ overflowY: "auto", height: 200 }}>
                   {bookings === undefined ? (
-                    <div>
-                      <h2
-                        style={{ textAlign: "center", alignContent: "center" }}
-                      >
-                        Loading...{" "}
-                      </h2>
+                    <div
+                      style={{
+                        justifyContent: "center",
+                        alignItems: "center",
+                        display: "flex",
+                        flexDirection: "column",
+                      }}
+                    >
+                      <Spinner animation="border" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                      </Spinner>
                     </div>
                   ) : bookings.length === 0 ? (
                     <div className="display-selected-venue">
@@ -597,12 +603,17 @@ function Profile() {
                 </div>
                 <div style={{ overflowY: "auto", height: 230 }}>
                   {bookings === undefined ? (
-                    <div>
-                      <h2
-                        style={{ textAlign: "center", alignContent: "center" }}
-                      >
-                        Loading...{" "}
-                      </h2>
+                    <div
+                      style={{
+                        justifyContent: "center",
+                        alignItems: "center",
+                        display: "flex",
+                        flexDirection: "column",
+                      }}
+                    >
+                      <Spinner animation="border" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                      </Spinner>
                     </div>
                   ) : bookings.length === 0 ? (
                     <div className="display-selected-venue">

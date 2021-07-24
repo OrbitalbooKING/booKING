@@ -13,6 +13,7 @@ import Select from "@material-ui/core/Select";
 import { makeStyles } from "@material-ui/core/styles";
 
 import * as Cookies from "js-cookie";
+import Spinner from "react-bootstrap/Spinner";
 import FormData from "form-data";
 
 import DefaultPic from "../assets/profile.png";
@@ -50,6 +51,8 @@ function SignUpForm() {
   const [faculty, setFaculty] = useState();
   const [error, setError] = useState("Create your account!");
 
+  const [loading, setLoading] = useState(false);
+
   const handleGradYearChange = (event) => {
     setGradYear(event.target.value);
   };
@@ -76,14 +79,18 @@ function SignUpForm() {
   const submitForm = (e) => {
     e.preventDefault();
 
+    setLoading(true);
+
     if (details.password !== details.confirmPassword) {
       setError("Passwords do not match!");
+      setLoading(false);
     } else if (
       details.id !== "" &&
       details.password === "" &&
       details.confirmPassword === ""
     ) {
       setError("Please enter a password!");
+      setLoading(false);
     } else if (
       details.password === details.confirmPassword &&
       details.id !== ""
@@ -121,6 +128,7 @@ function SignUpForm() {
             // that falls out of the range of 2xx
             if (error.response.status === 400) {
               setError(error.response.data.message);
+              setLoading(false);
             }
           } else if (error.request) {
             console.log("request");
@@ -129,9 +137,11 @@ function SignUpForm() {
             // browser and an instance of
             // http.ClientRequest in node.js
             console.log(error.request);
+            setLoading(false);
           } else {
             // Something happened in setting up the request that triggered an Error
             setError("Query failed!");
+            setLoading(false);
           }
         });
     } else if (
@@ -140,12 +150,14 @@ function SignUpForm() {
       details.confirmPassword !== ""
     ) {
       setError("Please enter your NUSNET ID!");
+      setLoading(false);
     } else {
       setError("Create your account!");
+      setLoading(false);
     }
   };
 
-  const getFacultyList = (e) => {
+  const getFacultyList = () => {
     Axios.get(configData.LOCAL_HOST + "/get_faculty")
       .then((response) => {
         setFacultyList(response.data.data);
@@ -360,6 +372,17 @@ function SignUpForm() {
                   >
                     Sign Up
                   </button>
+                  {loading ? (
+                    <Spinner
+                      animation="border"
+                      role="status"
+                      style={{ float: "left", margin: 5 }}
+                    >
+                      <span className="visually-hidden">Loading...</span>
+                    </Spinner>
+                  ) : (
+                    ""
+                  )}
                 </div>
               </form>
             </div>

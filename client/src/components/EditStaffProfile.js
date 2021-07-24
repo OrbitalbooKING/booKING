@@ -3,10 +3,11 @@ import { useHistory } from "react-router-dom";
 import Axios from "axios";
 import configData from "../config.json";
 import Layout3 from "../layouts/Layout3";
-import Home from "./Home";
+import EditProfile from "./EditProfile";
 import Unauthorised from "./Unauthorised";
 
 import * as Cookies from "js-cookie";
+import Spinner from "react-bootstrap/Spinner";
 import FormData from "form-data";
 
 import DefaultPic from "../assets/profile.png";
@@ -19,6 +20,8 @@ function EditStaffProfile() {
   let history = useHistory();
 
   const [profileInfo, setProfileInfo] = useState();
+
+  const [loading, setLoading] = useState(false);
 
   const getProfile = () => {
     let search = new URLSearchParams();
@@ -73,9 +76,11 @@ function EditStaffProfile() {
   const submitForm = (e) => {
     e.preventDefault();
 
+    setLoading(true);
+
     if (password.new !== password.confirm) {
       setError("Passwords do not match!");
-    } else if (password.new === password.confirm) {
+    } else {
       let bodyFormData = new FormData();
 
       bodyFormData.append("name", username);
@@ -114,6 +119,7 @@ function EditStaffProfile() {
                   // that falls out of the range of 2xx
                   if (error.response.status === 400) {
                     setError(error.response.data.message);
+                    setLoading(false);
                   }
                 } else if (error.request) {
                   console.log("request");
@@ -122,9 +128,11 @@ function EditStaffProfile() {
                   // browser and an instance of
                   // http.ClientRequest in node.js
                   console.log(error.request);
+                  setLoading(false);
                 } else {
                   // Something happened in setting up the request that triggered an Error
                   setError("Query failed!");
+                  setLoading(false);
                 }
               });
           }
@@ -136,6 +144,7 @@ function EditStaffProfile() {
             // that falls out of the range of 2xx
             if (error.response.status === 400) {
               setError(error.response.data.message);
+              setLoading(false);
             }
           } else if (error.request) {
             console.log("request");
@@ -144,13 +153,13 @@ function EditStaffProfile() {
             // browser and an instance of
             // http.ClientRequest in node.js
             console.log(error.request);
+            setLoading(false);
           } else {
             // Something happened in setting up the request that triggered an Error
             setError("Query failed!");
+            setLoading(false);
           }
         });
-    } else {
-      setError("Edit your profile!");
     }
   };
 
@@ -178,10 +187,17 @@ function EditStaffProfile() {
           <div className="parent">
             <div className="sign-up">
               {profileInfo === undefined ? (
-                <div>
-                  <h2 style={{ textAlign: "center", alignContent: "center" }}>
-                    Loading...{" "}
-                  </h2>
+                <div
+                  style={{
+                    justifyContent: "center",
+                    alignItems: "center",
+                    display: "flex",
+                    flexDirection: "column",
+                  }}
+                >
+                  <Spinner animation="border" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                  </Spinner>
                 </div>
               ) : (
                 <form>
@@ -295,6 +311,17 @@ function EditStaffProfile() {
                     >
                       Update
                     </button>
+                    {loading ? (
+                      <Spinner
+                        animation="border"
+                        role="status"
+                        style={{ float: "left", margin: 5 }}
+                      >
+                        <span className="visually-hidden">Loading...</span>
+                      </Spinner>
+                    ) : (
+                      ""
+                    )}
                   </div>
                 </form>
               )}
@@ -304,7 +331,7 @@ function EditStaffProfile() {
       ) : Cookies.get("name") !== undefined &&
         Cookies.get("id") !== undefined &&
         Cookies.get("account") !== undefined ? (
-        <Home />
+        <EditProfile />
       ) : (
         <Unauthorised />
       )}

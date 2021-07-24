@@ -406,17 +406,32 @@ function Profile() {
                                   alignSelf: "center",
                                 }}
                               >
-                                <DropdownButton
-                                  id="dropdown-basic-button"
-                                  title="Edit"
-                                >
-                                  <Dropdown.Item onClick={editBooking(val)}>
-                                    Edit
-                                  </Dropdown.Item>
-                                  <Dropdown.Item onClick={deleteBooking(val)}>
-                                    Delete
-                                  </Dropdown.Item>
-                                </DropdownButton>
+                                {val.Bookingstatusdescription === "Rejected" ? (
+                                  <DropdownButton
+                                    id="dropdown-basic-button"
+                                    title="Edit"
+                                    disabled
+                                  >
+                                    <Dropdown.Item onClick={editBooking(val)}>
+                                      Edit
+                                    </Dropdown.Item>
+                                    <Dropdown.Item onClick={deleteBooking(val)}>
+                                      Delete
+                                    </Dropdown.Item>
+                                  </DropdownButton>
+                                ) : (
+                                  <DropdownButton
+                                    id="dropdown-basic-button"
+                                    title="Edit"
+                                  >
+                                    <Dropdown.Item onClick={editBooking(val)}>
+                                      Edit
+                                    </Dropdown.Item>
+                                    <Dropdown.Item onClick={deleteBooking(val)}>
+                                      Delete
+                                    </Dropdown.Item>
+                                  </DropdownButton>
+                                )}
                               </div>
                             </div>
                           </div>
@@ -798,17 +813,32 @@ function Profile() {
                                   paddingTop: 10,
                                 }}
                               >
-                                <DropdownButton
-                                  id="dropdown-basic-button"
-                                  title="Edit"
-                                >
-                                  <Dropdown.Item onClick={editBooking(val)}>
-                                    Edit
-                                  </Dropdown.Item>
-                                  <Dropdown.Item onClick={deleteBooking(val)}>
-                                    Delete
-                                  </Dropdown.Item>
-                                </DropdownButton>
+                                {val.Bookingstatusdescription === "Rejected" ? (
+                                  <DropdownButton
+                                    id="dropdown-basic-button"
+                                    title="Edit"
+                                    disabled
+                                  >
+                                    <Dropdown.Item onClick={editBooking(val)}>
+                                      Edit
+                                    </Dropdown.Item>
+                                    <Dropdown.Item onClick={deleteBooking(val)}>
+                                      Delete
+                                    </Dropdown.Item>
+                                  </DropdownButton>
+                                ) : (
+                                  <DropdownButton
+                                    id="dropdown-basic-button"
+                                    title="Edit"
+                                  >
+                                    <Dropdown.Item onClick={editBooking(val)}>
+                                      Edit
+                                    </Dropdown.Item>
+                                    <Dropdown.Item onClick={deleteBooking(val)}>
+                                      Delete
+                                    </Dropdown.Item>
+                                  </DropdownButton>
+                                )}
                               </div>
                               <hr />
                             </div>

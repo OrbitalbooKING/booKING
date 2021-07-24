@@ -54,8 +54,9 @@ func MakePendingApprovalHTML(info models.PendingApprovalInfo) hermes.Email {
 				{
 					Instructions: "You can check the status of your booking and more in your dashboard. Log in to the app now to check:",
 					Button: hermes.Button{
-						Text: "Go to booKING",
-						Link: config.HEROKU_HOST,
+						Color: "#5aafff",
+						Text:  "Go to booKING",
+						Link:  config.HEROKU_HOST,
 					},
 				},
 			},
@@ -110,8 +111,9 @@ func MakeStaffCreationHTML(info models.StaffCreationInfo) hermes.Email {
 				{
 					Instructions: "Log in now:",
 					Button: hermes.Button{
-						Text: "booKING",
-						Link: config.HEROKU_HOST,
+						Color: "#5aafff",
+						Text:  "booKING",
+						Link:  config.HEROKU_HOST,
 					},
 				},
 			},
@@ -145,8 +147,9 @@ func MakeRejectHTML(info models.RejectInfo) hermes.Email {
 				{
 					Instructions: "Log in to make another booking, or check the status of your booking(s):",
 					Button: hermes.Button{
-						Text: "booKING",
-						Link: config.HEROKU_HOST,
+						Color: "#5aafff",
+						Text:  "booKING",
+						Link:  config.HEROKU_HOST,
 					},
 				},
 			},
@@ -178,8 +181,9 @@ func MakeApproveHTML(info models.ApproveInfo) hermes.Email {
 				{
 					Instructions: "Log in to make another booking, or check the status of your booking(s):",
 					Button: hermes.Button{
-						Text: "booKING",
-						Link: config.HEROKU_HOST,
+						Color: "#5aafff",
+						Text:  "booKING",
+						Link:  config.HEROKU_HOST,
 					},
 				},
 			},
@@ -205,8 +209,9 @@ func MakeAccountCreationHTML(info models.AccountCreationInfo) hermes.Email {
 				{
 					Instructions: "Log in to make your first booking now!",
 					Button: hermes.Button{
-						Text: "booKING",
-						Link: config.HEROKU_HOST,
+						Color: "#5aafff",
+						Text:  "booKING",
+						Link:  config.HEROKU_HOST,
 					},
 				},
 			},

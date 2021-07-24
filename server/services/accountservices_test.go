@@ -14,6 +14,8 @@ import (
 	"testing"
 	"time"
 
+	unitTest "github.com/Valiben/gin_unit_test"
+
 	"github.com/google/uuid"
 
 	"github.com/DATA-DOG/go-sqlmock"
@@ -24,6 +26,16 @@ import (
 
 type Repository struct {
 	db *gorm.DB
+}
+
+type StandardSuccess struct {
+	Success bool   `json:"success"`
+	Message string `json:"message"`
+}
+
+type StandardError struct {
+	Error   string `json:"error"`
+	Message string `json:"message"`
 }
 
 type AnyTime struct{}
@@ -259,7 +271,7 @@ func TestCreateAccount_ValidInput(t *testing.T) {
 	query := regexp.QuoteMeta(`INSERT INTO "accounts" ("id","nusnetid","passwordhash","name","facultyid","gradyear","profilepic","accounttypeid","points","createdat","lastupdated","accountstatusid") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) RETURNING "accounts"."id"`)
 	mock.ExpectBegin()
 	mock.ExpectQuery(query).
-		WithArgs(1, "e001", "pass", "test", 1, 2022, "testURL", 1,
+		WithArgs(1, "e001", "pass", "test", 1, 2022, uuid.Nil.String(), 1,
 			50.0, AnyTime{}, AnyTime{}, 1).
 		WillReturnRows(sqlmock.NewRows([]string{"id"}).AddRow("1"))
 	mock.ExpectCommit()
@@ -657,4 +669,214 @@ func TestRegister_InvalidUsedAcc(t *testing.T) {
 	//		"Expected message to be '%v' but got %s\n",
 	//		expectedSuccess, receive.Success, expectedMessage, receive.Message)
 	//}
+}
+
+func TestGetFaculties(t *testing.T) {
+	router, err := APISetupForTest()
+	if err != nil {
+		t.Fatalf("Unexpected error: %s", err)
+	}
+	router.GET("/get_faculty", GetFaculties)
+
+	type Temp struct {
+		Data []models.Faculties `json:"data"`
+	}
+	response := Temp{}
+	err = unitTest.TestHandlerUnMarshalResp("GET", "/get_faculty", "form", nil, &response)
+	if err != nil {
+		t.Errorf("Error encountered receiving response: %s", err)
+		return
+	}
+}
+
+func TestLogin(t *testing.T) {
+	router, err := APISetupForTest()
+	if err != nil {
+		t.Fatalf("Unexpected error: %s", err)
+	}
+	router.POST("/login", Login)
+
+	input := models.User{
+		Nusnetid: "e0123456",
+		Password: "Ab@123",
+	}
+	param := make(map[string]interface{})
+	param["NUSNET_ID"] = input.Nusnetid
+	param["password"] = input.Password
+
+	type Special struct {
+		Success bool               `json:"success"`
+		Message models.LoginOutput `json:"message"`
+	}
+	var response Special
+
+	err = unitTest.TestHandlerUnMarshalResp("POST", "/login", "json", input, &response)
+	if err != nil {
+		t.Errorf("Unexpected error testing Login API: %s", err)
+	}
+	if response.Message.Accounttypename != "Student" {
+		t.Errorf("Expected to get type Student but got %s instead.", response.Message.Accounttypename)
+	}
+}
+
+func TestPointsUpdate(t *testing.T) {
+	router, err := APISetupForTest()
+	if err != nil {
+		t.Fatalf("Unexpected error: %s", err)
+	}
+	router.POST("/points_update", PointsUpdate)
+
+	var response StandardSuccess
+	expected := "No points refilled as week has not past."
+	input := models.User{Nusnetid: "e0123456"}
+	err = unitTest.TestHandlerUnMarshalResp("POST", "/points_update", "json", input, &response)
+	if err != nil {
+		t.Errorf("Unexpected error testing PointsUpdate API: %s", err)
+	}
+	if response.Message != expected {
+		t.Errorf("Expected this message:\n%s but got this instead:\n%s", expected, response.Message)
+	}
+}
+
+func TestResetPassword(t *testing.T) {
+	router, err := APISetupForTest()
+	if err != nil {
+		t.Fatalf("Unexpected error: %s", err)
+	}
+	router.PATCH("/reset_password", ResetPassword)
+
+	input := models.PasswordReset{
+		Nusnetid:    "e0123456",
+		OldPassword: "Ab@123",
+		NewPassword: "aB@123",
+	}
+	var response StandardSuccess
+	expected := "Password successfully reset!"
+	err = unitTest.TestHandlerUnMarshalResp("PATCH", "/reset_password", "json", input, &response)
+	if err != nil {
+		t.Errorf("Unexpected error testing ResetPassword API: %s", err)
+	}
+	if response.Message != expected {
+		t.Errorf("Expected this message:\n%s but got this instead:\n%s", expected, response.Message)
+	}
+}
+
+func TestTriggerPasswordReset(t *testing.T) {
+	router, err := APISetupForTest()
+	if err != nil {
+		t.Fatalf("Unexpected error: %s", err)
+	}
+	router.POST("/trigger_password_reset", TriggerPasswordReset)
+
+	input := models.User{Nusnetid: "e0123456"}
+	var response StandardSuccess
+	err = unitTest.TestHandlerUnMarshalResp("POST", "/trigger_password_reset", "json", input, &response)
+	if err != nil {
+		t.Errorf("Unexpected error testing TriggerPasswordReset API: %s", err)
+	}
+}
+
+func TestGetProfile(t *testing.T) {
+	router, err := APISetupForTest()
+	if err != nil {
+		t.Fatalf("Unexpected error: %s", err)
+	}
+	router.GET("/get_profile", GetProfile)
+
+	input := models.User{
+		Nusnetid: "e0123456",
+	}
+	var response StandardSuccess
+	err = unitTest.TestHandlerUnMarshalResp("GET", "/get_profile", "json", input, &response)
+	if err != nil {
+		t.Errorf("Unexpected error testing GetProfile API: %s", err)
+	}
+}
+
+func TestTransferPoints(t *testing.T) {
+	router, err := APISetupForTest()
+	if err != nil {
+		t.Errorf("Unexpected error: %s", err)
+	}
+	router.POST("/transfer_points", TransferPoints)
+
+	input := models.PointsTarget{
+		User:   "e0123456",
+		Target: "e1234567",
+		Points: 5.0,
+	}
+	var response StandardSuccess
+	expected := fmt.Sprintf("Successfully transferred %.1f points to account with NUSNET ID %s!",
+		input.Points, input.Target)
+	err = unitTest.TestHandlerUnMarshalResp("POST", "/transfer_points", "json", input, &response)
+	if err != nil {
+		t.Errorf("Unexpected error testing TransferPoints API: %s", err)
+	}
+	if response.Message != expected {
+		t.Errorf("Expected this message:\n%s but got this instead:\n%s", expected, response.Message)
+	}
+}
+
+func TestEditProfile(t *testing.T) {
+	router, err := APISetupForTest()
+	if err != nil {
+		t.Fatalf("Unexpected error: %s", err)
+	}
+	router.POST("/edit_profile", EditProfile)
+
+	input := models.EditProfile{
+		Nusnetid:   "e0123456",
+		Name:       "TEST",
+		Facultyid:  1,
+		Gradyear:   2099,
+		Profilepic: nil,
+	}
+	var response StandardSuccess
+	expected := "Profile successfully updated!"
+	err = unitTest.TestHandlerUnMarshalResp("POST", "/edit_profile", "json", input, &response)
+	if err != nil {
+		t.Errorf("Unexpected error testing EditProfile API: %s", err)
+	}
+	if response.Message != expected {
+		t.Errorf("Expected this message:\n%s but got this instead:\n%s", expected, response.Message)
+	}
+}
+
+func TestRegister(t *testing.T) {
+	router, err := APISetupForTest()
+	router.POST("/register", Register)
+
+	if err != nil {
+		t.Fatalf("Unexpected error: %s", err)
+	}
+	toUseID := "e9" + strconv.Itoa(rand.Intn(1000000))
+	account := models.CreateAccountInput{
+		Nusnetid:   toUseID,
+		Password:   "Test@123",
+		Name:       "Test",
+		Facultyid:  1,
+		Gradyear:   2099,
+		Profilepic: nil,
+	}
+	var response StandardError
+	err = unitTest.TestHandlerUnMarshalResp("POST", "/register", "json", account, &response)
+}
+
+func TestCreateStaff(t *testing.T) {
+	router, err := APISetupForTest()
+	if err != nil {
+		t.Fatalf("Unexpected error: %s", err)
+	}
+	router.POST("/create_staff", CreateStaff)
+
+	toUseID := "e9" + strconv.Itoa(rand.Intn(1000000))
+	input := models.CreateStaffAccountInput{
+		NUSNET_ID: toUseID,
+		Name:      "TESTSTAFF",
+	}
+	var response StandardSuccess
+	err = unitTest.TestHandlerUnMarshalResp("POST", "/create_staff", "json", input, &response)
+	if err != nil {
+		t.Errorf("Unexpected error testing CreateStaff API: %s", err)
+	}
 }

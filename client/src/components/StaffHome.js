@@ -509,11 +509,10 @@ function StaffHome() {
                         <h3>No bookings to display</h3>
                       </div>
                     </div>
-                  ) : status === "Pending" ? (
+                  ) : status === "Approved" ? (
                     bookingsList
                       .filter(
-                        (data) =>
-                          data.Bookingstatusdescription === "Pending approval"
+                        (data) => data.Bookingstatusdescription === "Approved"
                       )
                       .map((val, key) => {
                         return (

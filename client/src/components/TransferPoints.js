@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import Axios from "axios";
 import configData from "../config.json";
 import Layout2 from "../layouts/Layout2";
-import Layout3 from "../layouts/Layout3";
+import Home from "./Home";
 import Unauthorised from "./Unauthorised";
 
 import * as Cookies from "js-cookie";
@@ -176,78 +176,7 @@ function TransferPoints() {
       ) : Cookies.get("name") !== undefined &&
         Cookies.get("id") !== undefined &&
         Cookies.get("account") !== undefined ? (
-        <Layout3
-          id={Cookies.get("id")}
-          name={Cookies.get("name")}
-          action="Tranfer points"
-        >
-          <div className="parent">
-            <div className="sign-up">
-              {pointsLeft === undefined ? (
-                <div>
-                  <h2 style={{ textAlign: "center", alignContent: "center" }}>
-                    Loading...{" "}
-                  </h2>
-                </div>
-              ) : (
-                <form>
-                  <h3>Transfer Points</h3>
-
-                  <div className="error">
-                    <span className="message">{error}</span>
-                  </div>
-
-                  <div className="form-group" style={style}>
-                    <input
-                      type="text"
-                      className="form-control"
-                      placeholder="Target recipient of points"
-                      onChange={(e) => setTarget(e.target.value)}
-                      value={target}
-                    />
-                  </div>
-
-                  <div
-                    className="form-group"
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      padding: 5,
-                    }}
-                  >
-                    <input
-                      style={{ width: "70%", float: "left" }}
-                      type="text"
-                      className="form-control"
-                      placeholder="Points to transfer"
-                      onChange={(e) => setPoints(Number(e.target.value))}
-                      value={points}
-                    />
-                    <div
-                      style={{
-                        alignSelf: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      Points Left: {Math.round(pointsLeft * 10) / 10}
-                    </div>
-                  </div>
-
-                  <div style={style}>
-                    <button
-                      style={{ float: "left" }}
-                      type="submit"
-                      className="btn btn-primary btn-block"
-                      onClick={submitForm}
-                    >
-                      Transfer
-                    </button>
-                  </div>
-                </form>
-              )}
-            </div>
-          </div>
-        </Layout3>
+        <Home />
       ) : (
         <Unauthorised />
       )}

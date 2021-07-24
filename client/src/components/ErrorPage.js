@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 function ErrorPage() {
   let history = useHistory();
 
-  const Home = () => {
+  const goHome = () => {
     history.push("/home");
   };
 
@@ -17,7 +17,7 @@ function ErrorPage() {
             style={{ float: "left" }}
             type="submit"
             className="btn btn-primary btn-block"
-            onClick={Home}
+            onClick={goHome}
           >
             Home
           </button>

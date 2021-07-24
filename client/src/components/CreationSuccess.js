@@ -14,7 +14,7 @@ function CreationSuccess(props) {
 
   return (
     <>
-      {props.location.state.success &&
+      {props.location.state !== undefined &&
       Cookies.get("name") !== undefined &&
       Cookies.get("id") !== undefined &&
       Cookies.get("account") === "Admin" ? (

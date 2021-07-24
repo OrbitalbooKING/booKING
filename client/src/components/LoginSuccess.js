@@ -15,7 +15,7 @@ function LoginSuccess(props) {
 
   return (
     <>
-      {props.location.state.success &&
+      {props.location.state !== undefined &&
       Cookies.get("name") !== undefined &&
       Cookies.get("id") !== undefined &&
       Cookies.get("account") === "Student" ? (
@@ -46,7 +46,7 @@ function LoginSuccess(props) {
             </div>
           </div>
         </Layout2>
-      ) : props.location.state.success &&
+      ) : props.location.state !== undefined &&
         Cookies.get("name") !== undefined &&
         Cookies.get("id") !== undefined &&
         Cookies.get("account") !== undefined ? (

@@ -1,30 +1,27 @@
 import { useHistory } from "react-router-dom";
 import Layout2 from "../layouts/Layout2";
+import Home from "./Home";
 import Unauthorised from "./Unauthorised";
 
 import * as Cookies from "js-cookie";
 
-function EditSuccess() {
+function EditSuccess(props) {
   let history = useHistory();
 
-  const Home = () => {
-    // history.push({
-    //     pathname: "/home",
-    //     state: {
-    //         id: props.location.state.id,
-    //         name: props.location.state.name
-    //     }
-    // });
+  const goHome = () => {
     history.push("/home");
   };
 
   return (
     <>
-      {Cookies.get("name") !== undefined && Cookies.get("id") !== undefined ? (
+      {props.location.state !== undefined &&
+      Cookies.get("name") !== undefined &&
+      Cookies.get("id") !== undefined &&
+      Cookies.get("account") === "Student" ? (
         <Layout2
           id={Cookies.get("id")}
           name={Cookies.get("name")}
-          action="Booking success!"
+          action="Edit success!"
         >
           <div className="parent">
             <div className="welcome-page">
@@ -34,7 +31,7 @@ function EditSuccess() {
                   style={{ float: "left" }}
                   type="submit"
                   className="btn btn-primary btn-block"
-                  onClick={Home}
+                  onClick={goHome}
                 >
                   Home
                 </button>
@@ -42,6 +39,10 @@ function EditSuccess() {
             </div>
           </div>
         </Layout2>
+      ) : Cookies.get("name") !== undefined &&
+        Cookies.get("id") !== undefined &&
+        Cookies.get("account") !== undefined ? (
+        <Home />
       ) : (
         <Unauthorised />
       )}

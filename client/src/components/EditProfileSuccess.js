@@ -15,14 +15,10 @@ function EditProfileSuccess(props) {
 
   return (
     <>
-      {!props.location.state.success &&
+      {props.location.state !== undefined &&
       Cookies.get("name") !== undefined &&
       Cookies.get("id") !== undefined &&
-      Cookies.get("account") !== undefined ? (
-        <Home />
-      ) : Cookies.get("name") !== undefined &&
-        Cookies.get("id") !== undefined &&
-        Cookies.get("account") === "Student" ? (
+      Cookies.get("account") === "Student" ? (
         <Layout2
           id={Cookies.get("id")}
           name={Cookies.get("name")}
@@ -44,7 +40,8 @@ function EditProfileSuccess(props) {
             </div>
           </div>
         </Layout2>
-      ) : Cookies.get("name") !== undefined &&
+      ) : props.location.state !== undefined &&
+        Cookies.get("name") !== undefined &&
         Cookies.get("id") !== undefined &&
         Cookies.get("account") !== undefined ? (
         <Layout3
@@ -68,6 +65,10 @@ function EditProfileSuccess(props) {
             </div>
           </div>
         </Layout3>
+      ) : Cookies.get("name") !== undefined &&
+        Cookies.get("id") !== undefined &&
+        Cookies.get("account") !== undefined ? (
+        <Home />
       ) : (
         <Unauthorised />
       )}

@@ -1,6 +1,5 @@
 import { useHistory } from "react-router-dom";
 import Layout2 from "../layouts/Layout2";
-import Layout3 from "../layouts/Layout3";
 import Home from "./Home";
 import Unauthorised from "./Unauthorised";
 
@@ -15,7 +14,7 @@ function DeletionSuccess(props) {
 
   return (
     <>
-      {props.location.state.success &&
+      {props.location.state !== undefined &&
       Cookies.get("name") !== undefined &&
       Cookies.get("id") !== undefined &&
       Cookies.get("account") === "Student" ? (
@@ -40,31 +39,6 @@ function DeletionSuccess(props) {
             </div>
           </div>
         </Layout2>
-      ) : props.location.state.success &&
-        Cookies.get("name") !== undefined &&
-        Cookies.get("id") !== undefined &&
-        Cookies.get("account") !== undefined ? (
-        <Layout3
-          id={Cookies.get("id")}
-          name={Cookies.get("name")}
-          action="Deletion success!"
-        >
-          <div className="parent">
-            <div className="welcome-page">
-              <h2>{props.location.state.message}</h2>
-              <div>
-                <button
-                  style={{ float: "left" }}
-                  type="submit"
-                  className="btn btn-primary btn-block"
-                  onClick={goHome}
-                >
-                  Home
-                </button>
-              </div>
-            </div>
-          </div>
-        </Layout3>
       ) : Cookies.get("name") !== undefined &&
         Cookies.get("id") !== undefined &&
         Cookies.get("account") !== undefined ? (

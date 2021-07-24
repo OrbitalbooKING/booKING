@@ -14,7 +14,7 @@ function ResetSuccess(props) {
 
   return (
     <>
-      {props.location.state.success ? (
+      {props.location.state !== undefined ? (
         <Layout1>
           <div className="parent">
             <div className="welcome-page">

@@ -3,6 +3,7 @@ import { useHistory } from "react-router-dom";
 import Axios from "axios";
 import configData from "../config.json";
 import Layout3 from "../layouts/Layout3";
+import Home from "./Home";
 import Unauthorised from "./Unauthorised";
 
 import * as Cookies from "js-cookie";
@@ -101,6 +102,10 @@ function AdminHome() {
             </div>
           </div>
         </Layout3>
+      ) : Cookies.get("name") !== undefined &&
+        Cookies.get("id") !== undefined &&
+        Cookies.get("account") !== undefined ? (
+        <Home />
       ) : (
         <Unauthorised />
       )}

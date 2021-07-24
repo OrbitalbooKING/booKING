@@ -44,7 +44,7 @@ func StartAll(r *gin.Engine) {
 	api.DELETE("/delete_pending_bookings", services.DeletePendingBookings)
 	api.DELETE("/delete_confirmed_bookings", services.DeleteConfirmedBookings)
 	api.GET("/get_user_with_temp_points", services.GetUserWithTempPoints)
-	api.PUT("/reject_booking", services.RejectBooking)
+	api.POST("/reject_booking", services.RejectBooking)
 
 	if port := os.Getenv("PORT"); port != "" {
 		r.Run(":" + port)

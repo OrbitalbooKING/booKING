@@ -20,12 +20,6 @@ CREATE TABLE IF NOT EXISTS bookingStatuses (
     bookingStatusDescription VARCHAR(250)
 );
 
-CREATE TABLE IF NOT EXISTS notificationTypes (
-    id SERIAL PRIMARY KEY,
-    notificationType VARCHAR(250),
-    notificationTypeDescription VARCHAR(250)
-);
-
 CREATE TABLE IF NOT EXISTS venueStatuses (
     id SERIAL PRIMARY KEY,
     venueStatusName VARCHAR(250),
@@ -105,11 +99,6 @@ CREATE TABLE IF NOT EXISTS currentBookings (
     cost REAL
 );
 
-CREATE TABLE IF NOT EXISTS notifications (
-    id SERIAL PRIMARY KEY,
-    notificationTypeID INT REFERENCES notificationTypes,
-    bookingID uuid REFERENCES currentBookings
-);
 
 CREATE TABLE IF NOT EXISTS venueFacilities (
     id SERIAL PRIMARY KEY,
@@ -121,7 +110,6 @@ CREATE TABLE IF NOT EXISTS venueFacilities (
 ALTER TABLE accountTypes OWNER TO postgres;
 ALTER TABLE accountStatuses OWNER TO postgres;
 ALTER TABLE bookingStatuses OWNER TO postgres;
-ALTER TABLE notificationTypes OWNER TO postgres;
 ALTER TABLE venueStatuses OWNER TO postgres;
 ALTER TABLE faculties OWNER TO postgres;
 ALTER TABLE roomTypes OWNER TO postgres;
@@ -132,5 +120,4 @@ ALTER TABLE venueTimings OWNER TO postgres;
 ALTER TABLE facilities OWNER TO postgres;
 ALTER TABLE accounts OWNER TO postgres;
 ALTER TABLE currentBookings OWNER TO postgres;
-ALTER TABLE notifications OWNER TO postgres;
 ALTER TABLE venueFacilities OWNER TO postgres;

@@ -524,12 +524,10 @@ func MakeTimeslotArr(operatingHours models.UnavailableTimings, timingWithPax []m
 	input models.TimingSearchInput, venue models.Venues) []models.Timeslots {
 	// need to populate an array of [{"eventstart" : timing, "eventend" : timing, "available" : true}]
 	timeslots := make([]models.Timeslots, 0)
-	ourZone := time.FixedZone("UTC", 8*3600)
-	time.Local = ourZone
 	for start := operatingHours.Starthour; start.Before(operatingHours.Endhour); start = start.Add(time.Hour) {
 		var temp models.Timeslots
-		temp.EventStart = start.Local()
-		temp.EventEnd = start.Local()
+		temp.EventStart = start
+		temp.EventEnd = start.Add(time.Hour)
 		temp.Available = true
 
 		for _, s := range timingWithPax {
@@ -749,8 +747,6 @@ func GetPendingBookings(DB *gorm.DB, input models.User, statusCode models.Bookin
 }
 
 func InsertBooking(DB *gorm.DB, overLimitAndTime bool, s models.BookingInput, venue models.Venues, statusCode models.Bookingstatuses) (uuid.UUID, bool, error) {
-	ourZone := time.FixedZone("UTC", 8*3600)
-	time.Local = ourZone
 	// pump into bookings table
 	if overLimitAndTime {
 		errorMessage := fmt.Sprintf("Unable to make booking for venue %s at time %s to time %s as there are not enough available slots left, or event time has already past.",

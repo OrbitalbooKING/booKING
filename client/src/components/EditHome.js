@@ -882,6 +882,7 @@ function EditHome() {
                               display: "flex",
                               flexDirection: "row",
                               paddingRight: 10,
+                              width: 230,
                             }}
                           >
                             <DatePicker
@@ -903,6 +904,7 @@ function EditHome() {
                               display: "flex",
                               flexDirection: "row",
                               paddingRight: 10,
+                              width: 230,
                             }}
                           >
                             <DatePicker

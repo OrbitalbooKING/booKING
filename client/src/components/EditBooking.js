@@ -477,8 +477,8 @@ function EditBooking() {
     }
   };
 
-  const removeTimeslot = (value) => () => {
-    // removes selected timeslot
+  const removeTimeSlot = (value) => () => {
+    // removes selected time slot
 
     let search = new URLSearchParams();
     search.append("bookingID", value.Bookingid);
@@ -559,7 +559,7 @@ function EditBooking() {
   };
 
   const DisplayTimings = () => {
-    // displays checkboxes for users to select timeslots
+    // displays checkboxes for users to select time slots
 
     return (
       <div>
@@ -1435,7 +1435,7 @@ function EditBooking() {
                       }}
                     >
                       <div style={{ textAlign: "center" }}>
-                        Currently selected Timeslots:
+                        Currently selected time slots:
                       </div>
                       <div
                         style={{
@@ -1467,7 +1467,7 @@ function EditBooking() {
                                 alignSelf: "center",
                               }}
                             >
-                              <h3>Add a timeslot</h3>
+                              <h3>Add a time slot</h3>
                             </div>
                           </div>
                         ) : (
@@ -1502,7 +1502,7 @@ function EditBooking() {
                                     <button
                                       type="submit"
                                       className="btn btn-primary btn-sm"
-                                      onClick={removeTimeslot(val)}
+                                      onClick={removeTimeSlot(val)}
                                     >
                                       Remove
                                     </button>

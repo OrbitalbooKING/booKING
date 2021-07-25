@@ -409,8 +409,8 @@ function Booking() {
     }
   };
 
-  const removeTimeslot = (value) => () => {
-    // removes selected timeslot
+  const removeTimeSlot = (value) => () => {
+    // removes selected time slot
 
     let search = new URLSearchParams();
     search.append("bookingID", value.Bookingid);
@@ -1070,7 +1070,7 @@ function Booking() {
                     }}
                   >
                     <div style={{ textAlign: "center" }}>
-                      Currently selected Timeslots:
+                      Currently selected time slots:
                     </div>
                     <div
                       style={{
@@ -1097,7 +1097,7 @@ function Booking() {
                           <div
                             style={{ textAlign: "center", alignSelf: "center" }}
                           >
-                            <h3>Add a timeslot</h3>
+                            <h3>Add a time slot</h3>
                           </div>
                         </div>
                       ) : (
@@ -1132,7 +1132,7 @@ function Booking() {
                                   <button
                                     type="submit"
                                     className="btn btn-primary btn-sm"
-                                    onClick={removeTimeslot(val)}
+                                    onClick={removeTimeSlot(val)}
                                   >
                                     Remove
                                   </button>
@@ -1526,7 +1526,7 @@ function Booking() {
               <div className="booking-selector-mobile">
                 <div>
                   <div style={{ textAlign: "center" }}>
-                    Currently selected Timeslots:
+                    Currently selected time slots:
                   </div>
                   <div style={{ overflowY: "auto", height: 200 }}>
                     {cart === undefined ? (
@@ -1547,7 +1547,7 @@ function Booking() {
                         <div
                           style={{ textAlign: "center", alignSelf: "center" }}
                         >
-                          <h3>Add a timeslot</h3>
+                          <h3>Add a time slot</h3>
                         </div>
                       </div>
                     ) : (
@@ -1578,7 +1578,7 @@ function Booking() {
                                 <button
                                   type="submit"
                                   className="btn btn-primary btn-sm"
-                                  onClick={removeTimeslot(val)}
+                                  onClick={removeTimeSlot(val)}
                                 >
                                   Remove
                                 </button>

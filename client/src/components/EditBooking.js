@@ -28,7 +28,7 @@ import Spinner from "react-bootstrap/Spinner";
 const useStyles = makeStyles((theme) => ({
   formControl: {
     margin: theme.spacing(1),
-    minWidth: 120,
+    minWidth: 90,
   },
   menuPaper: {
     maxHeight: 200,
@@ -524,6 +524,7 @@ function EditBooking() {
         params: search,
       })
         .then((response) => {
+          setClearLoading(false);
           getTimings();
           getCartItems();
         })
@@ -865,7 +866,7 @@ function EditBooking() {
       Cookies.get("oldBookingId") !== undefined &&
       Cookies.get("oldBuildingId") !== undefined &&
       Cookies.get("oldUnit") !== undefined &&
-      Cookies.get("bookingId") !== undefined &&
+      Cookies.get("buildingName") !== undefined &&
       Cookies.get("buildingId") !== undefined &&
       Cookies.get("unit") !== undefined ? (
         <Layout2

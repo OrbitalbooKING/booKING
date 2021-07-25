@@ -48,15 +48,12 @@ To maximise the venue and resources usage in School of Computing, we hope to hel
 
 ### **Advanced Features: (4 weeks)**
 1. - [x] Venue sharing system
-2. - [ ] Automatic categorisation of venue type
-3. - [X] Priority queue for SoC users to reserve rooms over non-SoC users
+2. - [X] Priority queue for SoC users to reserve rooms over non-SoC users
 
 ### **Nice-to-have Features: (2 weeks)**
-1. - [X] Prevent interval bookings (don’t let users book 30 mins and leave it empty for 30 mins etc) 
-2. - [ ] Lock incorrect attempts out
-3. - [X] Minimum number of characters for password
-4. - [X] Responsive design for different screen sizes
-5. - [ ] Statistics displayed for each venue for staff users
+1. - [X] Prevent interval bookings (don’t let users book 15 mins and leave it empty for 15 mins etc) 
+2. - [X] Minimum number of characters for password
+3. - [X] Responsive design for different screen sizes
 
 ---
 ## Tech Stack
@@ -81,15 +78,22 @@ To maximise the venue and resources usage in School of Computing, we hope to hel
 | 10 | Programming at home: Integration | 2 | 2 | 26/5/2021 | Successfully connected React frontend with PostgreSQL backend using Go to carry out authentication | 
 | 11 | Documentation at home: User Guide | 8 | 8 | 27/5/2021 |  Worked on documenting a user guide for Milestone 1 | 
 | 12 | Documentation at home: Developer Guide | 8 | 8 | 28/5/2021 | Worked on documenting a developer guide for Milestone 1 | 
-| 13 | Team meeting: milestone review | 2 | 2 | 1/6/2021 | 1) Met with mentor Loh Zi Bin Robin to look through milestone one feedbacks as well as plan out next course of action |
+| 13 | Team meeting: Milestone review | 2 | 2 | 1/6/2021 | 1) Met with mentor Loh Zi Bin Robin to look through milestone one feedbacks as well as plan out next course of action |
 | 14 | Programming at home: Frontend & Backend | 10 | 10 | 7/6/2021 | 1) Obtain venue information from NUS website to populate venue lists to store in database<br />2) Create API routes to fetch all venues<br />3) Implement search bar and venue display on react | 
 | 15 | Programming at home: Frontend & Backend | 10 | 10 | 14/6/2021 | 1) Implement filters for queries to only display certain venues<br />2) Create booking page with a calendar for users to select their desired time slots |
 | 16 | Programming at home: Frontend & Backend | 10 | 10 | 21/6/2021 | 1) Create booking services<br />2) Integration of frontend and backend to test out search features and booking |
 | 17 | Documentation at home: Frontend & Backend tests | 8 | 8 | 25/6/2021 | 1) Create test files to conduct testing of backend code<br />2) Qualitative evaluation of application (heuristics evaluation and cognitive walkthrough) |
+| 18 | Team meeting: Milestone review | 2 | 2 | 1/7/2021 | 1) Met with mentor Loh Zi Bin Robin to look through milestone two feedbacks as well as plan out next course of action |
+| 19 | Programming at home: Frontend & Backend | 10 | 10 | 7/7/2021 | 1) Create edit booking and edit profile services <br />2) Create page for editing profile and booking |
+| 20 | Programming at home: Frontend & Backend | 10 | 10 | 12/7/2021 | 1) Create approve and reject booking services <br />2) Create interface for staff user to view, approve, reject bookings |
+| 21 | Programming at home: Frontend & Backend | 10 | 10 | 19/7/2021 | 1) Create email notification services for different features, and also service to refill user points every week <br />2) Improved on UI design for all the pages (eg. adding animations to indicate loading) |
+| 22 | Team meeting: Project review | 2 | 2 | 21/7/2021 | 1) Met with mentor Loh Zi Bin Robin to look through what we have done for the entire project so far |
+| 23 | Documentation at home: Frontend & Backend tests | 8 | 8 | 25/7/2021 | 1) Additional test files for newly updated features<br />2) Conducting usability testing and recording walkthrough of application | 
+| 24 | Documentation at home: User & Developer Guide | 2 | 2 | 25/7/2021 | Additions and cleaning up of user and developer guide | 
 
 | Total hours | Jason | Jiewei |
 | - | - | - |
-| | 93 | 93 |
+| | 128 | 128 |
 
 ---
 ## Qualifications 

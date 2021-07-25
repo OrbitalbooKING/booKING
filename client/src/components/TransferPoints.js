@@ -112,7 +112,7 @@ function TransferPoints() {
         <Layout2
           id={Cookies.get("id")}
           name={Cookies.get("name")}
-          action="Tranfer points"
+          action="Transfer points"
         >
           <div className="parent">
             <div className="sign-up">

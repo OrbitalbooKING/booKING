@@ -261,7 +261,7 @@ function EditOverview() {
       Cookies.get("oldBookingId") !== undefined &&
       Cookies.get("oldBuildingId") !== undefined &&
       Cookies.get("oldUnit") !== undefined &&
-      Cookies.get("bookingId") !== undefined &&
+      Cookies.get("buildingName") !== undefined &&
       Cookies.get("buildingId") !== undefined &&
       Cookies.get("unit") !== undefined ? (
         <Layout2

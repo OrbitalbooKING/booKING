@@ -89,7 +89,7 @@ To maximise the venue and resources usage in School of Computing, we hope to hel
 | 21 | Programming at home: Frontend & Backend | 10 | 10 | 7/7/2021 | Fix and debug logic errors caused by points system and venue sharing |
 | 22 | Programming at home: Frontend & Backend | 10 | 10 | 12/7/2021 | 1) Create approve and reject booking services <br />2) Create interface for staff user to view, approve, reject bookings |
 | 23 | Programming at home: Frontend & Backend | 10 | 10 | 19/7/2021 | 1) Create email notification services for different features, and also service to refill user points every week <br />2) Improved on UI design for all the pages (eg. adding animations to indicate loading) |
-| 24 | Team meeting: Project review | 2 | 2 | 21/7/2021 | 1) Met with mentor Loh Zi Bin Robin to look through what we have done for the entire project so far |
+| 24 | Team meeting: Project review | 2 | 2 | 21/7/2021 | Met with mentor Loh Zi Bin Robin to look through what we have done for the entire project so far |
 | 25 | Documentation at home: Frontend & Backend tests | 8 | 8 | 25/7/2021 | 1) Additional test files for newly updated features<br />2) Conducting usability testing and recording walkthrough of application | 
 | 26 | Documentation at home: User & Developer Guide | 6 | 6 | 25/7/2021 | Additions and cleaning up of user and developer guide | 
 

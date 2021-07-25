@@ -84,16 +84,18 @@ To maximise the venue and resources usage in School of Computing, we hope to hel
 | 16 | Programming at home: Frontend & Backend | 10 | 10 | 21/6/2021 | 1) Create booking services<br />2) Integration of frontend and backend to test out search features and booking |
 | 17 | Documentation at home: Frontend & Backend tests | 8 | 8 | 25/6/2021 | 1) Create test files to conduct testing of backend code<br />2) Qualitative evaluation of application (heuristics evaluation and cognitive walkthrough) |
 | 18 | Team meeting: Milestone review | 2 | 2 | 1/7/2021 | 1) Met with mentor Loh Zi Bin Robin to look through milestone two feedbacks as well as plan out next course of action |
-| 19 | Programming at home: Frontend & Backend | 10 | 10 | 7/7/2021 | 1) Create edit booking and edit profile services <br />2) Create page for editing profile and booking |
-| 20 | Programming at home: Frontend & Backend | 10 | 10 | 12/7/2021 | 1) Create approve and reject booking services <br />2) Create interface for staff user to view, approve, reject bookings |
-| 21 | Programming at home: Frontend & Backend | 10 | 10 | 19/7/2021 | 1) Create email notification services for different features, and also service to refill user points every week <br />2) Improved on UI design for all the pages (eg. adding animations to indicate loading) |
-| 22 | Team meeting: Project review | 2 | 2 | 21/7/2021 | 1) Met with mentor Loh Zi Bin Robin to look through what we have done for the entire project so far |
-| 23 | Documentation at home: Frontend & Backend tests | 8 | 8 | 25/7/2021 | 1) Additional test files for newly updated features<br />2) Conducting usability testing and recording walkthrough of application | 
-| 24 | Documentation at home: User & Developer Guide | 2 | 2 | 25/7/2021 | Additions and cleaning up of user and developer guide | 
+| 19 | Programming at home: Frontend & Backend | 10 | 10 | 3/7/2021 | 1) Implement points system as well as integrate points system into bookings <br />2) Edit booking page to handle sharing of venue logic |
+| 20 | Programming at home: Frontend & Backend | 10 | 10 | 5/7/2021 | 1) Create edit booking and edit profile services <br />2) Create page for editing profile and booking |
+| 21 | Programming at home: Frontend & Backend | 10 | 10 | 7/7/2021 | 1) Fix and debug logic errors caused by points system and venue sharing |
+| 22 | Programming at home: Frontend & Backend | 10 | 10 | 12/7/2021 | 1) Create approve and reject booking services <br />2) Create interface for staff user to view, approve, reject bookings |
+| 23 | Programming at home: Frontend & Backend | 10 | 10 | 19/7/2021 | 1) Create email notification services for different features, and also service to refill user points every week <br />2) Improved on UI design for all the pages (eg. adding animations to indicate loading) |
+| 24 | Team meeting: Project review | 2 | 2 | 21/7/2021 | 1) Met with mentor Loh Zi Bin Robin to look through what we have done for the entire project so far |
+| 25 | Documentation at home: Frontend & Backend tests | 8 | 8 | 25/7/2021 | 1) Additional test files for newly updated features<br />2) Conducting usability testing and recording walkthrough of application | 
+| 26 | Documentation at home: User & Developer Guide | 6 | 6 | 25/7/2021 | Additions and cleaning up of user and developer guide | 
 
 | Total hours | Jason | Jiewei |
 | - | - | - |
-| | 128 | 128 |
+| | 152 | 152 |
 
 ---
 ## Qualifications 

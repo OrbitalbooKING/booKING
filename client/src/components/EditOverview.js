@@ -740,7 +740,7 @@ function EditOverview() {
                     }}
                   >
                     <div style={{ textAlign: "center" }}>
-                      Currently selected Timeslots:
+                      Currently selected time slots:
                     </div>
                     <div
                       style={{
@@ -768,7 +768,7 @@ function EditOverview() {
                           <div
                             style={{ textAlign: "center", alignSelf: "center" }}
                           >
-                            <h3>Add a timeslot</h3>
+                            <h3>Add a time slot</h3>
                           </div>
                         </div>
                       ) : (

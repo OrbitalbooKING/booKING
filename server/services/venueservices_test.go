@@ -2,6 +2,8 @@ package services
 
 import (
 	"database/sql"
+	"github.com/OrbitalbooKING/booKING/server/middleware"
+	"github.com/gin-gonic/gin"
 	"reflect"
 	"regexp"
 	"testing"
@@ -9,6 +11,7 @@ import (
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/OrbitalbooKING/booKING/server/models"
+	unitTest "github.com/Valiben/gin_unit_test"
 	"github.com/jinzhu/gorm"
 )
 
@@ -311,33 +314,82 @@ func TestMakeVenueFacilitiesDict_Stubbed(t *testing.T) {
 	}
 }
 
-//func TestMakeVenueFacilitiesDict(t *testing.T) {
-//	if err := ConnectDataBase(); err != nil {
-//		t.Fatalf("Unexpected error. Unable to connect to the database." + err.Error())
-//	}
-//	input := []models.SearchPage{
-//		{
-//			ID: 3,
-//		},
-//	}
-//	dict := make(map[string]int)
-//	dict["Desktop"] = 21
-//	dict["Whiteboard"] = 45
-//	// taken from database for venue with venueID = 3
-//	expected := []models.SearchPage{
-//		{
-//			ID:             3,
-//			Facilitiesdict: dict,
-//		},
-//	}
-//
-//	if err := MakeVenueFacilitiesDict(DB, input); err != nil || !reflect.DeepEqual(input, expected) {
-//		if err != nil {
-//			t.Fatalf("Unexpected error: %s", err.Error())
-//		}
-//		if !reflect.DeepEqual(input, expected) {
-//			t.Errorf("Dict not made properly. Expected to get dict %v but got value %v",
-//				expected, input)
-//		}
-//	}
-//}
+func TestMakeVenueFacilitiesDict(t *testing.T) {
+	if err := ConnectDataBase(); err != nil {
+		t.Fatalf("Unexpected error. Unable to connect to the database." + err.Error())
+	}
+	input := []models.SearchPage{
+		{
+			ID: 3,
+		},
+	}
+	dict := make(map[string]int)
+	dict["Desktop"] = 41
+	dict["Whiteboard"] = 45
+	// taken from database for venue with venueID = 3
+	expected := []models.SearchPage{
+		{
+			ID:             3,
+			Facilitiesdict: dict,
+		},
+	}
+
+	if err := MakeVenueFacilitiesDict(DB, input); err != nil || !reflect.DeepEqual(input, expected) {
+		if err != nil {
+			t.Fatalf("Unexpected error: %s", err.Error())
+		}
+		if !reflect.DeepEqual(input, expected) {
+			t.Errorf("Dict not made properly. Expected to get dict %v but got value %v",
+				expected[0].Facilitiesdict, input[0].Facilitiesdict)
+		}
+	}
+}
+
+func APISetupForTest() (*gin.Engine, error) {
+	// setup new router first
+	router := gin.Default()
+
+	// use a middleware function
+	router.Use(middleware.CORSMiddleware())
+
+	// set the router
+	unitTest.SetRouter(router)
+
+	// connect DB
+	if err := ConnectDataBase(); err != nil {
+		return nil, err
+	}
+	return router, nil
+}
+
+func TestGetVenues(t *testing.T) {
+	router, err := APISetupForTest()
+	if err != nil {
+		t.Fatalf("Unexpected error: %s", err)
+	}
+	router.GET("/home", GetVenues)
+
+	response := models.SearchPage{}
+
+	err = unitTest.TestHandlerUnMarshalResp("GET", "/home", "form", nil, &response)
+	if err != nil {
+		t.Errorf("Error encountered receiving response: %s", err)
+		return
+	}
+}
+
+func TestSearchVenues(t *testing.T) {
+	router, err := APISetupForTest()
+	if err != nil {
+		t.Fatalf("Unexpected error: %s", err)
+	}
+	router.GET("/search", SearchVenues)
+
+	response := models.SearchInput{}
+
+	err = unitTest.TestHandlerUnMarshalResp("GET", "/search", "form", nil, &response)
+	if err != nil {
+		t.Errorf("Error encountered receiving response: %s", err)
+		return
+	}
+}

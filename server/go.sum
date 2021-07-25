@@ -9,6 +9,8 @@ github.com/Masterminds/sprig v2.16.0+incompatible/go.mod h1:y6hNFY5UBTIWBxnzTeuN
 github.com/Masterminds/sprig v2.22.0+incompatible h1:z4yfnGrZ7netVz+0EDJ0Wi+5VZCSYp4Z0m2dk6cEM60=
 github.com/Masterminds/sprig v2.22.0+incompatible/go.mod h1:y6hNFY5UBTIWBxnzTeuNhlNS5hqE0NB0E6fgfo2Br3o=
 github.com/PuerkitoBio/goquery v1.5.1/go.mod h1:GsLWisAFVj4WgDibEWF4pvYnkVQBpKBKeU+7zCJoLcc=
+github.com/Valiben/gin_unit_test v0.0.0-20181205064931-674aee46d090 h1:sEh+aKc7XivRNlBKu5F8zqOktkJLyFUYQqaMrG/umhk=
+github.com/Valiben/gin_unit_test v0.0.0-20181205064931-674aee46d090/go.mod h1:R7THAtfNTnKrPkXX4dLl3Ug80AxnPqczbrOtGibHa/k=
 github.com/andybalholm/cascadia v1.1.0/go.mod h1:GsXiBklL0woXo1j/WYWtSYYC4ouU9PqHO0sqidkEA4Y=
 github.com/aokoli/goutils v1.0.1/go.mod h1:SijmP0QR8LtwsmDs8Yii5Z/S4trXFGFC2oO5g9DP+DQ=
 github.com/aws/aws-sdk-go v1.40.3 h1:NzjcLRsb+C9L1dVPajdNbdzkuPBi0pQJWiQW0eYJGo8=

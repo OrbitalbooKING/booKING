@@ -7,6 +7,7 @@ require (
 	github.com/Masterminds/goutils v1.1.1 // indirect
 	github.com/Masterminds/semver v1.5.0 // indirect
 	github.com/Masterminds/sprig v2.22.0+incompatible // indirect
+	github.com/Valiben/gin_unit_test v0.0.0-20181205064931-674aee46d090
 	github.com/aws/aws-sdk-go v1.40.3
 	github.com/gin-contrib/static v0.0.1
 	github.com/gin-gonic/gin v1.7.2

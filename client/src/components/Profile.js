@@ -98,6 +98,33 @@ function Profile() {
     );
   };
 
+  const toIsoString = (date) => {
+    let tzo = -date.getTimezoneOffset(),
+      dif = tzo >= 0 ? "+" : "-",
+      pad = function (num) {
+        var norm = Math.floor(Math.abs(num));
+        return (norm < 10 ? "0" : "") + norm;
+      };
+
+    return (
+      date.getFullYear() +
+      "-" +
+      pad(date.getMonth() + 1) +
+      "-" +
+      pad(date.getDate()) +
+      "T" +
+      pad(date.getHours()) +
+      ":" +
+      pad(date.getMinutes()) +
+      ":" +
+      pad(date.getSeconds()) +
+      dif +
+      pad(tzo / 60) +
+      ":" +
+      pad(tzo % 60)
+    );
+  };
+
   const deleteBooking = (val) => () => {
     let inThreeHours = 0.125;
 
@@ -397,7 +424,10 @@ function Profile() {
                                   alignSelf: "center",
                                 }}
                               >
-                                {val.Bookingstatusdescription}{" "}
+                                {val.Eventstart > toIsoString(new Date()) ||
+                                val.Bookingstatusdescription === "Rejected"
+                                  ? val.Bookingstatusdescription
+                                  : "Completed"}{" "}
                               </div>
                               <div
                                 style={{
@@ -406,7 +436,10 @@ function Profile() {
                                   alignSelf: "center",
                                 }}
                               >
-                                {val.Bookingstatusdescription === "Rejected" ? (
+                                {val.Eventstart <= toIsoString(new Date()) ||
+                                val.Bookingstatusdescription === "Rejected" ||
+                                val.Bookingstatusdescription ===
+                                  "In the midst of booking" ? (
                                   <DropdownButton
                                     id="dropdown-basic-button"
                                     title="Edit"
@@ -779,7 +812,10 @@ function Profile() {
                                     alignSelf: "center",
                                   }}
                                 >
-                                  {val.Bookingstatusdescription}{" "}
+                                  {val.Eventstart > toIsoString(new Date()) ||
+                                  val.Bookingstatusdescription === "Rejected"
+                                    ? val.Bookingstatusdescription
+                                    : "Completed"}{" "}
                                 </div>
                               </div>
                               <div className="display-old-header">
@@ -813,7 +849,10 @@ function Profile() {
                                   paddingTop: 10,
                                 }}
                               >
-                                {val.Bookingstatusdescription === "Rejected" ? (
+                                {val.Eventstart <= toIsoString(new Date()) ||
+                                val.Bookingstatusdescription === "Rejected" ||
+                                val.Bookingstatusdescription ===
+                                  "In the midst of booking" ? (
                                   <DropdownButton
                                     id="dropdown-basic-button"
                                     title="Edit"

@@ -288,7 +288,7 @@ function DeletionOverview() {
                     className="btn btn-primary btn-block"
                     onClick={deleteBooking}
                   >
-                    Delete Booking
+                    Delete
                   </button>
                 </div>
               </div>

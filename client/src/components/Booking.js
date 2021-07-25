@@ -456,6 +456,7 @@ function Booking() {
         params: search,
       })
         .then((response) => {
+          setClearLoading(false);
           getTimings();
           getCartItems();
         })

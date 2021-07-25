@@ -881,7 +881,7 @@ function EditHome() {
                             style={{
                               display: "flex",
                               flexDirection: "row",
-                              paddingRight: 10,
+                              marginRight: 10,
                               width: 230,
                             }}
                           >
@@ -903,7 +903,7 @@ function EditHome() {
                             style={{
                               display: "flex",
                               flexDirection: "row",
-                              paddingRight: 10,
+                              marginRight: 10,
                               width: 230,
                             }}
                           >

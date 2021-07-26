@@ -102,6 +102,62 @@ function StaffHome() {
     );
   };
 
+  const toIsoString = (date) => {
+    let tzo = -date.getTimezoneOffset(),
+      dif = tzo >= 0 ? "+" : "-",
+      pad = function (num) {
+        var norm = Math.floor(Math.abs(num));
+        return (norm < 10 ? "0" : "") + norm;
+      };
+
+    return (
+      date.getFullYear() +
+      "-" +
+      pad(date.getMonth() + 1) +
+      "-" +
+      pad(date.getDate()) +
+      "T" +
+      pad(date.getHours()) +
+      ":" +
+      pad(date.getMinutes()) +
+      ":" +
+      pad(date.getSeconds()) +
+      dif +
+      pad(tzo / 60) +
+      ":" +
+      pad(tzo % 60)
+    );
+  };
+
+  const sortBooking = (bookings) => {
+    if (bookings !== undefined) {
+      let pending = bookings.filter(
+        (data) => data.Bookingstatusdescription === "Pending approval"
+      );
+      let approved = bookings.filter(
+        (data) => data.Bookingstatusdescription === "Approved"
+      );
+
+      let pendingComputing = pending.filter(
+        (data) => data.Facultydescription === "School of Computing"
+      );
+      let pendingNonComputing = pending.filter(
+        (data) => data.Facultydescription !== "School of Computing"
+      );
+      let pendingSorted = pendingComputing.concat(pendingNonComputing);
+
+      let approvedComputing = approved.filter(
+        (data) => data.Facultydescription === "School of Computing"
+      );
+      let approvedNonComputing = approved.filter(
+        (data) => data.Facultydescription !== "School of Computing"
+      );
+      let approvedSorted = approvedComputing.concat(approvedNonComputing);
+
+      return pendingSorted.concat(approvedSorted);
+    }
+  };
+
   useEffect(() => {
     getBookings(); //get booking requests from API
 
@@ -252,7 +308,7 @@ function StaffHome() {
                       </div>
                     </div>
                   ) : status === "All" ? (
-                    bookingsList.map((val, key) => {
+                    sortBooking(bookingsList).map((val, key) => {
                       return (
                         <div key={key}>
                           <div
@@ -341,7 +397,9 @@ function StaffHome() {
                                   alignSelf: "center",
                                 }}
                               >
-                                {val.Bookingstatusdescription}{" "}
+                                {val.Eventstart > toIsoString(new Date())
+                                  ? val.Bookingstatusdescription
+                                  : "Completed"}{" "}
                               </div>
                               <div
                                 style={{
@@ -350,17 +408,52 @@ function StaffHome() {
                                   alignSelf: "center",
                                 }}
                               >
-                                <DropdownButton
-                                  id="dropdown-basic-button"
-                                  title="Handle"
-                                >
-                                  <Dropdown.Item onClick={approveBooking(val)}>
-                                    Approve
-                                  </Dropdown.Item>
-                                  <Dropdown.Item onClick={rejectBooking(val)}>
-                                    Reject
-                                  </Dropdown.Item>
-                                </DropdownButton>
+                                {val.Eventstart <= toIsoString(new Date()) ? (
+                                  <DropdownButton
+                                    id="dropdown-basic-button"
+                                    title="Edit"
+                                    disabled
+                                  >
+                                    <Dropdown.Item
+                                      onClick={approveBooking(val)}
+                                    >
+                                      Approve
+                                    </Dropdown.Item>
+                                    <Dropdown.Item onClick={rejectBooking(val)}>
+                                      Reject
+                                    </Dropdown.Item>
+                                  </DropdownButton>
+                                ) : val.Bookingstatusdescription ===
+                                  "Approved" ? (
+                                  <DropdownButton
+                                    id="dropdown-basic-button"
+                                    title="Edit"
+                                  >
+                                    <Dropdown.Item
+                                      onClick={approveBooking(val)}
+                                      disabled
+                                    >
+                                      Approve
+                                    </Dropdown.Item>
+                                    <Dropdown.Item onClick={rejectBooking(val)}>
+                                      Reject
+                                    </Dropdown.Item>
+                                  </DropdownButton>
+                                ) : (
+                                  <DropdownButton
+                                    id="dropdown-basic-button"
+                                    title="Edit"
+                                  >
+                                    <Dropdown.Item
+                                      onClick={approveBooking(val)}
+                                    >
+                                      Approve
+                                    </Dropdown.Item>
+                                    <Dropdown.Item onClick={rejectBooking(val)}>
+                                      Reject
+                                    </Dropdown.Item>
+                                  </DropdownButton>
+                                )}
                               </div>
                             </div>
                           </div>
@@ -373,7 +466,7 @@ function StaffHome() {
                       (data) =>
                         data.Bookingstatusdescription === "Pending approval"
                     ).length > 0 ? (
-                    bookingsList
+                    sortBooking(bookingsList)
                       .filter(
                         (data) =>
                           data.Bookingstatusdescription === "Pending approval"
@@ -470,7 +563,9 @@ function StaffHome() {
                                     alignSelf: "center",
                                   }}
                                 >
-                                  {val.Bookingstatusdescription}{" "}
+                                  {val.Eventstart > toIsoString(new Date())
+                                    ? val.Bookingstatusdescription
+                                    : "Completed"}{" "}
                                 </div>
                                 <div
                                   style={{
@@ -479,19 +574,58 @@ function StaffHome() {
                                     alignSelf: "center",
                                   }}
                                 >
-                                  <DropdownButton
-                                    id="dropdown-basic-button"
-                                    title="Handle"
-                                  >
-                                    <Dropdown.Item
-                                      onClick={approveBooking(val)}
+                                  {val.Eventstart <= toIsoString(new Date()) ? (
+                                    <DropdownButton
+                                      id="dropdown-basic-button"
+                                      title="Edit"
+                                      disabled
                                     >
-                                      Approve
-                                    </Dropdown.Item>
-                                    <Dropdown.Item onClick={rejectBooking(val)}>
-                                      Reject
-                                    </Dropdown.Item>
-                                  </DropdownButton>
+                                      <Dropdown.Item
+                                        onClick={approveBooking(val)}
+                                      >
+                                        Approve
+                                      </Dropdown.Item>
+                                      <Dropdown.Item
+                                        onClick={rejectBooking(val)}
+                                      >
+                                        Reject
+                                      </Dropdown.Item>
+                                    </DropdownButton>
+                                  ) : val.Bookingstatusdescription ===
+                                    "Approved" ? (
+                                    <DropdownButton
+                                      id="dropdown-basic-button"
+                                      title="Edit"
+                                    >
+                                      <Dropdown.Item
+                                        onClick={approveBooking(val)}
+                                        disabled
+                                      >
+                                        Approve
+                                      </Dropdown.Item>
+                                      <Dropdown.Item
+                                        onClick={rejectBooking(val)}
+                                      >
+                                        Reject
+                                      </Dropdown.Item>
+                                    </DropdownButton>
+                                  ) : (
+                                    <DropdownButton
+                                      id="dropdown-basic-button"
+                                      title="Edit"
+                                    >
+                                      <Dropdown.Item
+                                        onClick={approveBooking(val)}
+                                      >
+                                        Approve
+                                      </Dropdown.Item>
+                                      <Dropdown.Item
+                                        onClick={rejectBooking(val)}
+                                      >
+                                        Reject
+                                      </Dropdown.Item>
+                                    </DropdownButton>
+                                  )}
                                 </div>
                               </div>
                             </div>
@@ -518,7 +652,7 @@ function StaffHome() {
                     bookingsList.filter(
                       (data) => data.Bookingstatusdescription === "Approved"
                     ).length > 0 ? (
-                    bookingsList
+                    sortBooking(bookingsList)
                       .filter(
                         (data) => data.Bookingstatusdescription === "Approved"
                       )
@@ -614,7 +748,9 @@ function StaffHome() {
                                     alignSelf: "center",
                                   }}
                                 >
-                                  {val.Bookingstatusdescription}{" "}
+                                  {val.Eventstart > toIsoString(new Date())
+                                    ? val.Bookingstatusdescription
+                                    : "Completed"}{" "}
                                 </div>
                                 <div
                                   style={{
@@ -623,19 +759,58 @@ function StaffHome() {
                                     alignSelf: "center",
                                   }}
                                 >
-                                  <DropdownButton
-                                    id="dropdown-basic-button"
-                                    title="Handle"
-                                  >
-                                    <Dropdown.Item
-                                      onClick={approveBooking(val)}
+                                  {val.Eventstart <= toIsoString(new Date()) ? (
+                                    <DropdownButton
+                                      id="dropdown-basic-button"
+                                      title="Edit"
+                                      disabled
                                     >
-                                      Approve
-                                    </Dropdown.Item>
-                                    <Dropdown.Item onClick={rejectBooking(val)}>
-                                      Reject
-                                    </Dropdown.Item>
-                                  </DropdownButton>
+                                      <Dropdown.Item
+                                        onClick={approveBooking(val)}
+                                      >
+                                        Approve
+                                      </Dropdown.Item>
+                                      <Dropdown.Item
+                                        onClick={rejectBooking(val)}
+                                      >
+                                        Reject
+                                      </Dropdown.Item>
+                                    </DropdownButton>
+                                  ) : val.Bookingstatusdescription ===
+                                    "Approved" ? (
+                                    <DropdownButton
+                                      id="dropdown-basic-button"
+                                      title="Edit"
+                                    >
+                                      <Dropdown.Item
+                                        onClick={approveBooking(val)}
+                                        disabled
+                                      >
+                                        Approve
+                                      </Dropdown.Item>
+                                      <Dropdown.Item
+                                        onClick={rejectBooking(val)}
+                                      >
+                                        Reject
+                                      </Dropdown.Item>
+                                    </DropdownButton>
+                                  ) : (
+                                    <DropdownButton
+                                      id="dropdown-basic-button"
+                                      title="Edit"
+                                    >
+                                      <Dropdown.Item
+                                        onClick={approveBooking(val)}
+                                      >
+                                        Approve
+                                      </Dropdown.Item>
+                                      <Dropdown.Item
+                                        onClick={rejectBooking(val)}
+                                      >
+                                        Reject
+                                      </Dropdown.Item>
+                                    </DropdownButton>
+                                  )}
                                 </div>
                               </div>
                             </div>

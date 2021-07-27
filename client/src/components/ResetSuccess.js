@@ -9,6 +9,7 @@ function ResetSuccess(props) {
   let history = useHistory();
 
   const goLogin = () => {
+    // redirects user to the login page
     history.push("/sign-in");
   };
 

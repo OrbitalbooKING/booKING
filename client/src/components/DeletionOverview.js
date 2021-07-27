@@ -7,7 +7,6 @@ import Home from "./Home";
 import Unauthorised from "./Unauthorised";
 
 import moment from "moment";
-
 import * as Cookies from "js-cookie";
 import Spinner from "react-bootstrap/Spinner";
 
@@ -15,10 +14,10 @@ function DeletionOverview() {
   let history = useHistory();
 
   const [bookingInfo, setBookingInfo] = useState();
-
   const [loading, setLoading] = useState(false);
 
   const getBookingInfo = () => {
+    // get booking details for booking to be deleted
     let search = new URLSearchParams();
 
     search.append("bookingID", Cookies.get("bookingId"));
@@ -52,6 +51,7 @@ function DeletionOverview() {
   };
 
   const deleteBooking = () => {
+    // user confirms the deletion
     if (bookingInfo !== undefined) {
       setLoading(true);
 
@@ -97,6 +97,7 @@ function DeletionOverview() {
   };
 
   const dateConverter = (givenDate) => {
+    // display the time slot
     let endHour = Number(givenDate.substring(11, 13)) + 1;
     let tempDate = givenDate.substring(0, 13);
 
@@ -292,7 +293,6 @@ function DeletionOverview() {
                   </button>
                 </div>
               </div>
-
               <div className="booking-selector-mobile">
                 <div
                   style={{

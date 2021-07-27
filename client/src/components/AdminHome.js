@@ -21,6 +21,7 @@ function AdminHome() {
   const [loading, setLoading] = useState(false);
 
   const submitForm = (e) => {
+    // admin creates a new staff account
     e.preventDefault();
 
     setLoading(true);
@@ -74,7 +75,6 @@ function AdminHome() {
             <div className="sign-up">
               <form>
                 <h3>Create Staff Account</h3>
-
                 <div className="form-group" style={style}>
                   <input
                     type="text"
@@ -84,7 +84,6 @@ function AdminHome() {
                     value={username}
                   />
                 </div>
-
                 <div className="form-group" style={style}>
                   <input
                     type="text"
@@ -94,7 +93,6 @@ function AdminHome() {
                     value={id}
                   />
                 </div>
-
                 <div style={style}>
                   <button
                     style={{ float: "left" }}

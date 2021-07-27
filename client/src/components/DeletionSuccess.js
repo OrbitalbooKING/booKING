@@ -9,6 +9,7 @@ function DeletionSuccess(props) {
   let history = useHistory();
 
   const goHome = () => {
+    // redirects user back to home
     history.push("/home");
   };
 

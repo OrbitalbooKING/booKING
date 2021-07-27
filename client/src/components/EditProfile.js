@@ -5,6 +5,7 @@ import configData from "../config.json";
 import Layout2 from "../layouts/Layout2";
 import EditStaffProfile from "./EditStaffProfile";
 import Unauthorised from "./Unauthorised";
+import DefaultPic from "../assets/profile.png";
 
 import Input from "@material-ui/core/Input";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -12,12 +13,9 @@ import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import { makeStyles } from "@material-ui/core/styles";
-
 import * as Cookies from "js-cookie";
 import Spinner from "react-bootstrap/Spinner";
 import FormData from "form-data";
-
-import DefaultPic from "../assets/profile.png";
 
 const style = {
   padding: 5,
@@ -38,11 +36,24 @@ const useStyles = makeStyles((theme) => ({
 function EditProfile() {
   let history = useHistory();
 
+  const classes = useStyles();
   const [profileInfo, setProfileInfo] = useState();
-
   const [loading, setLoading] = useState(false);
+  const currentYear = new Date().getFullYear();
+  const [username, setUsername] = useState();
+  const [gradYear, setGradYear] = useState();
+  const [faculty, setFaculty] = useState();
+  const [password, setPassword] = useState({
+    old: "",
+    new: "",
+    confirm: "",
+  });
+  const [facultyList, setFacultyList] = useState();
+  const [profilePic, setProfilePic] = useState(null);
+  const [error, setError] = useState("Edit your profile!");
 
   const getProfile = () => {
+    // get profile info
     let search = new URLSearchParams();
 
     search.append("NUSNET_ID", Cookies.get("id"));
@@ -75,33 +86,18 @@ function EditProfile() {
       });
   };
 
-  const classes = useStyles();
-
-  const currentYear = new Date().getFullYear();
-
-  const [username, setUsername] = useState();
-  const [gradYear, setGradYear] = useState();
-  const [faculty, setFaculty] = useState();
-  const [password, setPassword] = useState({
-    old: "",
-    new: "",
-    confirm: "",
-  });
-  const [error, setError] = useState("Edit your profile!");
-
   const handleGradYearChange = (event) => {
+    // changes graduation year based on selected graduation year
     setGradYear(event.target.value);
   };
 
   const handleFacultyChange = (event) => {
+    // changes faculty based on selected faculty
     setFaculty(event.target.value);
   };
 
-  const [facultyList, setFacultyList] = useState();
-
-  const [profilePic, setProfilePic] = useState(null);
-
   const onImageChange = (event) => {
+    // changes profile pic based on selected profile pic
     if (event.target.files && event.target.files[0]) {
       let img = event.target.files[0];
       setProfilePic(img);
@@ -109,6 +105,7 @@ function EditProfile() {
   };
 
   const submitForm = (e) => {
+    // user confirms edit
     e.preventDefault();
 
     setLoading(true);
@@ -209,7 +206,8 @@ function EditProfile() {
     }
   };
 
-  const getFacultyList = (e) => {
+  const getFacultyList = () => {
+    //get list of faculties for users to select
     Axios.get(configData.LOCAL_HOST + "/get_faculty")
       .then((response) => {
         setFacultyList(response.data.data);
@@ -237,17 +235,19 @@ function EditProfile() {
   };
 
   useEffect(() => {
+    getProfile();
+    getFacultyList();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
     if (profileInfo !== undefined && facultyList !== undefined) {
       setUsername(profileInfo.Name);
       setGradYear(profileInfo.Gradyear);
       setFaculty(profileInfo.Facultydescription);
     }
   }, [profileInfo, facultyList]);
-
-  useEffect(() => {
-    getProfile();
-    getFacultyList();
-  }, []);
 
   return (
     <>
@@ -277,11 +277,9 @@ function EditProfile() {
               ) : (
                 <form>
                   <h3>Update Profile</h3>
-
                   <div className="error">
                     <span className="message">{error}</span>
                   </div>
-
                   <div
                     style={{
                       display: "flex",
@@ -330,7 +328,6 @@ function EditProfile() {
                       <label htmlFor="upload">Replace image</label>
                     </div>
                   </div>
-
                   <div className="form-group" style={style}>
                     <input
                       style={{ width: "60%", float: "left" }}
@@ -367,7 +364,6 @@ function EditProfile() {
                       </FormControl>
                     </div>
                   </div>
-
                   <FormControl style={{ width: "95%", paddingBottom: 5 }}>
                     <InputLabel id="demo-simple-select-label">
                       Faculty
@@ -396,7 +392,6 @@ function EditProfile() {
                             })}
                     </Select>
                   </FormControl>
-
                   <div className="form-group" style={style}>
                     <input
                       type="password"
@@ -408,7 +403,6 @@ function EditProfile() {
                       value={password.old}
                     />
                   </div>
-
                   <div className="form-group" style={style}>
                     <input
                       type="password"
@@ -420,7 +414,6 @@ function EditProfile() {
                       value={password.new}
                     />
                   </div>
-
                   <div className="form-group" style={style}>
                     <input
                       type="password"
@@ -432,7 +425,6 @@ function EditProfile() {
                       value={password.confirm}
                     />
                   </div>
-
                   <div style={style}>
                     <button
                       style={{ float: "left" }}

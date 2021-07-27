@@ -7,7 +7,6 @@ import Home from "./Home";
 import Unauthorised from "./Unauthorised";
 
 import moment from "moment";
-
 import * as Cookies from "js-cookie";
 import Spinner from "react-bootstrap/Spinner";
 
@@ -16,10 +15,10 @@ function BookingOverview() {
 
   const [venueInfo, setVenueInfo] = useState();
   const [cart, setCart] = useState();
-
   const [loading, setLoading] = useState(false);
 
   const venueSearch = () => {
+    // get venue details for selected venue
     let search = new URLSearchParams();
 
     search.append("buildingName", Cookies.get("buildingId"));
@@ -55,7 +54,6 @@ function BookingOverview() {
 
   const getCartItems = () => {
     // whenever the user changes date or capacity
-
     let search = new URLSearchParams();
 
     search.append("NUSNET_ID", Cookies.get("id"));
@@ -89,6 +87,7 @@ function BookingOverview() {
   };
 
   const confirmBooking = () => {
+    // when the user confirms the bookings
     if (cart !== undefined) {
       setLoading(true);
 
@@ -137,6 +136,7 @@ function BookingOverview() {
   };
 
   const dateConverter = (givenDate) => {
+    // display the time slot
     let endHour = Number(givenDate.substring(11, 13)) + 1;
     let tempDate = givenDate.substring(0, 13);
 
@@ -624,7 +624,6 @@ function BookingOverview() {
                   )}
                 </div>
               </div>
-              <br />
               <div className="booking-selector-mobile">
                 <div
                   style={{ display: "flex", flexDirection: "column", flex: 1 }}

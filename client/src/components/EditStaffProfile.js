@@ -5,12 +5,11 @@ import configData from "../config.json";
 import Layout3 from "../layouts/Layout3";
 import EditProfile from "./EditProfile";
 import Unauthorised from "./Unauthorised";
+import DefaultPic from "../assets/profile.png";
 
 import * as Cookies from "js-cookie";
 import Spinner from "react-bootstrap/Spinner";
 import FormData from "form-data";
-
-import DefaultPic from "../assets/profile.png";
 
 const style = {
   padding: 5,
@@ -20,10 +19,18 @@ function EditStaffProfile() {
   let history = useHistory();
 
   const [profileInfo, setProfileInfo] = useState();
-
   const [loading, setLoading] = useState(false);
+  const [username, setUsername] = useState();
+  const [password, setPassword] = useState({
+    old: "",
+    new: "",
+    confirm: "",
+  });
+  const [error, setError] = useState("Edit your profile!");
+  const [profilePic, setProfilePic] = useState(null);
 
   const getProfile = () => {
+    // get profile info
     let search = new URLSearchParams();
 
     search.append("NUSNET_ID", Cookies.get("id"));
@@ -56,17 +63,8 @@ function EditStaffProfile() {
       });
   };
 
-  const [username, setUsername] = useState();
-  const [password, setPassword] = useState({
-    old: "",
-    new: "",
-    confirm: "",
-  });
-  const [error, setError] = useState("Edit your profile!");
-
-  const [profilePic, setProfilePic] = useState(null);
-
   const onImageChange = (event) => {
+    // changes profile pic based on selected profile pic
     if (event.target.files && event.target.files[0]) {
       let img = event.target.files[0];
       setProfilePic(img);
@@ -74,6 +72,8 @@ function EditStaffProfile() {
   };
 
   const submitForm = (e) => {
+    // user confirms edit
+    // user can choose to update their password as well
     e.preventDefault();
 
     setLoading(true);
@@ -164,14 +164,16 @@ function EditStaffProfile() {
   };
 
   useEffect(() => {
+    getProfile();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
     if (profileInfo !== undefined) {
       setUsername(profileInfo.Name);
     }
   }, [profileInfo]);
-
-  useEffect(() => {
-    getProfile();
-  }, []);
 
   return (
     <>
@@ -202,11 +204,9 @@ function EditStaffProfile() {
               ) : (
                 <form>
                   <h3>Update Profile</h3>
-
                   <div className="error">
                     <span className="message">{error}</span>
                   </div>
-
                   <div
                     style={{
                       display: "flex",
@@ -255,7 +255,6 @@ function EditStaffProfile() {
                       <label htmlFor="upload">Replace image</label>
                     </div>
                   </div>
-
                   <div className="form-group" style={style}>
                     <input
                       type="text"
@@ -265,7 +264,6 @@ function EditStaffProfile() {
                       defaultValue={profileInfo.Name}
                     />
                   </div>
-
                   <div className="form-group" style={style}>
                     <input
                       type="password"
@@ -277,7 +275,6 @@ function EditStaffProfile() {
                       value={password.old}
                     />
                   </div>
-
                   <div className="form-group" style={style}>
                     <input
                       type="password"
@@ -289,7 +286,6 @@ function EditStaffProfile() {
                       value={password.new}
                     />
                   </div>
-
                   <div className="form-group" style={style}>
                     <input
                       type="password"
@@ -301,7 +297,6 @@ function EditStaffProfile() {
                       value={password.confirm}
                     />
                   </div>
-
                   <div style={style}>
                     <button
                       style={{ float: "left" }}

@@ -9,6 +9,7 @@ function LogoutSuccess(props) {
   let history = useHistory();
 
   const goLogin = () => {
+    // redirects user to login page
     history.push("/sign-in");
   };
 

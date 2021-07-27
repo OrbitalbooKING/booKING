@@ -12,16 +12,11 @@ import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import Checkbox from "@material-ui/core/Checkbox";
-
 import { makeStyles } from "@material-ui/core/styles";
-
 import FormGroup from "@material-ui/core/FormGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
-
 import { Calendar, DateObject } from "react-multi-date-picker";
-
 import moment from "moment";
-
 import * as Cookies from "js-cookie";
 import Spinner from "react-bootstrap/Spinner";
 
@@ -41,28 +36,24 @@ function EditBooking() {
   const classes = useStyles();
 
   const [errorMessage, setErrorMessage] = useState();
-
   const [bookingInfo, setBookingInfo] = useState();
   const [oldVenueInfo, setOldVenueInfo] = useState();
-
   const [bookable, setBookable] = useState();
   const [cost, setCost] = useState();
   const [points, setPoints] = useState();
   const [venueInfo, setVenueInfo] = useState();
-
   const [date, setDate] = useState(new DateObject());
   const [sharing, setSharing] = useState();
   const [capacity, setCapacity] = useState(0);
-
   const [timings, setTimings] = useState([]);
   const [availability, setAvailability] = useState();
   const [selected, setSelected] = useState();
   const [cart, setCart] = useState();
-
   const [loading, setLoading] = useState(false);
   const [clearLoading, setClearLoading] = useState(false);
 
   const getOldBooking = () => {
+    // get booking details for currently editing booking
     let search = new URLSearchParams();
 
     search.append("bookingID", Cookies.get("oldBookingId"));
@@ -96,6 +87,7 @@ function EditBooking() {
   };
 
   const getOldVenue = () => {
+    // get booking details for currently editing booking
     let search = new URLSearchParams();
 
     search.append("buildingName", Cookies.get("oldBuildingId"));
@@ -130,6 +122,7 @@ function EditBooking() {
   };
 
   const venueSearch = () => {
+    // get venue details for selected venue
     let search = new URLSearchParams();
 
     search.append("buildingName", Cookies.get("buildingId"));
@@ -164,6 +157,8 @@ function EditBooking() {
   };
 
   const getPoints = () => {
+    // get user's points and cart details
+    // whenever user adds a new item to cart, this function will be called to refetch the cart details
     let search = new URLSearchParams();
 
     search.append("NUSNET_ID", Cookies.get("id"));
@@ -205,14 +200,17 @@ function EditBooking() {
   };
 
   const handleCapacityChange = (event) => {
+    // changes capacity based on selected capacity
     setCapacity(event.target.value);
   };
 
   const handleSharingChange = (event) => {
+    // changes sharing option based on selected sharing option
     setSharing(event.target.value);
   };
 
   const handleCheckboxChange = (event) => {
+    // called everytime user selects/deselects a checkbox
     let selectedHour = Number(event.target.name.substring(4, 6));
 
     let selectedStart = toIsoString(
@@ -241,22 +239,15 @@ function EditBooking() {
     if (event.target.checked) {
       // user selected checkbox
       addToCart(selectedStart, selectedEnd);
-      // setSelected({ ...selected, [event.target.name]: event.target.checked });
     } else {
       // user unselected checkbox
       removeFromCart(selectedStart, selectedEnd);
-      // setSelected({ ...selected, [event.target.name]: event.target.checked });
     }
   };
 
   const getTimings = () => {
     // get bookings for selected date
-
-    // every capacity/date change should call this API
-
-    if (capacity !== 0 && sharing !== undefined) {
-    }
-
+    // every capacity/date change should call this function to update the booking list
     let search = new URLSearchParams();
 
     let eventStart = new Date(
@@ -316,6 +307,7 @@ function EditBooking() {
   };
 
   const populateCheckbox = () => {
+    //populates checkbox for selecting time slots
     let availabilityState = {};
     let selectedState = {};
     for (let i = 0; i < timings.length; i++) {
@@ -348,7 +340,6 @@ function EditBooking() {
 
   const getCartItems = () => {
     // whenever the user changes date or capacity
-
     let search = new URLSearchParams();
 
     search.append("NUSNET_ID", Cookies.get("id"));
@@ -384,7 +375,6 @@ function EditBooking() {
 
   const addToCart = (start, end) => {
     // whenever the user checks a checkbox
-
     if (cart !== undefined) {
       let changeInCapacity = false;
       for (let i = 0; i < cart.length; i++) {
@@ -438,7 +428,6 @@ function EditBooking() {
 
   const removeFromCart = (start, end) => {
     // whenever the user unchecks a checkbox
-
     for (let i = 0; i < cart.length; i++) {
       if (start.substring(0, 13) === cart[i].Eventstart.substring(0, 13)) {
         let search = new URLSearchParams();
@@ -479,7 +468,6 @@ function EditBooking() {
 
   const removeTimeSlot = (value) => () => {
     // removes selected time slot
-
     let search = new URLSearchParams();
     search.append("bookingID", value.Bookingid);
 
@@ -513,6 +501,7 @@ function EditBooking() {
   };
 
   const removeAllFromCart = () => {
+    // removes all bookings in cart
     if (cart !== undefined) {
       setClearLoading(true);
 
@@ -555,13 +544,13 @@ function EditBooking() {
   };
 
   const checkoutCart = () => {
+    // redirects user to confirmation page
     setLoading(true);
     history.push("/edit-overview");
   };
 
   const DisplayTimings = () => {
     // displays checkboxes for users to select time slots
-
     return (
       <div>
         <div style={{ overflowY: "auto", height: 200 }}>
@@ -673,6 +662,7 @@ function EditBooking() {
   };
 
   const formatter = (timing) => {
+    // formats timings for checkbox logic
     let start = Number(timing.substring(4, 6));
     let end = Number(timing.substring(4, 6)) + 1;
 
@@ -725,6 +715,7 @@ function EditBooking() {
   };
 
   const toIsoString = (date) => {
+    // converts given date to ISO format
     let tzo = -date.getTimezoneOffset(),
       dif = tzo >= 0 ? "+" : "-",
       pad = function (num) {
@@ -752,6 +743,7 @@ function EditBooking() {
   };
 
   const dateConverter = (givenDate) => {
+    // display the time slot
     let endHour = Number(givenDate.substring(11, 13)) + 1;
     let tempDate = givenDate.substring(0, 13);
 
@@ -763,6 +755,7 @@ function EditBooking() {
   };
 
   const findMaxCapacity = (max, points, sharing) => {
+    //get maximum capacity user can select
     if (sharing) {
       if (max < Math.floor(points * 1.2)) {
         return max;
@@ -832,6 +825,7 @@ function EditBooking() {
   }, [timings]);
 
   useEffect(() => {
+    // wipe old cart bookings when booking for a new venue
     if (cart !== undefined) {
       let changeInVenue = false;
       for (let i = 0; i < cart.length; i++) {
@@ -1163,7 +1157,6 @@ function EditBooking() {
                     })
                   )}
                 </div>
-
                 <div className="booking-selector">
                   <div className="display-selected-venue-header">
                     <div style={{ display: "flex", flexDirection: "row" }}>

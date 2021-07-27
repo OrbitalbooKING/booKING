@@ -6,8 +6,6 @@ import Layout2 from "../layouts/Layout2";
 import Home from "./Home";
 import Unauthorised from "./Unauthorised";
 
-import moment from "moment";
-
 import Input from "@material-ui/core/Input";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -16,14 +14,12 @@ import ListItemText from "@material-ui/core/ListItemText";
 import Select from "@material-ui/core/Select";
 import Checkbox from "@material-ui/core/Checkbox";
 import { makeStyles } from "@material-ui/core/styles";
-
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-
 import DatePicker from "react-datepicker";
 import subDays from "date-fns/subDays";
 import "react-datepicker/dist/react-datepicker.css";
-
+import moment from "moment";
 import * as Cookies from "js-cookie";
 import Spinner from "react-bootstrap/Spinner";
 
@@ -37,36 +33,32 @@ function EditHome() {
   let history = useHistory();
 
   const classes = useStyles();
-
   const [bookingInfo, setBookingInfo] = useState();
   const [venueInfo, setVenueInfo] = useState();
-
   const [searchResults, setSearchResults] = useState();
   const [venuesList, setVenuesList] = useState();
-
-  // 4 forms
   const [venueName, setVenueName] = useState("");
   const [venueType, setVenueType] = useState("");
   const [buildingName, setBuildingName] = useState("");
   const [unit, setUnit] = useState("");
-
   const [capacity, setCapacity] = useState(0);
-
   const [equipment, setEquipment] = useState([]);
   const equipmentList = ["Projector", "Screen", "Desktop", "Whiteboard"];
-
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [tempDate, setTempDate] = useState(null);
 
   const handleCapacityChange = (event) => {
+    // changes capacity based on selected capacity
     setCapacity(event.target.value);
   };
   const handleEquipmentChange = (event) => {
+    // changes equipment based on selected equipment
     setEquipment(event.target.value);
   };
 
   const filterStartTime = (time) => {
+    // filters start time based on end time
     if (endDate !== null) {
       const currentDate = new Date();
       const selectedDate = new Date(time);
@@ -82,6 +74,7 @@ function EditHome() {
   };
 
   const filterEndTime = (time) => {
+    // filters end time based on start time
     if (startDate !== null) {
       const selectedDate = new Date(time);
       return startDate.getTime() < selectedDate.getTime();
@@ -93,6 +86,7 @@ function EditHome() {
   };
 
   const getOldBooking = () => {
+    // get booking details for currently editing booking
     let search = new URLSearchParams();
 
     search.append("bookingID", Cookies.get("oldBookingId"));
@@ -126,6 +120,7 @@ function EditHome() {
   };
 
   const getOldVenue = () => {
+    // get booking details for currently editing booking
     let search = new URLSearchParams();
 
     search.append("buildingName", Cookies.get("oldBuildingId"));
@@ -160,10 +155,10 @@ function EditHome() {
   };
 
   const getVenues = () => {
+    // fetches whole list of venues without filtering
     Axios.get(configData.LOCAL_HOST + "/home")
       .then((response) => {
         setVenuesList(response.data.data);
-        // setVenuesList(MOCKDATA);
       })
       .catch((error) => {
         if (error.response) {
@@ -188,6 +183,7 @@ function EditHome() {
   };
 
   const venueSearch = () => {
+    // filters list of venues based on search inputs
     let search = new URLSearchParams();
     for (let i = 0; i < equipment.length; i++) {
       search.append("equipment", `${equipment[i]}`);
@@ -203,7 +199,6 @@ function EditHome() {
       }
       search.append("buildingName", buildingNameId);
     }
-
     if (unit !== "") {
       search.append("unitNo", unit);
     }
@@ -220,7 +215,6 @@ function EditHome() {
     if (venueName !== "") {
       search.append("venueName", venueName);
     }
-
     if (startDate !== null) {
       search.append("startHour", toIsoString(startDate));
     }
@@ -257,6 +251,7 @@ function EditHome() {
   };
 
   const book = (val) => () => {
+    //redirects user to the booking page
     let inThreeHours = 0.125;
 
     Cookies.set("buildingName", val.Buildingname, {
@@ -279,6 +274,7 @@ function EditHome() {
   };
 
   const dateConverter = (date) => {
+    // display the time slot
     let endHour = Number(date.substring(11, 13)) + 1;
     let tempDate = date.substring(0, 13);
 
@@ -290,6 +286,7 @@ function EditHome() {
   };
 
   const toIsoString = (date) => {
+    // converts given date to ISO format
     let tzo = -date.getTimezoneOffset(),
       dif = tzo >= 0 ? "+" : "-",
       pad = function (num) {
@@ -319,8 +316,8 @@ function EditHome() {
   useEffect(() => {
     getOldBooking();
     getOldVenue();
-    venueSearch(); //populates list of venues from API
-    getVenues(); //get venue details for filtering from API
+    venueSearch();
+    getVenues();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

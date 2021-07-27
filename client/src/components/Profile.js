@@ -5,13 +5,11 @@ import configData from "../config.json";
 import Layout2 from "../layouts/Layout2";
 import Layout3 from "../layouts/Layout3";
 import Unauthorised from "./Unauthorised";
+import DefaultPic from "../assets/profile.png";
 
 import moment from "moment";
-
-import DefaultPic from "../assets/profile.png";
 import * as Cookies from "js-cookie";
 import Spinner from "react-bootstrap/Spinner";
-
 import Dropdown from "react-bootstrap/esm/Dropdown";
 import DropdownButton from "react-bootstrap/esm/DropdownButton";
 
@@ -22,6 +20,7 @@ function Profile() {
   const [bookings, setBookings] = useState();
 
   const getProfile = () => {
+    // get profile info
     let search = new URLSearchParams();
 
     search.append("NUSNET_ID", Cookies.get("id"));
@@ -55,6 +54,7 @@ function Profile() {
   };
 
   const getBookings = () => {
+    // get user's bookings
     let search = new URLSearchParams();
 
     search.append("NUSNET_ID", Cookies.get("id"));
@@ -88,6 +88,7 @@ function Profile() {
   };
 
   const dateConverter = (date) => {
+    // display the time slot
     let endHour = Number(date.substring(11, 13)) + 1;
     let tempDate = date.substring(0, 13);
 
@@ -99,6 +100,7 @@ function Profile() {
   };
 
   const toIsoString = (date) => {
+    // converts given date to ISO format
     let tzo = -date.getTimezoneOffset(),
       dif = tzo >= 0 ? "+" : "-",
       pad = function (num) {
@@ -126,6 +128,7 @@ function Profile() {
   };
 
   const deleteBooking = (val) => () => {
+    // redirects user to deletion page
     let inThreeHours = 0.125;
 
     Cookies.set("bookingId", val.Bookingid, {
@@ -138,6 +141,7 @@ function Profile() {
   };
 
   const editBooking = (val) => () => {
+    // redirects user to edit booking page
     let inThreeHours = 0.125;
 
     Cookies.set("oldBookingId", val.Bookingid, {
@@ -160,16 +164,18 @@ function Profile() {
   };
 
   const editProfile = () => {
+    // redirects user to edit profile page
     history.push("/edit-profile");
   };
 
   const editStaffProfile = () => {
+    // redirects staff to edit profile page
     history.push("/edit-staff-profile");
   };
 
   useEffect(() => {
-    getProfile(); //populates list of venues from API
-    getBookings(); //get venue details for filtering from API
+    getProfile();
+    getBookings();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -475,7 +481,6 @@ function Profile() {
                   )}
                 </div>
               </div>
-
               <div className="profile-mobile">
                 <div
                   style={{
@@ -504,7 +509,6 @@ function Profile() {
                       )}
                     </div>
                   </div>
-
                   <div className="display-old-header">
                     <div
                       style={{
@@ -637,7 +641,6 @@ function Profile() {
                   </div>
                 </div>
               </div>
-
               <br />
               <div className="venue-list-mobile">
                 <div

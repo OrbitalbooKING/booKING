@@ -7,7 +7,6 @@ import Home from "./Home";
 import Unauthorised from "./Unauthorised";
 
 import moment from "moment";
-
 import * as Cookies from "js-cookie";
 import Spinner from "react-bootstrap/Spinner";
 
@@ -16,13 +15,12 @@ function EditOverview() {
 
   const [bookingInfo, setBookingInfo] = useState();
   const [oldVenueInfo, setOldVenueInfo] = useState();
-
   const [venueInfo, setVenueInfo] = useState();
   const [cart, setCart] = useState();
-
   const [loading, setLoading] = useState(false);
 
   const getOldBooking = () => {
+    // get booking details for currently editing booking
     let search = new URLSearchParams();
 
     search.append("bookingID", Cookies.get("oldBookingId"));
@@ -56,6 +54,7 @@ function EditOverview() {
   };
 
   const getOldVenue = () => {
+    // get booking details for currently editing booking
     let search = new URLSearchParams();
 
     search.append("buildingName", Cookies.get("oldBuildingId"));
@@ -90,6 +89,7 @@ function EditOverview() {
   };
 
   const venueSearch = () => {
+    // get venue details for selected venue
     let search = new URLSearchParams();
 
     search.append("buildingName", Cookies.get("buildingId"));
@@ -125,7 +125,6 @@ function EditOverview() {
 
   const getCartItems = () => {
     // whenever the user changes date or capacity
-
     let search = new URLSearchParams();
 
     search.append("NUSNET_ID", Cookies.get("id"));
@@ -159,6 +158,7 @@ function EditOverview() {
   };
 
   const confirmBooking = () => {
+    // user confirms the booking
     if (cart !== undefined) {
       setLoading(true);
       let tempArr = [];
@@ -234,6 +234,7 @@ function EditOverview() {
   };
 
   const dateConverter = (givenDate) => {
+    // display the time slot
     let endHour = Number(givenDate.substring(11, 13)) + 1;
     let tempDate = givenDate.substring(0, 13);
 
@@ -558,7 +559,6 @@ function EditOverview() {
                     })
                   )}
                 </div>
-
                 <div className="booking-selector">
                   <div className="display-selected-venue-header">
                     <div style={{ display: "flex", flexDirection: "row" }}>

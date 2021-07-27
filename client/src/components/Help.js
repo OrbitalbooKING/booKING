@@ -13,6 +13,7 @@ function Help() {
   const [isCopied, setIsCopied] = useState(false);
 
   const onCopyText = () => {
+    // sets the copied message to disappear after a second
     setIsCopied(true);
     setTimeout(() => {
       setIsCopied(false);
@@ -20,10 +21,12 @@ function Help() {
   };
 
   const goLogin = () => {
+    // redirects user back to login page
     history.push("/sign-in");
   };
 
   const goHome = () => {
+    // redirects user back to home
     history.push("/home");
   };
 
@@ -31,6 +34,8 @@ function Help() {
     return function cleanup() {
       setIsCopied(false);
     };
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

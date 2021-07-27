@@ -10,6 +10,7 @@ function EditProfileSuccess(props) {
   let history = useHistory();
 
   const goProfile = () => {
+    // redirects user back to profile
     history.push("/profile");
   };
 

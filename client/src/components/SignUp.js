@@ -2,8 +2,9 @@ import { useState, useEffect } from "react";
 import { Link, useHistory } from "react-router-dom";
 import Axios from "axios";
 import configData from "../config.json";
-import Layout1 from "../layouts/Layout1";
 import Home from "./Home";
+import Layout1 from "../layouts/Layout1";
+import DefaultPic from "../assets/profile.png";
 
 import Input from "@material-ui/core/Input";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -11,12 +12,9 @@ import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import { makeStyles } from "@material-ui/core/styles";
-
 import * as Cookies from "js-cookie";
 import Spinner from "react-bootstrap/Spinner";
 import FormData from "form-data";
-
-import DefaultPic from "../assets/profile.png";
 
 const style = {
   padding: 5,
@@ -40,7 +38,6 @@ function SignUpForm() {
   const classes = useStyles();
 
   const currentYear = new Date().getFullYear();
-
   const [details, setDetails] = useState({
     id: "",
     username: "",
@@ -50,22 +47,22 @@ function SignUpForm() {
   const [gradYear, setGradYear] = useState();
   const [faculty, setFaculty] = useState();
   const [error, setError] = useState("Create your account!");
-
   const [loading, setLoading] = useState(false);
+  const [facultyList, setFacultyList] = useState();
+  const [profilePic, setProfilePic] = useState(null);
 
   const handleGradYearChange = (event) => {
+    // changes graduation year based on selected graduation year
     setGradYear(event.target.value);
   };
 
   const handleFacultyChange = (event) => {
+    // changes faculty based on selected faculty
     setFaculty(event.target.value);
   };
 
-  const [facultyList, setFacultyList] = useState();
-
-  const [profilePic, setProfilePic] = useState(null);
-
   const onImageChange = (event) => {
+    // changes profile pic based on selected profile pic
     if (event.target.files && event.target.files[0]) {
       let img = event.target.files[0];
       setProfilePic(img);
@@ -73,10 +70,12 @@ function SignUpForm() {
   };
 
   const removeImage = () => {
+    // removes profile pic
     setProfilePic(null);
   };
 
   const submitForm = (e) => {
+    // user clicks on sign up
     e.preventDefault();
 
     setLoading(true);
@@ -158,6 +157,7 @@ function SignUpForm() {
   };
 
   const getFacultyList = () => {
+    //get list of faculties for users to select
     Axios.get(configData.LOCAL_HOST + "/get_faculty")
       .then((response) => {
         setFacultyList(response.data.data);
@@ -186,6 +186,8 @@ function SignUpForm() {
 
   useEffect(() => {
     getFacultyList();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -198,11 +200,9 @@ function SignUpForm() {
             <div className="sign-up">
               <form>
                 <h3>Sign Up</h3>
-
                 <div className="error">
                   <span className="message">{error}</span>
                 </div>
-
                 <div
                   style={{
                     display: "flex",
@@ -254,7 +254,6 @@ function SignUpForm() {
                     )}
                   </div>
                 </div>
-
                 <div className="form-group" style={style}>
                   <input
                     type="text"
@@ -266,7 +265,6 @@ function SignUpForm() {
                     value={details.username}
                   />
                 </div>
-
                 <div className="form-group" style={style}>
                   <input
                     style={{ width: "60%", float: "left" }}
@@ -305,7 +303,6 @@ function SignUpForm() {
                     </FormControl>
                   </div>
                 </div>
-
                 <FormControl style={{ width: "95%" }}>
                   <InputLabel id="demo-simple-select-label">Faculty</InputLabel>
                   <Select
@@ -332,7 +329,6 @@ function SignUpForm() {
                           })}
                   </Select>
                 </FormControl>
-
                 <div className="form-group" style={style}>
                   <input
                     type="password"
@@ -344,7 +340,6 @@ function SignUpForm() {
                     value={details.password}
                   />
                 </div>
-
                 <div className="form-group" style={style}>
                   <input
                     type="password"
@@ -359,7 +354,6 @@ function SignUpForm() {
                     value={details.confirmPassword}
                   />
                 </div>
-
                 <div style={style}>
                   <p className="forgot-password text-right">
                     Already registered? <Link to="/sign-in">Sign in</Link>

@@ -16,7 +16,14 @@ const style = {
 function TransferPoints() {
   let history = useHistory();
 
+  const [target, setTarget] = useState("");
+  const [points, setPoints] = useState("");
+  const [pointsLeft, setPointsLeft] = useState();
+  const [error, setError] = useState("Transfer your points to your friends!");
+  const [loading, setLoading] = useState(false);
+
   const getPoints = () => {
+    // get user's current points left
     let search = new URLSearchParams();
 
     search.append("NUSNET_ID", Cookies.get("id"));
@@ -49,14 +56,8 @@ function TransferPoints() {
       });
   };
 
-  const [target, setTarget] = useState("");
-  const [points, setPoints] = useState("");
-  const [pointsLeft, setPointsLeft] = useState();
-  const [error, setError] = useState("Transfer your points to your friends!");
-
-  const [loading, setLoading] = useState(false);
-
   const submitForm = (e) => {
+    // user clicks on transfer
     e.preventDefault();
 
     setLoading(true);
@@ -102,6 +103,8 @@ function TransferPoints() {
 
   useEffect(() => {
     getPoints();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -132,11 +135,9 @@ function TransferPoints() {
               ) : (
                 <form>
                   <h3>Transfer Points</h3>
-
                   <div className="error">
                     <span className="message">{error}</span>
                   </div>
-
                   <div className="form-group" style={style}>
                     <input
                       type="text"
@@ -146,7 +147,6 @@ function TransferPoints() {
                       value={target}
                     />
                   </div>
-
                   <div
                     className="form-group"
                     style={{
@@ -172,7 +172,6 @@ function TransferPoints() {
                       Points Left: {Math.round(pointsLeft * 10) / 10}
                     </div>
                   </div>
-
                   <div style={style}>
                     <button
                       style={{ float: "left" }}

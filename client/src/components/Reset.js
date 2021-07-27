@@ -19,10 +19,10 @@ function ResetForm() {
   const [error, setError] = useState(
     "Enter your NUSNET ID to reset your password!"
   );
-
   const [loading, setLoading] = useState(false);
 
   const resetPassword = (e) => {
+    // user clicks on login
     e.preventDefault();
 
     setLoading(true);
@@ -74,11 +74,9 @@ function ResetForm() {
             <div className="content">
               <form>
                 <h3>Reset Password</h3>
-
                 <div className="error">
                   <span className="message">{error}</span>
                 </div>
-
                 <div className="form-group" style={style}>
                   <input
                     type="text"
@@ -88,7 +86,6 @@ function ResetForm() {
                     value={id}
                   />
                 </div>
-
                 <div style={style}>
                   <p className="forgot-password text-right">
                     <Link to="/sign-in">Sign in</Link>

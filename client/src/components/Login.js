@@ -22,6 +22,7 @@ function LoginForm() {
   const [loading, setLoading] = useState(false);
 
   const submitForm = (e) => {
+    // user clicks on login
     e.preventDefault();
 
     setLoading(true);

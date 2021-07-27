@@ -12,12 +12,9 @@ import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import { makeStyles } from "@material-ui/core/styles";
-
 import moment from "moment";
-
 import * as Cookies from "js-cookie";
 import Spinner from "react-bootstrap/Spinner";
-
 import Dropdown from "react-bootstrap/esm/Dropdown";
 import DropdownButton from "react-bootstrap/esm/DropdownButton";
 
@@ -33,13 +30,15 @@ function StaffHome() {
   const classes = useStyles();
 
   const [bookingsList, setBookingsList] = useState();
-
   const [status, setStatus] = useState("All");
+
   const handleStatusChange = (event) => {
+    // allows staff to sort bookings by their status
     setStatus(event.target.value);
   };
 
   const getBookings = () => {
+    // fetches the list of booking requests
     Axios.get(configData.LOCAL_HOST + "/get_booking_requests")
       .then((response) => {
         setBookingsList(response.data.data);
@@ -67,6 +66,7 @@ function StaffHome() {
   };
 
   const approveBooking = (val) => () => {
+    // redirects staff to approval page
     let inThreeHours = 0.125;
 
     Cookies.set("bookingId", val.BookingID, {
@@ -79,6 +79,7 @@ function StaffHome() {
   };
 
   const rejectBooking = (val) => () => {
+    // redirects staff to rejection page
     let inThreeHours = 0.125;
 
     Cookies.set("bookingId", val.BookingID, {
@@ -91,6 +92,7 @@ function StaffHome() {
   };
 
   const dateConverter = (date) => {
+    // display the time slot
     let endHour = Number(date.substring(11, 13)) + 1;
 
     let tempDate = date.substring(0, 13);
@@ -103,6 +105,7 @@ function StaffHome() {
   };
 
   const toIsoString = (date) => {
+    // converts given date to ISO format
     let tzo = -date.getTimezoneOffset(),
       dif = tzo >= 0 ? "+" : "-",
       pad = function (num) {
@@ -130,6 +133,7 @@ function StaffHome() {
   };
 
   const sortBooking = (bookings) => {
+    // sorts booking requests by listening SoC requests first
     if (bookings !== undefined) {
       let pending = bookings.filter(
         (data) => data.Bookingstatusdescription === "Pending approval"
@@ -159,7 +163,7 @@ function StaffHome() {
   };
 
   useEffect(() => {
-    getBookings(); //get booking requests from API
+    getBookings();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

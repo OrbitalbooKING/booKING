@@ -901,7 +901,7 @@ function EditBooking() {
                             >
                               <h3>Currently editing:</h3>
                             </div>
-                            <div style={{ overflowY: "auto", height: 440 }}>
+                            <div className="edit-column-booking">
                               <div className="display-old-header">
                                 <div
                                   style={{

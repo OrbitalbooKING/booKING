@@ -351,7 +351,7 @@ function BookingOverview() {
                     style={{
                       margin: "0 auto",
                       overflowY: "auto",
-                      height: 240,
+                      height: 260,
                       marginBottom: 10,
                     }}
                   >

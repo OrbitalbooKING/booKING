@@ -303,7 +303,7 @@ function EditOverview() {
                             >
                               <h3>Currently editing:</h3>
                             </div>
-                            <div style={{ overflowY: "auto", height: 430 }}>
+                            <div className="edit-column-booking">
                               <div className="display-old-header">
                                 <div
                                   style={{
@@ -740,7 +740,7 @@ function EditOverview() {
                       style={{
                         margin: "0 auto",
                         overflowY: "auto",
-                        height: 240,
+                        height: 260,
                         marginBottom: 10,
                       }}
                     >

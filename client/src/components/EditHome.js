@@ -353,7 +353,7 @@ function EditHome() {
           name={Cookies.get("name")}
           action="Select a new venue"
         >
-          <div className="parent-booking">
+          <div className="parent-edit-home">
             <div className="home-page">
               <div className="edit-home">
                 <div className="column">

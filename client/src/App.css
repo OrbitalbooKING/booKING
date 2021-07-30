@@ -434,6 +434,17 @@ html,
   left: auto;
 }
 
+.edit-home {
+  display: flex;
+  flex-direction: row;
+  padding-right: 20;
+}
+
+.edit-column-details {
+  overflow-y: auto;
+  height: 470px;
+}
+
 @media (max-width: 450px) {
   .content {
     width: 80%;
@@ -454,13 +465,6 @@ html,
     overflow-y: auto;
     overflow-x: auto;
 
-    /* justify-self: center;
-    justify-content: center;
-    justify-items: center;
-    align-self: center;
-    align-content: center;
-    align-items: center;
-    text-align: center; */
     justify-content: center;
     align-content: center;
     text-align: center;
@@ -533,6 +537,17 @@ html,
     bottom: 0px;
   }
 
+  .parent-edit {
+    margin-top: 56px;
+    width: auto;
+    height: 230%;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+  }
+
   .stack-searchbar {
     display: flex;
     flex-direction: column;
@@ -556,6 +571,33 @@ html,
 
   .profile {
     display: none;
+  }
+
+  .booking-view {
+    display: none;
+  }
+
+  .bookings-list {
+    display: none;
+  }
+
+  .edit-home {
+    display: initial;
+  }
+
+  .column {
+    width: auto;
+    margin: auto;
+    background: #ffffff;
+    padding: 10px 20px 10px 20px;
+    border-radius: 15px;
+    transition: all 0.3s;
+    margin-bottom: 20px;
+  }
+
+  .edit-column-details {
+    overflow-y: auto;
+    height: 230px;
   }
 }
 

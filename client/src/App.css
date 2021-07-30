@@ -531,7 +531,7 @@ html,
   .parent-edit-home {
     margin-top: 56px;
     width: auto;
-    height: 120%;
+    height: 150%;
     position: absolute;
     top: 0px;
     left: 0px;
@@ -542,7 +542,7 @@ html,
   .parent-edit {
     margin-top: 56px;
     width: auto;
-    height: 210%;
+    height: 240%;
     position: absolute;
     top: 0px;
     left: 0px;

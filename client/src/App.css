@@ -45,25 +45,11 @@ html,
   top: 0;
 }
 
-.parent-booking {
-  margin-top: 56px;
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  right: 0px;
-  bottom: 0px;
-}
-
-.parent-home {
-  margin-top: 56px;
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  right: 0px;
-  bottom: 0px;
-}
-
-.parent {
+.parent,
+.parent-booking,
+.parent-home,
+.parent-edit,
+.parent-edit-home {
   margin-top: 56px;
   position: absolute;
   top: 0px;
@@ -445,6 +431,11 @@ html,
   height: 470px;
 }
 
+.edit-column-booking {
+  overflow-y: auto;
+  height: 440px;
+}
+
 @media (max-width: 450px) {
   .content {
     width: 80%;
@@ -537,10 +528,21 @@ html,
     bottom: 0px;
   }
 
+  .parent-edit-home {
+    margin-top: 56px;
+    width: auto;
+    height: 120%;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+  }
+
   .parent-edit {
     margin-top: 56px;
     width: auto;
-    height: 230%;
+    height: 210%;
     position: absolute;
     top: 0px;
     left: 0px;
@@ -596,6 +598,11 @@ html,
   }
 
   .edit-column-details {
+    overflow-y: auto;
+    height: 230px;
+  }
+
+  .edit-column-booking {
     overflow-y: auto;
     height: 230px;
   }

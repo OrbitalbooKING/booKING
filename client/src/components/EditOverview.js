@@ -270,7 +270,7 @@ function EditOverview() {
           name={Cookies.get("name")}
           action="Editing overview"
         >
-          <div className="parent-home">
+          <div className="parent-edit-home">
             <div className="home-page">
               <div className="edit-home">
                 <div className="column">

@@ -566,7 +566,7 @@ function BookingOverview() {
                                   style={{
                                     display: "flex",
                                     flexDirection: "column",
-                                    width: 120,
+                                    width: "auto",
                                     textAlign: "center",
                                     alignSelf: "center",
                                     justifyContent: "center",
@@ -624,6 +624,7 @@ function BookingOverview() {
                   )}
                 </div>
               </div>
+              <br />
               <div className="booking-selector-mobile">
                 <div
                   style={{ display: "flex", flexDirection: "column", flex: 1 }}

@@ -550,10 +550,10 @@ function EditBooking() {
   };
 
   const DisplayTimings = () => {
-    // displays checkboxes for users to select time slots
+    // displays checkboxes for users to select timeslots
     return (
       <div>
-        <div style={{ overflowY: "auto", height: 200 }}>
+        <div style={{ overflowY: "auto", height: 200, paddingLeft: 5 }}>
           <FormGroup>
             {availability === undefined || timings.length === 0 ? (
               <div
@@ -868,15 +868,9 @@ function EditBooking() {
           name={Cookies.get("name")}
           action="Make a new booking"
         >
-          <div className="parent">
+          <div className="parent-edit">
             <div className="home-page">
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  paddingRight: 20,
-                }}
-              >
+              <div className="edit-home">
                 <div className="column">
                   {oldVenueInfo === undefined ? (
                     <div
@@ -905,7 +899,7 @@ function EditBooking() {
                                 alignSelf: "center",
                               }}
                             >
-                              <h3>Currently selected:</h3>
+                              <h3>Currently editing:</h3>
                             </div>
                             <div style={{ overflowY: "auto", height: 440 }}>
                               <div className="display-old-header">
@@ -1606,6 +1600,478 @@ function EditBooking() {
                             </button>
                           )}
                         </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="booking-selector-mobile">
+                  <div
+                    style={{
+                      width: "auto",
+                      textAlign: "center",
+                      alignSelf: "center",
+                    }}
+                  >
+                    <h3>Currently selected venue:</h3>
+                  </div>
+                  <div style={{ overflowY: "auto", height: 250 }}>
+                    {venueInfo === undefined ? (
+                      <div
+                        style={{
+                          justifyContent: "center",
+                          alignItems: "center",
+                          display: "flex",
+                          flexDirection: "column",
+                        }}
+                      >
+                        <Spinner animation="border" role="status">
+                          <span className="visually-hidden">Loading...</span>
+                        </Spinner>
+                      </div>
+                    ) : venueInfo.length === 0 ? (
+                      <div className="display-selected-venue">
+                        <div
+                          style={{ textAlign: "center", alignSelf: "center" }}
+                        >
+                          <h3>No details to display</h3>
+                        </div>
+                      </div>
+                    ) : (
+                      venueInfo.map((val, key) => {
+                        return (
+                          <div key={key}>
+                            <div
+                              style={{
+                                display: "flex",
+                                flexDirection: "column",
+                              }}
+                            >
+                              <div>
+                                <div className="display-old-header">
+                                  <div
+                                    style={{
+                                      width: 220,
+                                      textAlign: "center",
+                                      alignSelf: "center",
+                                    }}
+                                  >
+                                    Venue type{" "}
+                                  </div>
+                                </div>
+                                <div className="display-old">
+                                  <div
+                                    style={{
+                                      width: "auto",
+                                      textAlign: "center",
+                                      alignSelf: "center",
+                                    }}
+                                  >
+                                    {val.Roomtypename}{" "}
+                                  </div>
+                                </div>
+                                <div className="display-old-header">
+                                  <div
+                                    style={{
+                                      width: "auto",
+                                      textAlign: "center",
+                                      alignSelf: "center",
+                                    }}
+                                  >
+                                    Venue name{" "}
+                                  </div>
+                                </div>
+                                <div className="display-old">
+                                  <div
+                                    style={{
+                                      width: "auto",
+                                      textAlign: "center",
+                                      alignSelf: "center",
+                                    }}
+                                  >
+                                    {val.Venuename}{" "}
+                                  </div>
+                                </div>
+                                <div className="display-old-header">
+                                  <div
+                                    style={{
+                                      width: "auto",
+                                      textAlign: "center",
+                                      alignSelf: "center",
+                                    }}
+                                  >
+                                    Location{" "}
+                                  </div>
+                                </div>
+                                <div className="display-old">
+                                  <div
+                                    style={{
+                                      width: "auto",
+                                      textAlign: "center",
+                                      alignSelf: "center",
+                                    }}
+                                  >
+                                    {val.Buildingname} {val.Unit}{" "}
+                                  </div>
+                                </div>
+                                <div className="display-old-header">
+                                  <div
+                                    style={{
+                                      width: "auto",
+                                      textAlign: "center",
+                                      alignSelf: "center",
+                                    }}
+                                  >
+                                    Max capacity{" "}
+                                  </div>
+                                </div>
+                                <div className="display-old">
+                                  <div
+                                    style={{
+                                      width: "auto",
+                                      textAlign: "center",
+                                      alignSelf: "center",
+                                    }}
+                                  >
+                                    {val.Maxcapacity}{" "}
+                                  </div>
+                                </div>
+                                <div className="display-old-header">
+                                  <div
+                                    style={{
+                                      width: "auto",
+                                      textAlign: "center",
+                                      alignSelf: "center",
+                                    }}
+                                  >
+                                    Equipment{" "}
+                                  </div>
+                                </div>
+                                <div className="display-old">
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      flexDirection: "column",
+                                      width: "auto",
+                                      textAlign: "center",
+                                      alignSelf: "center",
+                                      justifyContent: "center",
+                                    }}
+                                  >
+                                    <div>
+                                      {val.Facilitiesdict.Projector ===
+                                        undefined &&
+                                      val.Facilitiesdict.Screen === undefined &&
+                                      val.Facilitiesdict.Desktop ===
+                                        undefined &&
+                                      val.Facilitiesdict.Whiteboard ===
+                                        undefined
+                                        ? "Nil"
+                                        : ""}
+                                    </div>
+                                    <div>
+                                      {val.Facilitiesdict.Projector ===
+                                      undefined
+                                        ? ""
+                                        : val.Facilitiesdict.Projector === 1
+                                        ? val.Facilitiesdict.Projector +
+                                          " projector"
+                                        : val.Facilitiesdict.Projector +
+                                          " projectors"}
+                                    </div>
+                                    <div>
+                                      {val.Facilitiesdict.Screen === undefined
+                                        ? ""
+                                        : val.Facilitiesdict.Screen === 1
+                                        ? val.Facilitiesdict.Screen + " screen"
+                                        : val.Facilitiesdict.Screen +
+                                          " screens"}
+                                    </div>
+                                    <div>
+                                      {val.Facilitiesdict.Desktop === undefined
+                                        ? ""
+                                        : val.Facilitiesdict.Desktop === 1
+                                        ? val.Facilitiesdict.Desktop +
+                                          " desktop"
+                                        : val.Facilitiesdict.Desktop +
+                                          " desktops"}
+                                    </div>
+                                    <div>
+                                      {val.Facilitiesdict.Whiteboard ===
+                                      undefined
+                                        ? ""
+                                        : val.Facilitiesdict.Whiteboard === 1
+                                        ? val.Facilitiesdict.Whiteboard +
+                                          " whiteboard"
+                                        : val.Facilitiesdict.Whiteboard +
+                                          " whiteboards"}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })
+                    )}
+                  </div>
+                </div>
+                <br />
+                <div className="booking-selector-mobile">
+                  <div style={{ width: 260 }}>
+                    <div style={{ display: "flex", flexDirection: "row" }}>
+                      <FormControl className={classes.formControl}>
+                        <InputLabel id="demo-simple-select-label">
+                          Sharing?
+                        </InputLabel>
+                        <Select
+                          labelId="demo-simple-select-label"
+                          id="demo-simple-select"
+                          value={sharing === undefined ? "" : sharing}
+                          onChange={handleSharingChange}
+                          input={<Input />}
+                          MenuProps={{ classes: { paper: classes.menuPaper } }}
+                        >
+                          <MenuItem value={true} key={"Yes"}>
+                            Yes
+                          </MenuItem>
+                          <MenuItem value={false} key={"No"}>
+                            No
+                          </MenuItem>
+                        </Select>
+                      </FormControl>
+                      {sharing ? (
+                        <FormControl className={classes.formControl}>
+                          <InputLabel id="demo-simple-select-label">
+                            Capacity
+                          </InputLabel>
+                          <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={capacity === 0 ? "" : capacity}
+                            onChange={handleCapacityChange}
+                            input={<Input />}
+                            MenuProps={{
+                              classes: { paper: classes.menuPaper },
+                            }}
+                          >
+                            {venueInfo === undefined || points === undefined
+                              ? null
+                              : Array.from(
+                                  {
+                                    length: findMaxCapacity(
+                                      venueInfo[0].Maxcapacity,
+                                      points,
+                                      sharing
+                                    ),
+                                  },
+                                  (v, i) => 1 + i
+                                ).map((val, key) => {
+                                  return (
+                                    <MenuItem value={val} key={key}>
+                                      {val}
+                                    </MenuItem>
+                                  );
+                                })}
+                          </Select>
+                        </FormControl>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+                  </div>
+                  <Calendar
+                    mapDays={({ date }) => {
+                      let currentTime = new DateObject();
+
+                      if (date < currentTime)
+                        return {
+                          disabled: true,
+                          style: { color: "#ccc" },
+                          onClick: () => alert("Date has already passed!"),
+                        };
+                    }}
+                    value={date}
+                    onChange={handleDateChange}
+                    format="DD/MM/YYYY HH:mm"
+                  ></Calendar>
+                  <DisplayTimings />
+                </div>
+                <br />
+                <div className="booking-selector-mobile">
+                  <div style={{ width: 260 }}>
+                    <div style={{ textAlign: "center" }}>
+                      Currently selected time slots:
+                    </div>
+                    <div style={{ overflowY: "auto", height: 200 }}>
+                      {cart === undefined ? (
+                        <div
+                          style={{
+                            justifyContent: "center",
+                            alignItems: "center",
+                            display: "flex",
+                            flexDirection: "column",
+                          }}
+                        >
+                          <Spinner animation="border" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                          </Spinner>
+                        </div>
+                      ) : cart.length === 0 ? (
+                        <div>
+                          <div
+                            style={{ textAlign: "center", alignSelf: "center" }}
+                          >
+                            <h3>Add a time slot</h3>
+                          </div>
+                        </div>
+                      ) : (
+                        cart.map((val, key) => {
+                          return (
+                            <div key={key}>
+                              <hr />
+                              <div
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "row",
+                                }}
+                              >
+                                <div
+                                  style={{
+                                    width: "auto",
+                                    textAlign: "center",
+                                    alignSelf: "center",
+                                  }}
+                                >
+                                  Pax: {val.Pax} | Timing:{" "}
+                                  {dateConverter(val.Eventstart)}
+                                </div>
+                                <div
+                                  style={{
+                                    width: "auto",
+                                    textAlign: "center",
+                                    alignSelf: "center",
+                                  }}
+                                >
+                                  <button
+                                    type="submit"
+                                    className="btn btn-primary btn-sm"
+                                    onClick={removeTimeSlot(val)}
+                                  >
+                                    Remove
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })
+                      )}
+                    </div>
+                    <br />
+                    <div style={{ display: "flex", flexDirection: "row" }}>
+                      <div
+                        style={{
+                          width: "45%",
+                          textAlign: "left",
+                          alignSelf: "center",
+                        }}
+                      >
+                        Points left: {Math.round(points * 10) / 10}
+                      </div>
+                      <div
+                        style={{
+                          width: "55%",
+                          textAlign: "right",
+                          alignSelf: "center",
+                        }}
+                      >
+                        Points needed: {Math.round(cost * 10) / 10}
+                      </div>
+                    </div>
+                    <br />
+                    <div style={{ display: "flex", flexDirection: "row" }}>
+                      <div
+                        style={{
+                          width: "50%",
+                          textAlign: "left",
+                          alignSelf: "center",
+                        }}
+                      >
+                        <button
+                          type="submit"
+                          className="btn btn-primary btn-block"
+                          onClick={removeAllFromCart}
+                        >
+                          Clear cart
+                        </button>
+                        {clearLoading ? (
+                          <Spinner
+                            animation="border"
+                            role="status"
+                            style={{
+                              float: "left",
+                              margin: 5,
+                              width: 20,
+                              height: 20,
+                            }}
+                          >
+                            <span className="visually-hidden">Loading...</span>
+                          </Spinner>
+                        ) : (
+                          ""
+                        )}
+                      </div>
+                      <div
+                        style={{
+                          width: "50%",
+                          textAlign: "right",
+                          alignSelf: "center",
+                        }}
+                      >
+                        {cart === undefined ? (
+                          <button
+                            type="submit"
+                            className="btn btn-primary btn-block"
+                            disabled
+                          >
+                            Checkout
+                          </button>
+                        ) : bookable && cart.length > 0 ? (
+                          <>
+                            <button
+                              type="submit"
+                              className="btn btn-primary btn-block"
+                              onClick={checkoutCart}
+                            >
+                              Checkout
+                            </button>
+                            {loading ? (
+                              <Spinner
+                                animation="border"
+                                role="status"
+                                style={{
+                                  float: "right",
+                                  margin: 5,
+                                  width: 20,
+                                  height: 20,
+                                }}
+                              >
+                                <span className="visually-hidden">
+                                  Loading...
+                                </span>
+                              </Spinner>
+                            ) : (
+                              ""
+                            )}
+                          </>
+                        ) : (
+                          <button
+                            type="submit"
+                            className="btn btn-primary btn-block"
+                            disabled
+                          >
+                            Checkout
+                          </button>
+                        )}
                       </div>
                     </div>
                   </div>

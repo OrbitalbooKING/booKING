@@ -780,7 +780,6 @@ function StudentHome() {
                   )}
                 </div>
               </div>
-
               <div className="venue-list-mobile">
                 <div
                   style={{

@@ -301,7 +301,7 @@ function DeletionOverview() {
                     alignSelf: "center",
                   }}
                 >
-                  <h3>Bookings</h3>
+                  <h3>Currently selected:</h3>
                 </div>
                 <div style={{ display: "flex", flexDirection: "column" }}>
                   <div

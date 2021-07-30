@@ -268,17 +268,11 @@ function EditOverview() {
         <Layout2
           id={Cookies.get("id")}
           name={Cookies.get("name")}
-          action="Booking overview"
+          action="Editing overview"
         >
-          <div className="parent">
+          <div className="parent-edit-overview">
             <div className="home-page">
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  paddingRight: 20,
-                }}
-              >
+              <div className="edit-home">
                 <div className="column">
                   {oldVenueInfo === undefined || bookingInfo === undefined ? (
                     <div
@@ -307,9 +301,9 @@ function EditOverview() {
                                 alignSelf: "center",
                               }}
                             >
-                              <h3>Currently selected:</h3>
+                              <h3>Currently editing:</h3>
                             </div>
-                            <div style={{ overflowY: "auto", height: 430 }}>
+                            <div className="edit-column-booking">
                               <div className="display-old-header">
                                 <div
                                   style={{
@@ -746,7 +740,7 @@ function EditOverview() {
                       style={{
                         margin: "0 auto",
                         overflowY: "auto",
-                        height: 240,
+                        height: 260,
                         marginBottom: 10,
                       }}
                     >
@@ -820,6 +814,290 @@ function EditOverview() {
                         ""
                       )}
                     </div>
+                  </div>
+                </div>
+              </div>
+              <div className="booking-selector-mobile">
+                <div
+                  style={{
+                    width: "auto",
+                    textAlign: "center",
+                    alignSelf: "center",
+                  }}
+                >
+                  <h3>Currently selected venue:</h3>
+                </div>
+                <div style={{ overflowY: "auto", height: 250 }}>
+                  {venueInfo === undefined ? (
+                    <div
+                      style={{
+                        justifyContent: "center",
+                        alignItems: "center",
+                        display: "flex",
+                        flexDirection: "column",
+                      }}
+                    >
+                      <Spinner animation="border" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                      </Spinner>
+                    </div>
+                  ) : venueInfo.length === 0 ? (
+                    <div className="display-selected-venue">
+                      <div style={{ textAlign: "center", alignSelf: "center" }}>
+                        <h3>No details to display</h3>
+                      </div>
+                    </div>
+                  ) : (
+                    venueInfo.map((val, key) => {
+                      return (
+                        <div key={key}>
+                          <div
+                            style={{ display: "flex", flexDirection: "column" }}
+                          >
+                            <div>
+                              <div className="display-old-header">
+                                <div
+                                  style={{
+                                    width: 220,
+                                    textAlign: "center",
+                                    alignSelf: "center",
+                                  }}
+                                >
+                                  Venue type{" "}
+                                </div>
+                              </div>
+                              <div className="display-old">
+                                <div
+                                  style={{
+                                    width: "auto",
+                                    textAlign: "center",
+                                    alignSelf: "center",
+                                  }}
+                                >
+                                  {val.Roomtypename}{" "}
+                                </div>
+                              </div>
+                              <div className="display-old-header">
+                                <div
+                                  style={{
+                                    width: "auto",
+                                    textAlign: "center",
+                                    alignSelf: "center",
+                                  }}
+                                >
+                                  Venue name{" "}
+                                </div>
+                              </div>
+                              <div className="display-old">
+                                <div
+                                  style={{
+                                    width: "auto",
+                                    textAlign: "center",
+                                    alignSelf: "center",
+                                  }}
+                                >
+                                  {val.Venuename}{" "}
+                                </div>
+                              </div>
+                              <div className="display-old-header">
+                                <div
+                                  style={{
+                                    width: "auto",
+                                    textAlign: "center",
+                                    alignSelf: "center",
+                                  }}
+                                >
+                                  Location{" "}
+                                </div>
+                              </div>
+                              <div className="display-old">
+                                <div
+                                  style={{
+                                    width: "auto",
+                                    textAlign: "center",
+                                    alignSelf: "center",
+                                  }}
+                                >
+                                  {val.Buildingname} {val.Unit}{" "}
+                                </div>
+                              </div>
+                              <div className="display-old-header">
+                                <div
+                                  style={{
+                                    width: "auto",
+                                    textAlign: "center",
+                                    alignSelf: "center",
+                                  }}
+                                >
+                                  Max capacity{" "}
+                                </div>
+                              </div>
+                              <div className="display-old">
+                                <div
+                                  style={{
+                                    width: "auto",
+                                    textAlign: "center",
+                                    alignSelf: "center",
+                                  }}
+                                >
+                                  {val.Maxcapacity}{" "}
+                                </div>
+                              </div>
+                              <div className="display-old-header">
+                                <div
+                                  style={{
+                                    width: "auto",
+                                    textAlign: "center",
+                                    alignSelf: "center",
+                                  }}
+                                >
+                                  Equipment{" "}
+                                </div>
+                              </div>
+                              <div className="display-old">
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    width: "auto",
+                                    textAlign: "center",
+                                    alignSelf: "center",
+                                    justifyContent: "center",
+                                  }}
+                                >
+                                  <div>
+                                    {val.Facilitiesdict.Projector ===
+                                      undefined &&
+                                    val.Facilitiesdict.Screen === undefined &&
+                                    val.Facilitiesdict.Desktop === undefined &&
+                                    val.Facilitiesdict.Whiteboard === undefined
+                                      ? "Nil"
+                                      : ""}
+                                  </div>
+                                  <div>
+                                    {val.Facilitiesdict.Projector === undefined
+                                      ? ""
+                                      : val.Facilitiesdict.Projector === 1
+                                      ? val.Facilitiesdict.Projector +
+                                        " projector"
+                                      : val.Facilitiesdict.Projector +
+                                        " projectors"}
+                                  </div>
+                                  <div>
+                                    {val.Facilitiesdict.Screen === undefined
+                                      ? ""
+                                      : val.Facilitiesdict.Screen === 1
+                                      ? val.Facilitiesdict.Screen + " screen"
+                                      : val.Facilitiesdict.Screen + " screens"}
+                                  </div>
+                                  <div>
+                                    {val.Facilitiesdict.Desktop === undefined
+                                      ? ""
+                                      : val.Facilitiesdict.Desktop === 1
+                                      ? val.Facilitiesdict.Desktop + " desktop"
+                                      : val.Facilitiesdict.Desktop +
+                                        " desktops"}
+                                  </div>
+                                  <div>
+                                    {val.Facilitiesdict.Whiteboard === undefined
+                                      ? ""
+                                      : val.Facilitiesdict.Whiteboard === 1
+                                      ? val.Facilitiesdict.Whiteboard +
+                                        " whiteboard"
+                                      : val.Facilitiesdict.Whiteboard +
+                                        " whiteboards"}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
+              </div>
+              <br />
+              <div className="booking-selector-mobile">
+                <div
+                  style={{ display: "flex", flexDirection: "column", flex: 1 }}
+                >
+                  <div style={{ textAlign: "center" }}>
+                    Currently selected time slots:
+                  </div>
+                  <div
+                    style={{
+                      margin: "0 auto",
+                      overflowY: "auto",
+                      height: 250,
+                      marginBottom: 10,
+                    }}
+                  >
+                    {cart === undefined ? (
+                      <div
+                        style={{
+                          justifyContent: "center",
+                          alignItems: "center",
+                          display: "flex",
+                          flexDirection: "column",
+                        }}
+                      >
+                        <Spinner animation="border" role="status">
+                          <span className="visually-hidden">Loading...</span>
+                        </Spinner>
+                      </div>
+                    ) : cart.length === 0 ? (
+                      <div>
+                        <div
+                          style={{ textAlign: "center", alignSelf: "center" }}
+                        >
+                          <h3>Add a time slot</h3>
+                        </div>
+                      </div>
+                    ) : (
+                      cart.map((val, key) => {
+                        return (
+                          <div key={key}>
+                            <hr />
+                            <div
+                              style={{ display: "flex", flexDirection: "row" }}
+                            >
+                              <div
+                                style={{
+                                  width: "auto",
+                                  textAlign: "center",
+                                  alignSelf: "center",
+                                  paddingRight: 10,
+                                }}
+                              >
+                                Pax: {val.Pax} | Timing:{" "}
+                                {dateConverter(val.Eventstart)}
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })
+                    )}
+                  </div>
+                  <div style={{ textAlign: "right" }}>
+                    <button
+                      type="submit"
+                      className="btn btn-primary btn-block"
+                      onClick={confirmBooking}
+                    >
+                      Confirm
+                    </button>
+                    {loading ? (
+                      <Spinner
+                        animation="border"
+                        role="status"
+                        style={{ float: "right", margin: 5 }}
+                      >
+                        <span className="visually-hidden">Loading...</span>
+                      </Spinner>
+                    ) : (
+                      ""
+                    )}
                   </div>
                 </div>
               </div>

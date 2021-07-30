@@ -836,6 +836,315 @@ function StaffHome() {
                   )}
                 </div>
               </div>
+              <div className="venue-list-mobile">
+                <div
+                  style={{
+                    width: "auto",
+                    textAlign: "center",
+                    alignSelf: "center",
+                  }}
+                >
+                  <h3>List of bookings</h3>
+                </div>
+                <div style={{ overflowY: "auto", height: 230 }}>
+                  {bookingsList === undefined ? (
+                    <div
+                      style={{
+                        justifyContent: "center",
+                        alignItems: "center",
+                        display: "flex",
+                        flexDirection: "column",
+                      }}
+                    >
+                      <Spinner animation="border" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                      </Spinner>
+                    </div>
+                  ) : sortBooking(bookingsList).length === 0 ? (
+                    <div className="display-selected-venue">
+                      <div
+                        style={{
+                          width: 220,
+                          textAlign: "center",
+                          alignSelf: "center",
+                        }}
+                      >
+                        <h3>No bookings to display</h3>
+                      </div>
+                    </div>
+                  ) : (
+                    bookingsList.map((val, key) => {
+                      return (
+                        <div key={key}>
+                          <div
+                            style={{ display: "flex", flexDirection: "column" }}
+                          >
+                            <div>
+                              <div className="display-old-header">
+                                <div
+                                  style={{
+                                    width: 220,
+                                    textAlign: "center",
+                                    alignSelf: "center",
+                                  }}
+                                >
+                                  Requestor{" "}
+                                </div>
+                              </div>
+                              <div className="display-old">
+                                <div
+                                  style={{
+                                    width: "auto",
+                                    textAlign: "center",
+                                    alignSelf: "center",
+                                  }}
+                                >
+                                  {val.Nusnetid}{" "}
+                                </div>
+                              </div>
+                              <div className="display-old-header">
+                                <div
+                                  style={{
+                                    width: "auto",
+                                    textAlign: "center",
+                                    alignSelf: "center",
+                                  }}
+                                >
+                                  Requestor's faculty{" "}
+                                </div>
+                              </div>
+                              <div className="display-old">
+                                <div
+                                  style={{
+                                    width: "auto",
+                                    textAlign: "center",
+                                    alignSelf: "center",
+                                  }}
+                                >
+                                  {val.Facultydescription}{" "}
+                                </div>
+                              </div>
+                              <div className="display-old-header">
+                                <div
+                                  style={{
+                                    width: "auto",
+                                    textAlign: "center",
+                                    alignSelf: "center",
+                                  }}
+                                >
+                                  Booking id{" "}
+                                </div>
+                              </div>
+                              <div className="display-old">
+                                <div
+                                  style={{
+                                    width: "auto",
+                                    textAlign: "center",
+                                    alignSelf: "center",
+                                  }}
+                                >
+                                  {val.BookingID.substring(0, 4)}{" "}
+                                </div>
+                              </div>
+                              <div className="display-old-header">
+                                <div
+                                  style={{
+                                    width: "auto",
+                                    textAlign: "center",
+                                    alignSelf: "center",
+                                  }}
+                                >
+                                  Venue name{" "}
+                                </div>
+                              </div>
+                              <div className="display-old">
+                                <div
+                                  style={{
+                                    width: "auto",
+                                    textAlign: "center",
+                                    alignSelf: "center",
+                                  }}
+                                >
+                                  {val.Venuename}{" "}
+                                </div>
+                              </div>
+                              <div className="display-old-header">
+                                <div
+                                  style={{
+                                    width: "auto",
+                                    textAlign: "center",
+                                    alignSelf: "center",
+                                  }}
+                                >
+                                  Location{" "}
+                                </div>
+                              </div>
+                              <div className="display-old">
+                                <div
+                                  style={{
+                                    width: "auto",
+                                    textAlign: "center",
+                                    alignSelf: "center",
+                                  }}
+                                >
+                                  {val.Buildingname} {val.Unit}{" "}
+                                </div>
+                              </div>
+                              <div className="display-old-header">
+                                <div
+                                  style={{
+                                    width: "auto",
+                                    textAlign: "center",
+                                    alignSelf: "center",
+                                  }}
+                                >
+                                  Date{" "}
+                                </div>
+                              </div>
+                              <div className="display-old">
+                                <div
+                                  style={{
+                                    width: "auto",
+                                    textAlign: "center",
+                                    alignSelf: "center",
+                                  }}
+                                >
+                                  {dateConverter(val.Eventstart)}{" "}
+                                </div>
+                              </div>
+                              <div className="display-old-header">
+                                <div
+                                  style={{
+                                    width: "auto",
+                                    textAlign: "center",
+                                    alignSelf: "center",
+                                  }}
+                                >
+                                  Pax{" "}
+                                </div>
+                              </div>
+                              <div className="display-old">
+                                <div
+                                  style={{
+                                    width: "auto",
+                                    textAlign: "center",
+                                    alignSelf: "center",
+                                  }}
+                                >
+                                  {val.Pax}{" "}
+                                </div>
+                              </div>
+                              <div className="display-old-header">
+                                <div
+                                  style={{
+                                    width: "auto",
+                                    textAlign: "center",
+                                    alignSelf: "center",
+                                  }}
+                                >
+                                  Status{" "}
+                                </div>
+                              </div>
+                              <div className="display-old">
+                                <div
+                                  style={{
+                                    width: "auto",
+                                    textAlign: "center",
+                                    alignSelf: "center",
+                                  }}
+                                >
+                                  {val.Eventstart > toIsoString(new Date())
+                                    ? val.Bookingstatusdescription
+                                    : "Completed"}{" "}
+                                </div>
+                              </div>
+                              <div className="display-old-header">
+                                <div
+                                  style={{
+                                    width: "auto",
+                                    textAlign: "center",
+                                    alignSelf: "center",
+                                  }}
+                                >
+                                  Sharing{" "}
+                                </div>
+                              </div>
+                              <div className="display-old">
+                                <div
+                                  style={{
+                                    width: "auto",
+                                    textAlign: "center",
+                                    alignSelf: "center",
+                                  }}
+                                >
+                                  {val.Sharable ? "Yes" : "No"}{" "}
+                                </div>
+                              </div>
+
+                              <div
+                                style={{
+                                  width: "auto",
+                                  textAlign: "center",
+                                  alignSelf: "center",
+                                  paddingTop: 10,
+                                }}
+                              >
+                                {val.Eventstart <= toIsoString(new Date()) ? (
+                                  <DropdownButton
+                                    id="dropdown-basic-button"
+                                    title="Edit"
+                                    disabled
+                                  >
+                                    <Dropdown.Item
+                                      onClick={approveBooking(val)}
+                                    >
+                                      Approve
+                                    </Dropdown.Item>
+                                    <Dropdown.Item onClick={rejectBooking(val)}>
+                                      Reject
+                                    </Dropdown.Item>
+                                  </DropdownButton>
+                                ) : val.Bookingstatusdescription ===
+                                  "Approved" ? (
+                                  <DropdownButton
+                                    id="dropdown-basic-button"
+                                    title="Edit"
+                                  >
+                                    <Dropdown.Item
+                                      onClick={approveBooking(val)}
+                                      disabled
+                                    >
+                                      Approve
+                                    </Dropdown.Item>
+                                    <Dropdown.Item onClick={rejectBooking(val)}>
+                                      Reject
+                                    </Dropdown.Item>
+                                  </DropdownButton>
+                                ) : (
+                                  <DropdownButton
+                                    id="dropdown-basic-button"
+                                    title="Edit"
+                                  >
+                                    <Dropdown.Item
+                                      onClick={approveBooking(val)}
+                                    >
+                                      Approve
+                                    </Dropdown.Item>
+                                    <Dropdown.Item onClick={rejectBooking(val)}>
+                                      Reject
+                                    </Dropdown.Item>
+                                  </DropdownButton>
+                                )}
+                              </div>
+                              <hr />
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </Layout3>

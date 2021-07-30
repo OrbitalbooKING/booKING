@@ -351,17 +351,11 @@ function EditHome() {
         <Layout2
           id={Cookies.get("id")}
           name={Cookies.get("name")}
-          action="Editing booking"
+          action="Select a new venue"
         >
-          <div className="parent">
+          <div className="parent-edit-home">
             <div className="home-page">
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  paddingRight: 20,
-                }}
-              >
+              <div className="edit-home">
                 <div className="column">
                   {venueInfo === undefined || bookingInfo === undefined ? (
                     <div
@@ -390,9 +384,9 @@ function EditHome() {
                                 alignSelf: "center",
                               }}
                             >
-                              <h3>Currently selected:</h3>
+                              <h3>Currently editing:</h3>
                             </div>
-                            <div style={{ overflowY: "auto", height: 470 }}>
+                            <div className="edit-column-details">
                               <div className="display-old-header">
                                 <div
                                   style={{
@@ -1174,6 +1168,237 @@ function EditHome() {
                                 </div>
                               </div>
                               <br />
+                            </div>
+                          );
+                        })
+                      )}
+                    </div>
+                  </div>
+                  <div className="venue-list-mobile">
+                    <div
+                      style={{
+                        width: "auto",
+                        textAlign: "center",
+                        alignSelf: "center",
+                      }}
+                    >
+                      <h3>Select a venue:</h3>
+                    </div>
+                    <div style={{ overflowY: "auto", height: 230 }}>
+                      {searchResults === undefined ? (
+                        <div
+                          style={{
+                            justifyContent: "center",
+                            alignItems: "center",
+                            display: "flex",
+                            flexDirection: "column",
+                          }}
+                        >
+                          <Spinner animation="border" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                          </Spinner>
+                        </div>
+                      ) : searchResults.length === 0 ? (
+                        <div className="display-selected-venue">
+                          <div
+                            style={{ textAlign: "center", alignSelf: "center" }}
+                          >
+                            <h3>No results found</h3>
+                          </div>
+                        </div>
+                      ) : (
+                        searchResults.map((val, key) => {
+                          return (
+                            <div key={key}>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                }}
+                              >
+                                <div>
+                                  <div className="display-old-header">
+                                    <div
+                                      style={{
+                                        width: 220,
+                                        textAlign: "center",
+                                        alignSelf: "center",
+                                      }}
+                                    >
+                                      Venue type{" "}
+                                    </div>
+                                  </div>
+                                  <div className="display-old">
+                                    <div
+                                      style={{
+                                        width: "auto",
+                                        textAlign: "center",
+                                        alignSelf: "center",
+                                      }}
+                                    >
+                                      {val.Roomtypename}{" "}
+                                    </div>
+                                  </div>
+                                  <div className="display-old-header">
+                                    <div
+                                      style={{
+                                        width: "auto",
+                                        textAlign: "center",
+                                        alignSelf: "center",
+                                      }}
+                                    >
+                                      Venue name{" "}
+                                    </div>
+                                  </div>
+                                  <div className="display-old">
+                                    <div
+                                      style={{
+                                        width: "auto",
+                                        textAlign: "center",
+                                        alignSelf: "center",
+                                      }}
+                                    >
+                                      {val.Venuename}{" "}
+                                    </div>
+                                  </div>
+                                  <div className="display-old-header">
+                                    <div
+                                      style={{
+                                        width: "auto",
+                                        textAlign: "center",
+                                        alignSelf: "center",
+                                      }}
+                                    >
+                                      Location{" "}
+                                    </div>
+                                  </div>
+                                  <div className="display-old">
+                                    <div
+                                      style={{
+                                        width: "auto",
+                                        textAlign: "center",
+                                        alignSelf: "center",
+                                      }}
+                                    >
+                                      {val.Buildingname} {val.Unit}{" "}
+                                    </div>
+                                  </div>
+                                  <div className="display-old-header">
+                                    <div
+                                      style={{
+                                        width: "auto",
+                                        textAlign: "center",
+                                        alignSelf: "center",
+                                      }}
+                                    >
+                                      Max capacity{" "}
+                                    </div>
+                                  </div>
+                                  <div className="display-old">
+                                    <div
+                                      style={{
+                                        width: "auto",
+                                        textAlign: "center",
+                                        alignSelf: "center",
+                                      }}
+                                    >
+                                      {val.Maxcapacity}{" "}
+                                    </div>
+                                  </div>
+                                  <div className="display-old-header">
+                                    <div
+                                      style={{
+                                        width: "auto",
+                                        textAlign: "center",
+                                        alignSelf: "center",
+                                      }}
+                                    >
+                                      Equipment{" "}
+                                    </div>
+                                  </div>
+                                  <div className="display-old">
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        width: "auto",
+                                        textAlign: "center",
+                                        alignSelf: "center",
+                                        justifyContent: "center",
+                                      }}
+                                    >
+                                      <div>
+                                        {val.Facilitiesdict.Projector ===
+                                          undefined &&
+                                        val.Facilitiesdict.Screen ===
+                                          undefined &&
+                                        val.Facilitiesdict.Desktop ===
+                                          undefined &&
+                                        val.Facilitiesdict.Whiteboard ===
+                                          undefined
+                                          ? "Nil"
+                                          : ""}
+                                      </div>
+                                      <div>
+                                        {val.Facilitiesdict.Projector ===
+                                        undefined
+                                          ? ""
+                                          : val.Facilitiesdict.Projector === 1
+                                          ? val.Facilitiesdict.Projector +
+                                            " projector"
+                                          : val.Facilitiesdict.Projector +
+                                            " projectors"}
+                                      </div>
+                                      <div>
+                                        {val.Facilitiesdict.Screen === undefined
+                                          ? ""
+                                          : val.Facilitiesdict.Screen === 1
+                                          ? val.Facilitiesdict.Screen +
+                                            " screen"
+                                          : val.Facilitiesdict.Screen +
+                                            " screens"}
+                                      </div>
+                                      <div>
+                                        {val.Facilitiesdict.Desktop ===
+                                        undefined
+                                          ? ""
+                                          : val.Facilitiesdict.Desktop === 1
+                                          ? val.Facilitiesdict.Desktop +
+                                            " desktop"
+                                          : val.Facilitiesdict.Desktop +
+                                            " desktops"}
+                                      </div>
+                                      <div>
+                                        {val.Facilitiesdict.Whiteboard ===
+                                        undefined
+                                          ? ""
+                                          : val.Facilitiesdict.Whiteboard === 1
+                                          ? val.Facilitiesdict.Whiteboard +
+                                            " whiteboard"
+                                          : val.Facilitiesdict.Whiteboard +
+                                            " whiteboards"}
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div
+                                    style={{
+                                      width: "auto",
+                                      textAlign: "center",
+                                      alignSelf: "center",
+                                      paddingTop: 10,
+                                    }}
+                                  >
+                                    <button
+                                      type="submit"
+                                      className="btn btn-primary btn-block"
+                                      onClick={book(val)}
+                                    >
+                                      Book
+                                    </button>
+                                  </div>
+                                  <hr />
+                                </div>
+                              </div>
                             </div>
                           );
                         })

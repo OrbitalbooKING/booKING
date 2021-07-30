@@ -49,7 +49,8 @@ html,
 .parent-booking,
 .parent-home,
 .parent-edit,
-.parent-edit-home {
+.parent-edit-home,
+.parent-edit-overview {
   margin-top: 56px;
   position: absolute;
   top: 0px;
@@ -531,7 +532,7 @@ html,
   .parent-edit-home {
     margin-top: 56px;
     width: auto;
-    height: 150%;
+    height: 170%;
     position: absolute;
     top: 0px;
     left: 0px;
@@ -543,6 +544,17 @@ html,
     margin-top: 56px;
     width: auto;
     height: 240%;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+  }
+
+  .parent-edit-overview {
+    margin-top: 56px;
+    width: auto;
+    height: 150%;
     position: absolute;
     top: 0px;
     left: 0px;
